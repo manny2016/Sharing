@@ -18,29 +18,32 @@ namespace Sharing.Core.Configuration
             get { return (bool)this["isWriteOnly"]; }
             set { this["isWriteOnly"] = value; }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         [ConfigurationProperty("userid", DefaultValue = "sharing-uat")]
         public string UserId
         {
             get { return (string)this["userid"]; }
             set { this["userid"] = value; }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         [ConfigurationProperty("password", DefaultValue = "Window2008")]
         public string Password
         {
             get { return (string)this["password"]; }
             set { this["password"] = value; }
         }
-
-        [ConfigurationProperty("dbtype", DefaultValue = DatabaseTypes.SqlServer)]
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigurationProperty("dbtype", DefaultValue = DatabaseTypes.MySql)]
         public DatabaseTypes Type
         {
-            get { return Enum.Parse<DatabaseTypes>(this["dbtype"].ToString()); }
-            set { this["dbtype"] = value.ToString(); }
+            get { return (DatabaseTypes)this["dbtype"]; }
+            set { this["dbtype"] = value; }
         }
-
-
-
     }
 }

@@ -45,11 +45,13 @@ namespace Sharing.Core
             string queryString,
             object param = null)
         {
-            return connection.QueryFirstOrDefault(queryString, param);
+
+            return connection.QueryFirstOrDefault<T>(queryString, param);
         }
 
         public int Execute(string executeSql, object param = null)
         {
+
             return connection.Execute(executeSql, param);
         }
     }

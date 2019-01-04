@@ -8,7 +8,7 @@ namespace Sharing.Core.Entities
     {
         public virtual long Id { get; set; }
         public virtual long MerchantId { get; set; }
-        public virtual long WxId { get; set; }
+        public virtual long WxShopId { get; set; }
         public virtual string ShopName { get; set; }
         public virtual string Address { get; set; }
     }
