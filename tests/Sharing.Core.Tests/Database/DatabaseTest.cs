@@ -38,7 +38,7 @@ namespace Sharing.Core.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            //DatabaseTestHelper.Cleanup();
+            DatabaseTestHelper.Cleanup();
         }
     }
 }
