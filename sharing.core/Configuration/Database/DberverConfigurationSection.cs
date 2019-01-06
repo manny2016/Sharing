@@ -8,13 +8,14 @@ namespace Sharing.Core.Configuration
         private static DberverConfigurationSection instance = null;
         public static DberverConfigurationSection GetInstance()
         {
-            if (instance == null)
-                instance = ConfigurationManager.GetSection(SectionName) as DberverConfigurationSection;
-            return instance;
+            var configuration = ConfigurationManager.OpenExeConfiguration( ConfigurationUserLevel.None);
+            return configuration.GetSection(SectionName)
+                 as DberverConfigurationSection;
+
+            
         }
         public static DberverConfigurationSection GetInstanceForTest()
-        {
-            
+        {            
             var configuration = ConfigurationManager.OpenMachineConfiguration();
             return configuration.GetSection(SectionName)
                  as DberverConfigurationSection;

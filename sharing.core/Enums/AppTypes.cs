@@ -7,6 +7,6 @@ namespace Sharing.Core
     public enum AppTypes
     {
         Miniprogram = 1,
-        Official = 1,
+        Official = 2,
     }
 }

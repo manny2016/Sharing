@@ -4,10 +4,9 @@ using System.Text;
 
 namespace Sharing.Core
 {
-    public interface IWxUserKey
+    public interface IMCardService
     {
-        string AppId { get; }
-        string OpenId { get; }
-        
+
+        void Synchronous();
     }
 }

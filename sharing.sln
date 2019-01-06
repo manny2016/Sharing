@@ -15,7 +15,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Core.Tests", "tests
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5EF2BB8E-72DA-4A13-A7AB-03A5F8BAC78D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "tools\ConsoleApp\ConsoleApp.csproj", "{D9594DF4-C416-402A-9346-2C60D9B95F25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "tools\ConsoleApp\ConsoleApp.csproj", "{D9594DF4-C416-402A-9346-2C60D9B95F25}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{B8D1B4B9-E3E2-4910-A6F3-75FC5A726B62}"
+	ProjectSection(SolutionItems) = preProject
+		Merchant.sql = Merchant.sql
+		MShop.sql = MShop.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "portals", "portals", "{F9364E31-41CC-4193-91B1-FE340F2F972D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sharing.core.services", "sharing.core.service\sharing.core.services.csproj", "{20A67B19-086E-4AEE-AF38-43D8791BB2BE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sharing.portal.api", "portals\sharing.portal.api\sharing.portal.api.csproj", "{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +53,14 @@ Global
 		{D9594DF4-C416-402A-9346-2C60D9B95F25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9594DF4-C416-402A-9346-2C60D9B95F25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9594DF4-C416-402A-9346-2C60D9B95F25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20A67B19-086E-4AEE-AF38-43D8791BB2BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20A67B19-086E-4AEE-AF38-43D8791BB2BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20A67B19-086E-4AEE-AF38-43D8791BB2BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20A67B19-086E-4AEE-AF38-43D8791BB2BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -49,6 +69,8 @@ Global
 		{F96C9B46-A3AD-493E-8C86-A76B1344BFB2} = {15E51319-FB13-43BF-9FFE-F319320E9491}
 		{853D6543-7275-40C4-A96A-F1BBA1C570F5} = {4C0A82E1-C121-4197-A9E0-ABF9DE92F007}
 		{D9594DF4-C416-402A-9346-2C60D9B95F25} = {5EF2BB8E-72DA-4A13-A7AB-03A5F8BAC78D}
+		{B8D1B4B9-E3E2-4910-A6F3-75FC5A726B62} = {15E51319-FB13-43BF-9FFE-F319320E9491}
+		{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7} = {F9364E31-41CC-4193-91B1-FE340F2F972D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {486C7E1F-A769-448F-BDC7-9C877CF27FC8}

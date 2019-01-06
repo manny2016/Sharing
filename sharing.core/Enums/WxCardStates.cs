@@ -4,10 +4,10 @@ using System.Text;
 
 namespace Sharing.Core
 {
-    public interface IWxUserKey
+    public enum WxCardStates
     {
-        string AppId { get; }
-        string OpenId { get; }
-        
+        Normal = 1,
+        Abnormal = 2
+
     }
 }

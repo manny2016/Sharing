@@ -6,6 +6,7 @@ namespace Sharing.Core
     using System.Data;
     using Dapper;
     using System;
+    using System.Data.Common;
     public class Database : IDatabase
     {
         private IDbConnection connection;
@@ -50,9 +51,17 @@ namespace Sharing.Core
         }
 
         public int Execute(string executeSql, object param = null)
-        {
-
+        {            
             return connection.Execute(executeSql, param);
         }
+        public int Execute(
+            string executeSql, 
+            DynamicParameters parameters, 
+            CommandType type)
+        {
+            var command = new CommandDefinition(executeSql, parameters, null, null, type);
+            return connection.Execute(command);
+        }
+       
     }
 }
