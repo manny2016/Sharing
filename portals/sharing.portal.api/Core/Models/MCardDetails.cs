@@ -2,7 +2,7 @@
 namespace Sharing.Portal.Api.Models
 {
     using Newtonsoft.Json;
-    public class MyMCardModel
+    public class MCardDetails
     {
         [JsonProperty("brandName")]
         public virtual string BrandName { get; set; }
@@ -20,7 +20,7 @@ namespace Sharing.Portal.Api.Models
         public virtual string UserCode { get; set; }
 
         [JsonProperty("money")]
-        public virtual int? Money { get; set; }
+        public virtual string Money { get; set; }
 
         [JsonProperty("prerogative")]
         public virtual string Prerogative { get; set; }
@@ -29,6 +29,6 @@ namespace Sharing.Portal.Api.Models
         public virtual string Address { get; set; }
 
         [JsonProperty("rewardMoney")]
-        public virtual int? RewardMoney { get; set; }
+        public virtual string RewardMoney { get; set; }
     }
 }

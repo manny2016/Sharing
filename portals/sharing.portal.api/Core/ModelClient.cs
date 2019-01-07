@@ -66,7 +66,7 @@ WHERE merchant.MCode=mcode";
         }
 
 
-        public MyMCardModel GetMyMCard(string appid, string openid, string cardid)
+        public MCardDetails GetMCardDetails(string appid, string openid, string cardid)
         {
             var queryString = @"
 SELECT 
@@ -76,8 +76,8 @@ SELECT
     mcard.CardId,
     mcard.Prerogative,
     ucard.UserCode,
-    ucard.Money,
-    ucard.RewardMoney,
+    IFNULL(ucard.Money,0)/100,
+    IFNULL(ucard.RewardMoney,0)/100,
     (
 		SELECT Address FROM  `sharing_merchant` AS merchant WHERE merchant.Id = mcard.MerchantId
         LIMIT 1
@@ -87,11 +87,11 @@ FROM `sharing_wxusercard` AS ucard
 		ON ucard.CardId = mcard.CardId AND mcard.CardId =@pCardid
 	LEFT JOIN  `sharing_wxuser` AS wxuser
 		ON ucard.WxUserId = wxuser.Id AND wxuser.AppId=@pAppid AND wxuser.OpenId=@pOpenId
-WHERE mcard.CardId =@pCardid
+WHERE mcard.CardId =@pCardid  
 ";
             using (var database = SharingConfigurations.GenerateDatabase(false))
             {
-                return database.SqlQuerySingleOrDefault<MyMCardModel>(queryString, new
+                return database.SqlQuerySingleOrDefault<MCardDetails>(queryString, new
                 {
                     pAppid = appid,
                     pOpenId = openid,
@@ -99,7 +99,38 @@ WHERE mcard.CardId =@pCardid
                 });
             }
         }
-
+        public List<MCardDetails> GetMCardDetails(string appid, string openid)
+        {
+            var queryString = @"
+SELECT 
+	mcard.BrandName,
+    mcard.Title,
+    IFNULL(ucard.WxUserId,0) AS Ready,
+    mcard.CardId,
+    mcard.Prerogative,
+    ucard.UserCode,
+    IFNULL(ucard.Money,0) / 100,
+    IFNULL(ucard.RewardMoney,0) / 100,
+    (
+		SELECT Address FROM  `sharing_merchant` AS merchant WHERE merchant.Id = mcard.MerchantId
+        LIMIT 1
+    ) AS Address
+FROM `sharing_wxusercard` AS ucard
+	RIGHT JOIN `sharing_mcard` AS mcard
+		ON ucard.CardId = mcard.CardId 
+	LEFT JOIN  `sharing_wxuser` AS wxuser
+		ON ucard.WxUserId = wxuser.Id AND wxuser.AppId=@pAppId AND wxuser.OpenId=@pOpenId
+WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
+";
+            using (var database = SharingConfigurations.GenerateDatabase(false))
+            {
+                return database.SqlQuery<MCardDetails>(queryString, new
+                {
+                    pAppId = appid,
+                    pOpenId = openid
+                }).ToList();
+            }
+        }
         public PullWxPayData GenerateUnifiedorder(TopupContext context)
         {
             var service = this.provider.GetService<IWeChatPayService>();

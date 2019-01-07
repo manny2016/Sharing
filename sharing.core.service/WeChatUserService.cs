@@ -30,12 +30,14 @@ namespace Sharing.Core.Services
                 parameters.Add("p_LastActivityTime", DateTime.Now.ToUnixStampDateTime(), System.Data.DbType.Int64);
                 parameters.Add("o_Id", null, System.Data.DbType.Int64, System.Data.ParameterDirection.Output);
                 parameters.Add("o_mobile", null, System.Data.DbType.String, System.Data.ParameterDirection.Output);
+                parameters.Add("o_rewardMoney", null, System.Data.DbType.Int32, System.Data.ParameterDirection.Output);
                 database.Execute(queryString, parameters, System.Data.CommandType.StoredProcedure);
                 return new Membership()
                 {
                     AppId = context.WxApp.AppId,
                     Id = parameters.Get<long?>("o_Id"),
                     Mobile = parameters.Get<string>("o_mobile"),
+                    RewardMoney = parameters.Get<int?>("o_rewardMoney") ,
                     OpenId = context.Info.OpenId
                 };
             }

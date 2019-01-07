@@ -12,6 +12,7 @@ namespace Sharing.Portal.Api.Models
         [JsonProperty("openid")]
         public string OpenId { get; set; }
 
+
         [JsonProperty("cardId")]
         public string CardId { get; set; }
     }

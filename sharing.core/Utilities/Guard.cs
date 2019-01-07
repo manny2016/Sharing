@@ -25,8 +25,8 @@ namespace Sharing.Core
             {
                 if (string.IsNullOrEmpty(argumentValues[index]))
                 {
-                    strBld.AppendLine(string.Format("The null value of\"{0}\" is not allow",
-                        index < argumentNames.Length ? argumentValues[index] : "Unknow"));
+                    strBld.AppendLine(string.Format("The null and empty value of\"{0}\" is not allow",
+                        index < argumentNames.Length ? argumentNames[index] : "Unknow"));
                 }
             }
             if (strBld.Length > 0)

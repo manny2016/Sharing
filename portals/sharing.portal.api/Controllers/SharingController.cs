@@ -42,19 +42,27 @@ namespace Sharing.Portal.Api
         }
 
 
-        [Route("api/sharing/QueryMyMCard")]
+        [Route("api/sharing/QueryMCardDetails")]
         [HttpPost]
-        public MyMCardModel QueryMyMCard(QueryMyMCardContext context)
+        public MCardDetails QueryMCardDetails(QueryMyMCardContext context)
         {
             Guard.ArgumentNotNull(context, "context");
             Guard.ArgumentNotNullOrEmpty(
                 new string[] { context.AppID, context.OpenId, context.CardId },
                 new string[] { "AppId", "OpenId", "CardId" });
-
-            var model = client.GetMyMCard(context.AppID, context.OpenId, context.CardId);
+            var model = client.GetMCardDetails(context.AppID, context.OpenId, context.CardId);
             return model;
         }
-
+        [Route("api/sharing/QueryMyMCardDetails")]
+        [HttpPost]
+        public IList<MCardDetails> QueryMyMCardDetails(QueryMyMCardContext context)
+        {
+            Guard.ArgumentNotNull(context, "context");
+            Guard.ArgumentNotNullOrEmpty(
+                new string[] { context.AppID, context.OpenId },
+                new string[] { "AppId", "OpenId" });
+            return client.GetMCardDetails(context.AppID, context.OpenId);
+        }
 
         [Route("api/sharing/WxBizMsg")]
         [HttpPost]
@@ -88,8 +96,8 @@ namespace Sharing.Portal.Api
                 new string[] { context.MCode, context.OpenId, context.AppId, context.CardId, context.Code },
                 new string[] { "MCode", "OpenId", "AppId", "CardId", "Code" }
             );
-            return null;
-            //return client.GenerateUnifiedorder(context);
+
+            return client.GenerateUnifiedorder(context);
         }
 
         [Route("api/enjoy/PayNotify")]
@@ -97,7 +105,8 @@ namespace Sharing.Portal.Api
         [HttpPost]
         public void PayNotify()
         {
-          
+
         }
+
     }
 }
