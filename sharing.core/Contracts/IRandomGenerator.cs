@@ -4,8 +4,9 @@ using System.Text;
 
 namespace Sharing.Core
 {
-    public interface IMCardService
+    public interface IRandomGenerator
     {
-        void Synchronous();
+        uint GetRandomUInt();
+        string Genernate();
     }
 }

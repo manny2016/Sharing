@@ -11,9 +11,11 @@ namespace Sharing.Portal.Api
     using Sharing.Core.Models;
     using System.Collections.Generic;
     using System.Linq;
+
     public class ModelClient
     {
-        private readonly IServiceProvider provider = Utility.CreateServiceProvider();
+        private readonly IServiceProvider provider = SharingConfigurations.CreateServiceProvider(null);
+
         public WeChatUserModel Register(RegisterWeChatUserContext context)
         {
             var weChatApi = provider.GetService<IWeChatApi>();
@@ -36,11 +38,14 @@ namespace Sharing.Portal.Api
                 UnionId = info.UnionId
             };
         }
+
+
         public SessionWxResponse GetSession(JSCodeApiToken token)
         {
             var service = provider.GetService<IWeChatApi>();
             return service.GetSession(token);
         }
+
         public IList<MCardModel> GetMCardModels(string mcode)
         {
             var queryString = @"
@@ -59,6 +64,7 @@ WHERE merchant.MCode=mcode";
                 return database.SqlQuery<MCardModel>(queryString, new { mcode = mcode }).ToList();
             }
         }
+
 
         public MyMCardModel GetMyMCard(string appid, string openid, string cardid)
         {
@@ -92,6 +98,28 @@ WHERE mcard.CardId =@pCardid
                     pCardid = cardid
                 });
             }
+        }
+
+        public PullWxPayData GenerateUnifiedorder(TopupContext context)
+        {
+            var service = this.provider.GetService<IWeChatPayService>();
+            var api = this.provider.GetService<IWeChatApi>();
+            var generator = this.provider.GetService<IRandomGenerator>();
+            ////P3 Need to query from cache.
+            var payment = service.GetPayment(context.AppId);
+            var trade = service.PrepareUnifiedorder(context);
+            var data = context.GenerateUnifiedWxPayData(payment.MchId.ToString(), trade.TradeId, payment.PayKey, generator.Genernate());
+            var parameter = api.Unifiedorder(data, payment.MchId.ToString());
+            parameter.PaySign = parameter.MakeSign(payment.PayKey);
+
+            return new PullWxPayData()
+            {
+                nonceStr = parameter.NonceStr,
+                package = parameter.Package,
+                paySign = parameter.PaySign,
+                signType = WxPayData.SIGN_TYPE_HMAC_SHA256,
+                timeStamp = parameter.TimeStamp.ToString()
+            };
         }
     }
 }

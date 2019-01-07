@@ -44,7 +44,9 @@ namespace Sharing.Core
         /// <param name="official"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        JObject QueryMCardDetails(IWxApp official,IWxCardKey key);
-             
+        JObject QueryMCardDetails(IWxApp official, IWxCardKey key);
+
+        WxPayParameter Unifiedorder(WxPayData data, string mchid);
+
     }
 }

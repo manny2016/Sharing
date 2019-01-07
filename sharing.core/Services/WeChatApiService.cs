@@ -11,6 +11,11 @@ namespace Sharing.Core.Services
     using System.Text;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using System.Net;
+    using System.Net.Security;
+    using System.Security.Cryptography.X509Certificates;
+    using Sharing.Core;
+
     public class WeChatApiService : IWeChatApi
     {
 
@@ -114,24 +119,61 @@ namespace Sharing.Core.Services
         public JObject QueryMCardDetails(IWxApp official, IWxCardKey card)
         {
             var url = string.Format("https://api.weixin.qq.com/card/get?access_token={0}", GetToken(official.AppId, official.Secret));
-            var result= url.GetUriJsonContent<JObject>((http) =>
+            var result = url.GetUriJsonContent<JObject>((http) =>
+             {
+                 http.Method = "POST";
+                 http.ContentType = "application/json; encoding=utf-8";
+                 var data = new
+                 {
+                     card_id = card.CardId
+                 };
+                 using (var stream = http.GetRequestStream())
+                 {
+                     var body = data.SerializeToJson();
+                     var buffers = UTF8Encoding.UTF8.GetBytes(body);
+                     stream.Write(buffers, 0, buffers.Length);
+                     stream.Flush();
+                 }
+                 return http;
+             });
+            return result;
+        }
+
+
+        public WxPayParameter Unifiedorder(WxPayData data,string mchid)
+        {
+            var request = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+            var order = request.GetUriContentDirectly((http) =>
             {
-                http.Method = "POST";
-                http.ContentType = "application/json; encoding=utf-8";
-                var data = new
+                if (request.StartsWith("https", StringComparison.OrdinalIgnoreCase))
                 {
-                    card_id = card.CardId
-                };
+                    ServicePointManager.ServerCertificateValidationCallback =
+                            new RemoteCertificateValidationCallback(CheckValidationResult);
+                }
+                http.Timeout = 30 * 1000;
+                ServicePointManager.DefaultConnectionLimit = 200;
+                http.UserAgent = string.Format("WXPaySDK/{3} ({0}) .net/{1} {2}",
+                    Environment.OSVersion, Environment.Version, mchid,
+                    typeof(WxPayParameter).Assembly.GetName().Version);
+                http.Method = "POST";
+                http.ContentType = "text/xml";
                 using (var stream = http.GetRequestStream())
                 {
-                    var body = data.SerializeToJson();
+                    var body = data.SerializeToXml();
                     var buffers = UTF8Encoding.UTF8.GetBytes(body);
                     stream.Write(buffers, 0, buffers.Length);
                     stream.Flush();
                 }
                 return http;
-            });        
-            return result;
+            }).DeserializeFromXml<WeChatUnifiedorderResponse>();
+            return new WxPayParameter(order);
+        }
+
+
+        public static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
+        {
+            //直接确认，否则打不开    
+            return true;
         }
     }
 }

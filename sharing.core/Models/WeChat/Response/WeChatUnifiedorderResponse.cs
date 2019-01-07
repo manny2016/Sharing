@@ -1,32 +1,36 @@
 ﻿
-namespace Enjoy.Core.WeChatModels
+
+namespace Sharing.WeChat.Models
 {
     using System;
     using System.Xml;
     using System.Xml.Serialization;
     using Newtonsoft.Json;
-    
+
     [Serializable]
     [XmlRoot("xml")]
-    public class WxUnifiedorderResponse
+    public class WeChatUnifiedorderResponse
     {
         private string return_code;
-        
+
         [XmlElement("return_code")]
         public XmlCDataSection ReturnCode
         {
-            get {
+            get
+            {
                 XmlDocument doc = new XmlDocument();
                 return doc.CreateCDataSection(return_code);
             }
-            set {
+            set
+            {
                 return_code = value.Value;
             }
         }
         private string return_msg;
-        
+
         [XmlElement("return_msg")]
-        public XmlCDataSection ReturnMsg {
+        public XmlCDataSection ReturnMsg
+        {
             get
             {
                 XmlDocument doc = new XmlDocument();
@@ -38,9 +42,10 @@ namespace Enjoy.Core.WeChatModels
             }
         }
         private string appid;
-        
+
         [XmlElement("appid")]
-        public XmlCDataSection AppId {
+        public XmlCDataSection AppId
+        {
             get
             {
                 XmlDocument doc = new XmlDocument();
@@ -69,7 +74,7 @@ namespace Enjoy.Core.WeChatModels
         }
 
         private string nonce_str;
-        
+
         [XmlElement("nonce_str")]
         public XmlCDataSection NonceStr
         {
@@ -85,7 +90,7 @@ namespace Enjoy.Core.WeChatModels
         }
 
         private string sign;
-        
+
         [XmlElement("sign")]
         public XmlCDataSection Sign
         {
@@ -100,7 +105,7 @@ namespace Enjoy.Core.WeChatModels
             }
         }
         private string prepay_id;
-        
+
         [XmlElement("prepay_id")]
         public XmlCDataSection PrepayId
         {
@@ -116,7 +121,7 @@ namespace Enjoy.Core.WeChatModels
         }
 
         private string trade_type;
-        
+
         [XmlElement("trade_type")]
         public XmlCDataSection TradeType
         {

@@ -46,22 +46,47 @@ namespace Sharing.Core
             string queryString,
             object param = null)
         {
-
             return connection.QueryFirstOrDefault<T>(queryString, param);
         }
 
+
         public int Execute(string executeSql, object param = null)
-        {            
+        {
             return connection.Execute(executeSql, param);
         }
         public int Execute(
-            string executeSql, 
-            DynamicParameters parameters, 
+            string executeSql,
+            DynamicParameters parameters,
             CommandType type)
         {
             var command = new CommandDefinition(executeSql, parameters, null, null, type);
             return connection.Execute(command);
         }
-       
+
+        public T SqlQuerySingleOrDefaultTransaction<T>(string queryString, object param = null)
+        {
+            IDbTransaction transcation = null;
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                    connection.Open();
+                transcation = connection.BeginTransaction();
+                var result = connection.QuerySingleOrDefault<T>(queryString, param, transcation);
+                transcation.Commit();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                if (transcation != null)
+                    transcation.Rollback();
+                return default(T);
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                    connection.Close();
+            }
+
+        }
     }
 }

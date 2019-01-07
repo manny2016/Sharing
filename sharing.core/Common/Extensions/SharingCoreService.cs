@@ -13,6 +13,12 @@ namespace Sharing.Core
             services.Add(new ServiceDescriptor(typeof(IWeChatApi), typeof(WeChatApiService), ServiceLifetime.Transient));
             return services;
         }
-    
+        public static IServiceCollection AddRandomGenerator(this IServiceCollection services)
+        {
+            services.Add(new ServiceDescriptor(typeof(IRandomGenerator), typeof(DefaultRandomGenerator), ServiceLifetime.Singleton));
+            return services;
+        }
+
+
     }
 }

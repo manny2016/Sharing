@@ -46,8 +46,58 @@ namespace Sharing.Portal.Api
         [HttpPost]
         public MyMCardModel QueryMyMCard(QueryMyMCardContext context)
         {
+            Guard.ArgumentNotNull(context, "context");
+            Guard.ArgumentNotNullOrEmpty(
+                new string[] { context.AppID, context.OpenId, context.CardId },
+                new string[] { "AppId", "OpenId", "CardId" });
+
             var model = client.GetMyMCard(context.AppID, context.OpenId, context.CardId);
             return model;
+        }
+
+
+        [Route("api/sharing/WxBizMsg")]
+        [HttpPost]
+        [HttpGet]
+        public void WxBizMsg(string signature = null,
+            string timestamp = null,
+            string nonce = null,
+            string openid = null,
+            string encrypt_type = null,
+            string msg_signature = null,
+            string echostr = null)
+        {
+            if (this.Request.Method.Equals("GET", StringComparison.OrdinalIgnoreCase))
+            {
+                this.HttpContext.Response.Body.Write(echostr.ToBytes());
+            }
+            else
+            {
+
+            }
+        }
+
+
+
+        [Route("api/sharing/GenerateUnifiedorderforTopup")]
+        [HttpPost]
+        public PullWxPayData GenerateUnifiedorderforTopup(TopupContext context)
+        {
+            Guard.ArgumentNotNull(context, "context");
+            Guard.ArgumentNotNullOrEmpty(
+                new string[] { context.MCode, context.OpenId, context.AppId, context.CardId, context.Code },
+                new string[] { "MCode", "OpenId", "AppId", "CardId", "Code" }
+            );
+            return null;
+            //return client.GenerateUnifiedorder(context);
+        }
+
+        [Route("api/enjoy/PayNotify")]
+        [HttpGet]
+        [HttpPost]
+        public void PayNotify()
+        {
+          
         }
     }
 }

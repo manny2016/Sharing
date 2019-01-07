@@ -20,13 +20,15 @@ namespace Sharing.Core
             string queryString,
             object param = null);
 
+        T SqlQuerySingleOrDefaultTransaction<T>(
+          string queryString,object param=null);
         int Execute(
-            string executeSql, 
+            string executeSql,
             object param = null);
 
         int Execute(
-            string executeSql, 
-            DynamicParameters parameters, 
+            string executeSql,
+            DynamicParameters parameters,
             CommandType type = CommandType.Text);
     }
 }
