@@ -136,7 +136,10 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
             var service = this.provider.GetService<IWeChatPayService>();
             var api = this.provider.GetService<IWeChatApi>();
             var generator = this.provider.GetService<IRandomGenerator>();
+            var wxuserservice = this.provider.GetService<IWxUserService>();
+
             ////P3 Need to query from cache.
+
             var payment = service.GetPayment(context.AppId);
             var trade = service.PrepareUnifiedorder(context);
             var data = context.GenerateUnifiedWxPayData(payment.MchId.ToString(), trade.TradeId, payment.PayKey, generator.Genernate());
@@ -151,6 +154,61 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
                 signType = WxPayData.SIGN_TYPE_HMAC_SHA256,
                 timeStamp = parameter.TimeStamp.ToString()
             };
+        }
+
+        public void TodoPayNotify(PayNotification notification)
+        {
+            Guard.ArgumentNotNull(notification, "notification");
+            if (notification.ResultCode.Value.Equals("SUCCESS"))
+            {
+                var service = provider.GetService<IWeChatPayService>();
+                var trade = service.GetTradeByTradeId(notification.OutTradeNo.Value);
+                Guard.ArgumentNotNull(trade, "trade");
+
+                if (trade.Money != notification.TotalFee)////P1 TODO: need change to sign verify.
+                    throw new WeChatPayException("There is a error happend on transaction to verify.(pay money)");
+                if (trade.TradeState != TradeStates.Waiting)
+                    throw new WeChatPayException("Only Waitting status pay order can be modify.");
+
+                var context = trade.Attach.DeserializeToObject<WxPayAttach>();
+
+                var executeSqlString = string.Format(@"
+/*修改交易状态*/
+UPDATE `sharing_trade` SET `TradeState`=@tradeState,`ConfirmTime`=@confirmTime,`WxOrderId`=@wxOrderId 
+WHERE Id=@tradeId;
+/*修改用户卡余额*/
+UPDATE `sharing_wxusercard` SET Money = Money + @realMoney,Integral =Integral+@rewardIntegral  
+WHERE WxUserId=@wxUserId AND UserCode=@userCode;
+/*派发鼓励金*/
+{0}
+",
+context.SharedPyramid == null
+? @"INSERT INTO `sharing-uat`.`sharing_rewardlogging`(`WxUserId`,`GeneratedFromWxUserId`,`RewardMoney`,`RewardIntegral`,`RelevantTradeId`,`State`,`CreatedTime`)
+VALUES(@invitedBy,@wxUserId,@rewardMoney,@rewardIntegral,@tradeId,@rewardState,@createdTime);"
+: string.Empty);
+
+
+                using (var database = SharingConfigurations.GenerateDatabase(true))
+                {
+                    var parameters = new Dapper.DynamicParameters();
+                    parameters.Add("@tradeState", TradeStates.Success.ToString(), System.Data.DbType.String);
+                    parameters.Add("@tradeId", trade.Id, System.Data.DbType.Int64);
+                    parameters.Add("@realMoney", trade.RealMoney, System.Data.DbType.Int32);
+                    parameters.Add("@wxUserId", trade.WxUserId, System.Data.DbType.Int64);
+                    parameters.Add("@userCode", context.UserCode, System.Data.DbType.String);
+                    parameters.Add("@rewardIntegral", trade.Money / 100, System.Data.DbType.Int32);
+                    parameters.Add("@rewardMoney", trade.Money * 0.1, System.Data.DbType.Int32);
+                    parameters.Add("@rewardState", RewardStates.Waitting, System.Data.DbType.String);
+                    parameters.Add("@createdTime", DateTime.Now.ToUnixStampDateTime(), System.Data.DbType.Int64);
+                    parameters.Add("@wxOrderId", notification.TransactionId.Value, System.Data.DbType.String);
+                    parameters.Add("@confirmTime", DateTime.Now.ToUnixStampDateTime(), System.Data.DbType.Int64);
+                    parameters.Add("@invitedBy", context.SharedPyramid == null 
+                        ? null 
+                        : (long?)context.SharedPyramid.Id, System.Data.DbType.Int64);
+                    database.Execute(executeSqlString, parameters, System.Data.CommandType.Text, true);
+                }
+
+            }
         }
     }
 }

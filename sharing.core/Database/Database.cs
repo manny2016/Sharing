@@ -79,7 +79,7 @@ namespace Sharing.Core
             {
                 if (transcation != null)
                     transcation.Rollback();
-                return default(T);
+                throw ex;
             }
             finally
             {
@@ -87,6 +87,32 @@ namespace Sharing.Core
                     connection.Close();
             }
 
+        }
+
+        public int Execute(string executeSql, DynamicParameters parameters, CommandType type = CommandType.Text, bool useTransaction = false)
+        {
+            if (useTransaction == false) return Execute(executeSql, parameters, type);
+            IDbTransaction transcation = null;
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                    connection.Open();
+                transcation = connection.BeginTransaction();
+                var result = connection.Execute(executeSql, parameters, transcation);
+                transcation.Commit();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                if (transcation != null)
+                    transcation.Rollback();
+                throw ex;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                    connection.Close();
+            }
         }
     }
 }

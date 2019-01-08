@@ -9,4 +9,5 @@ namespace Sharing.Core
         string AppId { get; }
         string Secret { get; }
     }
+   
 }

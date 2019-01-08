@@ -4,7 +4,8 @@
 namespace Sharing.WeChat.Models
 {
     using Newtonsoft.Json;
-    public class TopupContext
+    using Sharing.Core;
+    public class TopupContext : IWxUserKey
     {
         [JsonProperty("appId")]
         public string AppId { get; set; }

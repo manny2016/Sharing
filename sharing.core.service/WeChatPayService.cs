@@ -1,16 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Sharing.Core.Entities;
-using Sharing.Core.Models;
-using Sharing.WeChat.Models;
-
+﻿
 namespace Sharing.Core.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using Sharing.Core.Entities;
+    using Sharing.Core.Models;
+    using Sharing.WeChat.Models;
+    using Microsoft.Extensions.DependencyInjection;
+    using Sharing.Core;
     public class WeChatPayService : IWeChatPayService
     {
+        private readonly IServiceProvider provider = SharingConfigurations.CreateServiceProvider();
+
         public Trade PrepareUnifiedorder(TopupContext context)
         {
+            var service = provider.GetService<IWxUserService>();
             var queryString = @"
     INSERT INTO 
     `sharing_trade`(WxUserId,WxOrderId,TradeId,TradeType,TradeState,Money,RealMoney,CreatedTime,Attach, Strategy)
@@ -27,9 +32,16 @@ namespace Sharing.Core.Services
     @pStrategy AS Strategy;
     UPDATE `sharing_trade` SET TradeId=CONCAT(@prefix , LPAD(Id,10,'0')) WHERE WxOrderId = @pWxOrderId;
     SELECT * FROM `sharing_trade` WHERE WxOrderId = @pWxOrderId LIMIT 1;
-
 ";
-            var cardKey = new WeChatUserCardKey() { CardId = context.CardId, UserCode = context.Code };
+            var pyramid = service.GetSharedContext(context as IWxUserKey)
+                .BuildSharedPyramid(context as IWxUserKey, out long basicWxUserId, 3);
+            var attach = new WxPayAttach()
+            {
+                PayBy = basicWxUserId,
+                CardId = context.CardId,
+                Paysign = string.Empty,
+                SharedPyramid = pyramid
+            };
             using (var database = SharingConfigurations.GenerateDatabase(true))
             {
                 return database.SqlQuerySingleOrDefaultTransaction<Trade>(queryString, new
@@ -42,7 +54,7 @@ namespace Sharing.Core.Services
                     pRealMoney = context.Money * 100 + (context.Money * 100 * 0.2),
                     pCreatedTime = DateTime.Now.ToUnixStampDateTime(),
                     pStrategy = "{}",
-                    pAttach = cardKey.SerializeToJson(),
+                    pAttach = attach.SerializeToJson(),
                     prefix = string.Format("T{0}", DateTime.Now.ToString("yyyyMMdd"))
                 });
             }
@@ -57,5 +69,16 @@ namespace Sharing.Core.Services
                 return app.Payment.DeserializeToObject<Payment>();
             }
         }
+
+        public Trade GetTradeByTradeId(string tradeId)
+        {
+            var queryString = "SELECT * FROM `sharing_trade` WHERE `TradeId` =@tradeId";
+            using (var database = SharingConfigurations.GenerateDatabase(false))
+            {
+                return database.SqlQuerySingleOrDefault<Trade>(queryString, new { tradeId = tradeId });
+            }
+        }
+
+
     }
 }

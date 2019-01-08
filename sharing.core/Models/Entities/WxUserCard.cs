@@ -1,7 +1,7 @@
 ﻿
 namespace Sharing.Core.Entities
 {
-    public class WxUserCard : IWxCardKey
+    public class WxUserCard 
     {
         public virtual long WxUserId { get; set; }
         public virtual string CardId { get; set; }

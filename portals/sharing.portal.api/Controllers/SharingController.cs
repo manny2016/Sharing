@@ -96,7 +96,6 @@ namespace Sharing.Portal.Api
                 new string[] { context.MCode, context.OpenId, context.AppId, context.CardId, context.Code },
                 new string[] { "MCode", "OpenId", "AppId", "CardId", "Code" }
             );
-
             return client.GenerateUnifiedorder(context);
         }
 
@@ -105,7 +104,26 @@ namespace Sharing.Portal.Api
         [HttpPost]
         public void PayNotify()
         {
-
+            try
+            {
+                var notify = this.Request.Body.ReadAsStringAsync().DeserializeFromXml<PayNotification>();
+                client.TodoPayNotify(notify);
+                var str = @"
+<xml>
+    <return_code><![CDATA[SUCCESS]]></return_code>
+    <return_msg><![CDATA[OK]]></return_msg>
+</xml>";
+                this.Response.Body.Write(str.ToBytes());
+            }
+            catch (Exception ex)
+            {
+                var str = @"
+<xml>
+    <return_code><![CDATA[Fail]]></return_code>
+    <return_msg><![CDATA[NO]]></return_msg>
+</xml>";
+                this.Response.Body.Write(str.ToBytes());
+            }
         }
 
     }

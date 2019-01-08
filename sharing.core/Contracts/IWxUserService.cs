@@ -4,7 +4,7 @@
     using Sharing.Core.Models;
     using System.Collections.Generic;
     using Sharing.Core.Entities;
-    
+
 
     public interface IWxUserService
     {
@@ -15,6 +15,10 @@
         /// <returns>
         /// 返回微信用户在本平台的流水号
         /// </returns>
-        Membership Register(RegisterWxUserContext context);        
+        Membership Register(RegisterWxUserContext context);
+
+        IList<ISharedContext> GetSharedContext(IWxUserKey key);
+
+        long GetWxUserId(IWxUserKey key);
     }
 }

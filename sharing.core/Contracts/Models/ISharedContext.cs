@@ -4,13 +4,10 @@ using System.Text;
 
 namespace Sharing.Core
 {
-    public interface ISharedPyramid
+    public interface ISharedContext
     {
         long Id { get; }
-
-        int Level { get; }
-
-        ISharedPyramid Parent { get; set; }
+        string OpenId { get; }
+        long? InvitedBy { get; }
     }
-
 }

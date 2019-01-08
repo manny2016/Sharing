@@ -46,6 +46,7 @@ namespace Sharing.Core.Entities
         /// 交易确认时间
         /// </summary>
         public virtual long? ConfirmTime { get; set; }
+        public virtual string Attach { get; set; }
         /// <summary>
         /// 使用的营销策略
         /// </summary>

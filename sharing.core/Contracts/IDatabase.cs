@@ -21,7 +21,7 @@ namespace Sharing.Core
             object param = null);
 
         T SqlQuerySingleOrDefaultTransaction<T>(
-          string queryString,object param=null);
+          string queryString, object param = null);
         int Execute(
             string executeSql,
             object param = null);
@@ -30,5 +30,10 @@ namespace Sharing.Core
             string executeSql,
             DynamicParameters parameters,
             CommandType type = CommandType.Text);
+
+        int Execute(
+            string executeSql,
+            DynamicParameters parameters,
+            CommandType type = CommandType.Text, bool useTransaction = false);
     }
 }
