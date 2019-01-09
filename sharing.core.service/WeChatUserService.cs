@@ -61,10 +61,9 @@ namespace Sharing.Core.Services
                     return database.SqlQuery<SharedContext>(queryString, new { AppId = key.AppId })
                     .ToList<ISharedContext>();
                 }
-            });
+            });            
         }
-
-
+        
 
         public long GetWxUserId(IWxUserKey key)
         {

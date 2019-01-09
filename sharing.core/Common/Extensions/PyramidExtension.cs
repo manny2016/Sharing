@@ -7,13 +7,14 @@ namespace Sharing.Core
 
     public static class PyramidExtension
     {
+
         public static ISharedPyramid BuildSharedPyramid(
             this IList<ISharedContext> context,
             IWxUserKey basic,
             out long basicWxUserId,
-            int levelLimit = 3)
+            int levelLimit = WeChatConstant.AllowSharedPyramidLevel)
         {
-            var basicSharedContext = context.FirstOrDefault(o => o.OpenId.Equals(basic.AppId));
+            var basicSharedContext = context.FirstOrDefault(o => o.OpenId.Equals(basic.OpenId));
             var invitedBy = basicSharedContext.InvitedBy;
             basicWxUserId = basicSharedContext.Id;
             if (invitedBy == null)
@@ -23,7 +24,7 @@ namespace Sharing.Core
                 var pyramid = new SharedPyramid() { Id = invitedBy ?? 0, Level = 1, Parent = null };
                 int level = 1;
                 var lastPyramid = pyramid;
-                while (level <= levelLimit)
+                while (level < levelLimit)
                 {
                     level++;
                     var parent = context.FirstOrDefault(o => o.InvitedBy == lastPyramid.Id);
@@ -39,6 +40,13 @@ namespace Sharing.Core
                 return pyramid;
             }
 
+        }
+
+        public static ISharedPyramid BuildSharedPyramid(
+            this IList<ISharedContext> context,
+            IWxUserKey basic)
+        {
+            return BuildSharedPyramid(context, basic, out long basicWxUserId);
         }
     }
 }

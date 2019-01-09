@@ -45,8 +45,19 @@ namespace Sharing.Core
         /// <param name="key"></param>
         /// <returns></returns>
         JObject QueryMCardDetails(IWxApp official, IWxCardKey key);
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="mchid"></param>
+        /// <returns></returns>
         WxPayParameter Unifiedorder(WxPayData data, string mchid);
+
+        string GenerateSignForApplyMCard(
+            IWxApp app,
+            string cardid,
+            long timestamp,
+            string nonce_str);
 
     }
 }

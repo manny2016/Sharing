@@ -2,7 +2,7 @@
 
 namespace Sharing.Core.Entities
 {
-    public class Merchant : IMerchantKey
+    public class Merchant : IMCode
     {
         public virtual long Id { get; set; }
         public virtual string MCode { get; set; }

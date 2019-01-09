@@ -11,6 +11,7 @@ namespace Sharing.Portal.Api
     using Sharing.Core.Models;
     using System.Collections.Generic;
     using System.Linq;
+    
 
     public class ModelClient
     {
@@ -169,24 +170,19 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
                 if (trade.TradeState != TradeStates.Waiting)
                     throw new WeChatPayException("Only Waitting status pay order can be modify.");
 
-                var context = trade.Attach.DeserializeToObject<WxPayAttach>();
+                var attach = trade.Attach.DeserializeToObject<WxPayAttach>();
 
-                var executeSqlString = string.Format(@"
+                var executeSqlString = @"
 /*修改交易状态*/
 UPDATE `sharing_trade` SET `TradeState`=@tradeState,`ConfirmTime`=@confirmTime,`WxOrderId`=@wxOrderId 
 WHERE Id=@tradeId;
 /*修改用户卡余额*/
-UPDATE `sharing_wxusercard` SET Money = Money + @realMoney,Integral =Integral+@rewardIntegral  
-WHERE WxUserId=@wxUserId AND UserCode=@userCode;
-/*派发鼓励金*/
-{0}
-",
-context.SharedPyramid == null
-? @"INSERT INTO `sharing-uat`.`sharing_rewardlogging`(`WxUserId`,`GeneratedFromWxUserId`,`RewardMoney`,`RewardIntegral`,`RelevantTradeId`,`State`,`CreatedTime`)
-VALUES(@invitedBy,@wxUserId,@rewardMoney,@rewardIntegral,@tradeId,@rewardState,@createdTime);"
-: string.Empty);
-
-
+UPDATE `sharing_wxusercard` SET Money = Money + @realMoney,Integral = Integral+@rewardIntegral  
+WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
+                //context.SharedPyramid == null
+                //? @"INSERT INTO `sharing-uat`.`sharing_rewardlogging`(`WxUserId`,`GeneratedFromWxUserId`,`RewardMoney`,`RewardIntegral`,`RelevantTradeId`,`State`,`CreatedTime`)
+                //VALUES(@invitedBy,@wxUserId,@rewardMoney,@rewardIntegral,@tradeId,@rewardState,@createdTime);"
+                //: string.Empty);
                 using (var database = SharingConfigurations.GenerateDatabase(true))
                 {
                     var parameters = new Dapper.DynamicParameters();
@@ -194,16 +190,14 @@ VALUES(@invitedBy,@wxUserId,@rewardMoney,@rewardIntegral,@tradeId,@rewardState,@
                     parameters.Add("@tradeId", trade.Id, System.Data.DbType.Int64);
                     parameters.Add("@realMoney", trade.RealMoney, System.Data.DbType.Int32);
                     parameters.Add("@wxUserId", trade.WxUserId, System.Data.DbType.Int64);
-                    parameters.Add("@userCode", context.UserCode, System.Data.DbType.String);
+                    parameters.Add("@userCode", attach.UserCode, System.Data.DbType.String);
                     parameters.Add("@rewardIntegral", trade.Money / 100, System.Data.DbType.Int32);
-                    parameters.Add("@rewardMoney", trade.Money * 0.1, System.Data.DbType.Int32);
+                    //parameters.Add("@rewardMoney", trade.Money * 0.1, System.Data.DbType.Int32);
                     parameters.Add("@rewardState", RewardStates.Waitting, System.Data.DbType.String);
                     parameters.Add("@createdTime", DateTime.Now.ToUnixStampDateTime(), System.Data.DbType.Int64);
                     parameters.Add("@wxOrderId", notification.TransactionId.Value, System.Data.DbType.String);
                     parameters.Add("@confirmTime", DateTime.Now.ToUnixStampDateTime(), System.Data.DbType.Int64);
-                    parameters.Add("@invitedBy", context.SharedPyramid == null
-                        ? null
-                        : (long?)context.SharedPyramid.Id, System.Data.DbType.Int64);
+
                     database.Execute(executeSqlString, parameters, System.Data.CommandType.Text, true);
                 }
 
@@ -212,21 +206,39 @@ VALUES(@invitedBy,@wxUserId,@rewardMoney,@rewardIntegral,@tradeId,@rewardState,@
 
         public int UpgradeSharedPyramid(SharingContext context)
         {
-            var executeSqlString = @"
-SELECT src.Id INTO @sharedBy FROM `sharing_wxuser` AS src WHERE src.AppId=@SharedByAppId AND src.OpenId = @SharedByOpenId LIMIT 1;
-UPDATE `sharing_wxuser` AS target SET target.`InvitedBy`= @sharedBy
-WHERE target.AppId=@CurrentAppId AND target.OpenId=@CurrentOpenId AND target.`InvitedBy` IS NULL;
-";
+            var executeSqlString = @"spUpgradeSharedPyramid";
             using (var database = SharingConfigurations.GenerateDatabase(true))
             {
                 var parameters = new Dapper.DynamicParameters();
-                parameters.Add("SharedByOpenId", context.SharedBy.OpenId, System.Data.DbType.String);
-                parameters.Add("SharedByAppId", context.SharedBy.AppId, System.Data.DbType.String);
-                parameters.Add("CurrentAppId", context.Current.AppId, System.Data.DbType.String);
-                parameters.Add("CurrentOpenId", context.Current.OpenId, System.Data.DbType.String);
-                parameters.Add("sharedBy", null, System.Data.DbType.Int64, System.Data.ParameterDirection.Output);
-                return database.Execute(executeSqlString, parameters, System.Data.CommandType.Text);
+                parameters.Add("pSharedByOpenId", context.SharedBy.OpenId, System.Data.DbType.String);
+                parameters.Add("pSharedByAppId", context.SharedBy.AppId, System.Data.DbType.String);
+                parameters.Add("pCurrentAppId", context.Current.AppId, System.Data.DbType.String);
+                parameters.Add("pCurrentOpenId", context.Current.OpenId, System.Data.DbType.String);
+                return database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure);
             }
+        }
+        public ISharedPyramid GetSharedPyramid(IWxUserKey basic)
+        {
+            var service = this.provider.GetService<IWxUserService>();
+            return service.GetSharedContext(basic)
+                .BuildSharedPyramid(basic as IWxUserKey, out long basicWxUserId);
+        }
+
+        public CardExtModel PrepareCardSign(ApplyMCardContext context)
+        {
+
+            var host = this.provider.GetService<ISharingHostService>();
+            var timestamp = DateTime.Now.ToUnixStampDateTime();
+            var nonceStr = this.provider.GetService<IRandomGenerator>().Genernate();
+            var wxapp = host.MerchantDetails.SelectMany(o => o.Apps)
+                .FirstOrDefault(o => o.AppId.Equals(context.AppId));
+            return new CardExtModel()
+            {
+                NonceStr = nonceStr,
+                OuterStr = "Miniprogram",
+                Signature = this.provider.GetService<IWeChatApi>().GenerateSignForApplyMCard(wxapp, context.CardId, timestamp, nonceStr),
+                TimeStamp = timestamp.ToString()
+            };
         }
     }
 }

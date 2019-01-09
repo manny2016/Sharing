@@ -11,6 +11,8 @@ namespace Sharing.Portal.Api
     using System;
     using Sharing.WeChat.Models;
     using System.Collections.Generic;
+    using Sharing.Core.Models;
+    
 
     [Produces("application/json")]
     [ApiController]
@@ -60,6 +62,8 @@ namespace Sharing.Portal.Api
             var model = client.GetMCardDetails(context.AppID, context.OpenId, context.CardId);
             return model;
         }
+
+
         [Route("api/sharing/QueryMyMCardDetails")]
         [HttpPost]
         public IList<MCardDetails> QueryMyMCardDetails(QueryMyMCardContext context)
@@ -106,6 +110,7 @@ namespace Sharing.Portal.Api
             return client.GenerateUnifiedorder(context);
         }
 
+
         [Route("api/enjoy/PayNotify")]
         [HttpGet]
         [HttpPost]
@@ -132,13 +137,31 @@ namespace Sharing.Portal.Api
                 this.Response.Body.Write(str.ToBytes());
             }
         }
-        [Route("api/sharing/Test")]
 
+
+        [Route("api/sharing/Test")]
         [HttpGet]
         public void Test()
         {
+
             this.Response.Body.Write("ok".ToBytes());
         }
 
+        [Route("api/sharing/GetSharedPyramid")]
+        [HttpPost]
+        public ISharedPyramid GetSharedPyramid(WxUserKey basic)
+        {
+            return client.GetSharedPyramid(basic);
+        }
+        /// <summary>
+        /// 领取会员卡
+        /// </summary>
+        /// <param name="context"></param>
+        [Route("api/sharing/ApplyMCard")]
+        [HttpPost]
+        public CardExtModel ApplyMCard(ApplyMCardContext context)
+        {
+            return client.PrepareCardSign(context);
+        }
     }
 }

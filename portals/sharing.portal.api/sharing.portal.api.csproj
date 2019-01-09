@@ -3,13 +3,20 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>sharing.portal.api</AssemblyName>
+    <RootNamespace>Sharing.Portal.Api</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Core\Models\ApiResponse\" />
     <Folder Include="Core\Services\" />
-    <Folder Include="images\" />
-    <Folder Include="wwwroot\" />
+    <Folder Include="Images\" />
   </ItemGroup>
 
   <ItemGroup>

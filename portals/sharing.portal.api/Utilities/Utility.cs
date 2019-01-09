@@ -39,6 +39,7 @@ namespace Sharing.Portal.Api
                 collection.AddWeChatUserService();
                 collection.AddWeChatPayService();
                 collection.AddRandomGenerator();
+                collection.AddSharingHostService();
             });
         }
     }

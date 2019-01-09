@@ -4,7 +4,10 @@ namespace Sharing.Core
 {
     using Microsoft.Extensions.DependencyInjection;
     using Sharing.Core.Configuration;
+    using Sharing.Core.Models;
     using System;
+    using System.Collections.Generic;
+
     public static class SharingConfigurations
     {
         static SharingConfigurations()
@@ -67,10 +70,7 @@ namespace Sharing.Core
                 }
             }
             return provider;
-        }
-
-
-
+        }        
     }
 
 
@@ -80,5 +80,7 @@ namespace Sharing.Core
         public const string EncodingAESKey = "mkxeUAVtj2aaopbOsfLm8wJQ7SLnHMV6U41lmCQs95c";
         public const int SMSAppId = 1400108197;
         public const string SMSAppKey = "1add466d18076fcbb47e0e3b28e55490";
+
+        public const int AllowSharedPyramidLevel = 2;
     }
 }

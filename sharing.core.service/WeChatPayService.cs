@@ -34,7 +34,7 @@ namespace Sharing.Core.Services
     SELECT * FROM `sharing_trade` WHERE WxOrderId = @pWxOrderId LIMIT 1;
 ";
             var pyramid = service.GetSharedContext(context as IWxUserKey)
-                .BuildSharedPyramid(context as IWxUserKey, out long basicWxUserId, 3);
+                .BuildSharedPyramid(context as IWxUserKey, out long basicWxUserId);
             var attach = new WxPayAttach()
             {
                 PayBy = basicWxUserId,
@@ -78,7 +78,5 @@ namespace Sharing.Core.Services
                 return database.SqlQuerySingleOrDefault<Trade>(queryString, new { tradeId = tradeId });
             }
         }
-
-
     }
 }

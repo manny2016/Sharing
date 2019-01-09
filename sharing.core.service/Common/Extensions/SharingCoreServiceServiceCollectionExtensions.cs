@@ -22,5 +22,10 @@ namespace Sharing.Core.Services
             collection.Add(new ServiceDescriptor(typeof(IWeChatPayService), typeof(WeChatPayService), ServiceLifetime.Transient));
             return collection;
         }
+        public static IServiceCollection AddSharingHostService(this IServiceCollection collection)
+        {
+            collection.Add(new ServiceDescriptor(typeof(ISharingHostService), typeof(SharingHostService), ServiceLifetime.Singleton));
+            return collection;
+        }
     }
 }

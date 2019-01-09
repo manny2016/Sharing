@@ -140,7 +140,7 @@ namespace Sharing.Core.Services
         }
 
 
-        public WxPayParameter Unifiedorder(WxPayData data,string mchid)
+        public WxPayParameter Unifiedorder(WxPayData data, string mchid)
         {
             var request = "https://api.mch.weixin.qq.com/pay/unifiedorder";
             var order = request.GetUriContentDirectly((http) =>
@@ -174,6 +174,38 @@ namespace Sharing.Core.Services
         {
             //直接确认，否则打不开    
             return true;
+        }
+
+        public string GenerateSignForApplyMCard(
+            IWxApp app,
+            string cardid,
+            long timestamp,
+            string nonce_str)
+        {
+
+            var ticket = GetTicket(app.AppId, this.GetToken(app.AppId, app.Secret));
+            var @params = new string[] {
+                nonce_str,
+                timestamp.ToString(),
+                cardid,
+                ticket
+            };
+            var perpare = string.Format("{0}{1}{2}{3}", ticket, timestamp, nonce_str, cardid);
+            return perpare.GetSHA1Crypto();
+        }
+
+        private string GetTicket(string appid, string token)
+        {
+            string cacheKey = string.Format("ticket-{0}", appid);
+            return provider.GetService<MemoryCache>()
+                .GetOrCreate<string>(cacheKey,
+                (entity) =>
+                {
+                    var url = string.Format("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={0}&type=wx_card", token);
+                    var response = url.GetUriJsonContent<TicketWxResponse>();
+                    entity.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(response.Expiresin);
+                    return response.Ticket;
+                });
         }
     }
 }

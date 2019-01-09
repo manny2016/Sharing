@@ -3,13 +3,9 @@
 namespace Sharing.Core
 {
     using Newtonsoft.Json;
-    public interface IWxUserKey
+    public interface IWxUserKey : IWxAppId, IWxUserOpenId
     {
-        [JsonProperty("appid")]
-        string AppId { get; }
 
-        [JsonProperty("openid")]
-        string OpenId { get; }
-        
+
     }
 }
