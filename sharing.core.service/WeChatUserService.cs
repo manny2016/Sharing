@@ -12,8 +12,11 @@ namespace Sharing.Core.Services
     using System.Linq;
     public class WeChatUserService : IWxUserService
     {
-
-        private readonly IServiceProvider provider = SharingConfigurations.CreateServiceProvider();
+        private readonly IMemoryCache cache;
+        public WeChatUserService(IMemoryCache cache)
+        {
+            this.cache = cache;
+        }
         public Membership Register(RegisterWxUserContext context)
         {
             using (var database = SharingConfigurations.GenerateDatabase(true))
@@ -51,8 +54,8 @@ namespace Sharing.Core.Services
         public IList<ISharedContext> GetSharedContext(IWxUserKey key)
         {
             var cacheKey = string.Format("pyramid_{0}", key.AppId);
-            var cache = provider.GetService<IMemoryCache>();
-            return cache.GetOrCreate<IList<ISharedContext>>(cacheKey, (entity) =>
+        
+            return this.cache.GetOrCreate<IList<ISharedContext>>(cacheKey, (entity) =>
             {
                 entity.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
                 using (var database = SharingConfigurations.GenerateDatabase(false))
@@ -61,9 +64,9 @@ namespace Sharing.Core.Services
                     return database.SqlQuery<SharedContext>(queryString, new { AppId = key.AppId })
                     .ToList<ISharedContext>();
                 }
-            });            
+            });
         }
-        
+
 
         public long GetWxUserId(IWxUserKey key)
         {

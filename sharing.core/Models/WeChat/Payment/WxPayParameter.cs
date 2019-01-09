@@ -8,8 +8,12 @@ namespace Sharing.WeChat.Models
     using Microsoft.Extensions.DependencyInjection;
     public class WxPayParameter
     {
-        private IServiceProvider provider = SharingConfigurations.CreateServiceCollection().BuildServiceProvider();
-        public WxPayParameter() { }
+        //private IServiceProvider provider = SharingConfigurations.CreateServiceCollection().BuildServiceProvider();
+        private readonly IRandomGenerator generator;
+        public WxPayParameter(IRandomGenerator generator)
+        {
+            this.generator=generator;
+        }
         public WxPayParameter(WeChatUnifiedorderResponse response)
         {
             this.ReturnCode = response.ReturnCode.Value;
@@ -18,7 +22,7 @@ namespace Sharing.WeChat.Models
             this.NonceStr = response.NonceStr.Value;
             this.Package = string.Format("prepay_id={0}", response.PrepayId.Value);
             this.AppId = response.AppId.Value;
-            this.NonceStr = provider.GetService<IRandomGenerator>().Genernate();
+            this.NonceStr = this.generator.Genernate();
             this.SignType = WxPayData.SIGN_TYPE_HMAC_SHA256;
             this.TimeStamp = DateTime.Now.ToUnixStampDateTime();
 

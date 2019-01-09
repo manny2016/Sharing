@@ -32,15 +32,15 @@ namespace Sharing.Portal.Api
         //    return provider;
         //}
 
-        public static void Initialize()
-        {
-            SharingConfigurations.CreateServiceProvider((collection) =>
-            {
-                collection.AddWeChatUserService();
-                collection.AddWeChatPayService();
-                collection.AddRandomGenerator();
-                collection.AddSharingHostService();
-            });
-        }
+        //public static void Initialize()
+        //{
+        //    SharingConfigurations.CreateServiceProvider((collection) =>
+        //    {
+        //        collection.AddWeChatUserService();
+        //        collection.AddWeChatPayService();
+        //        collection.AddRandomGenerator();
+        //        collection.AddSharingHostService();
+        //    });
+        //}
     }
 }

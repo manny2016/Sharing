@@ -14,9 +14,14 @@ namespace Sharing.Core.Services
 
     public class MCardService : IMCardService
     {
-        private readonly IServiceProvider provider = SharingConfigurations
-            .CreateServiceCollection()
-            .BuildServiceProvider();
+        //private readonly IServiceProvider provider = SharingConfigurations
+        //    .CreateServiceCollection()
+        //    .BuildServiceProvider();
+        private readonly IWeChatApi api;
+        public MCardService(IWeChatApi api)
+        {
+            this.api = api;
+        }
         public void Synchronous()
         {
             var cards = new ConcurrentDictionary<string, MCard>();
@@ -24,10 +29,10 @@ namespace Sharing.Core.Services
                 new ParallelOptions() { MaxDegreeOfParallelism = 5 },
             (app) =>
             {
-                var api = provider.GetService<IWeChatApi>();
+                
                 foreach (var cardid in api.QueryMCard(app).CardIdList)
                 {
-                    var details = api.QueryMCardDetails(app, new MCardKey() { CardId = cardid }).CreateMCard(app.MerchantId);
+                    var details = this.api.QueryMCardDetails(app, new MCardKey() { CardId = cardid }).CreateMCard(app.MerchantId);
                     cards[cardid] = details;
                 }
             });

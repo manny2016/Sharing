@@ -11,17 +11,32 @@ namespace Sharing.Portal.Api
     using Sharing.Core.Models;
     using System.Collections.Generic;
     using System.Linq;
-    
+
 
     public class ModelClient
     {
-        private readonly IServiceProvider provider = SharingConfigurations.CreateServiceProvider(null);
-
+        private readonly IWeChatApi wxapi;
+        private readonly IWxUserService wxUserService;
+        private readonly IRandomGenerator generator;
+        private readonly IWeChatPayService weChatPayService;
+        private readonly ISharingHostService sharingHostService;
+        public ModelClient(
+            IWeChatApi api,
+            IWxUserService wxUserService,
+            IRandomGenerator generator,
+            IWeChatPayService payService,
+            ISharingHostService hostService)
+        {
+            this.wxapi = api;
+            this.sharingHostService = hostService;
+            this.wxUserService = wxUserService;
+            this.generator = generator;
+            this.weChatPayService = payService;
+        }
         public WeChatUserModel Register(RegisterWeChatUserContext context)
         {
-            var weChatApi = provider.GetService<IWeChatApi>();
-            var wxUserService = provider.GetService<IWxUserService>();
-            var info = weChatApi.Decrypt<WeChatUserInfo>(context.Data, context.IV, context.SessionKey);
+
+            var info = this.wxapi.Decrypt<WeChatUserInfo>(context.Data, context.IV, context.SessionKey);
             var membership = wxUserService.Register(new Core.Models.RegisterWxUserContext()
             {
                 AppType = AppTypes.Miniprogram,
@@ -43,8 +58,8 @@ namespace Sharing.Portal.Api
 
         public SessionWxResponse GetSession(JSCodeApiToken token)
         {
-            var service = provider.GetService<IWeChatApi>();
-            return service.GetSession(token);
+            return this.wxapi.GetSession(token);
+
         }
 
         public IList<MCardModel> GetMCardModels(string mcode)
@@ -134,16 +149,11 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
         }
         public PullWxPayData GenerateUnifiedorder(TopupContext context)
         {
-            var service = this.provider.GetService<IWeChatPayService>();
-            var api = this.provider.GetService<IWeChatApi>();
-            var generator = this.provider.GetService<IRandomGenerator>();
-            var wxuserservice = this.provider.GetService<IWxUserService>();
-
             ////P3 Need to query from cache.
-            var payment = service.GetPayment(context.AppId);
-            var trade = service.PrepareUnifiedorder(context);
-            var data = context.GenerateUnifiedWxPayData(payment.MchId.ToString(), trade.TradeId, payment.PayKey, generator.Genernate());
-            var parameter = api.Unifiedorder(data, payment.MchId.ToString());
+            var payment = this.weChatPayService.GetPayment(context.AppId);
+            var trade = this.weChatPayService.PrepareUnifiedorder(context);
+            var data = context.GenerateUnifiedWxPayData(payment.MchId.ToString(), trade.TradeId, payment.PayKey, this.generator.Genernate());
+            var parameter = this.wxapi.Unifiedorder(data, payment.MchId.ToString());
             parameter.PaySign = parameter.MakeSign(payment.PayKey);
 
             return new PullWxPayData()
@@ -161,8 +171,7 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
             Guard.ArgumentNotNull(notification, "notification");
             if (notification.ResultCode.Value.Equals("SUCCESS"))
             {
-                var service = provider.GetService<IWeChatPayService>();
-                var trade = service.GetTradeByTradeId(notification.OutTradeNo.Value);
+                var trade = this.weChatPayService.GetTradeByTradeId(notification.OutTradeNo.Value);
                 Guard.ArgumentNotNull(trade, "trade");
 
                 if (trade.Money != notification.TotalFee)////P1 TODO: need change to sign verify.
@@ -219,24 +228,22 @@ WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
         }
         public ISharedPyramid GetSharedPyramid(IWxUserKey basic)
         {
-            var service = this.provider.GetService<IWxUserService>();
-            return service.GetSharedContext(basic)
+            return this.wxUserService.GetSharedContext(basic)
                 .BuildSharedPyramid(basic as IWxUserKey, out long basicWxUserId);
         }
 
         public CardExtModel PrepareCardSign(ApplyMCardContext context)
         {
-
-            var host = this.provider.GetService<ISharingHostService>();
+                        
             var timestamp = DateTime.Now.ToUnixStampDateTime();
-            var nonceStr = this.provider.GetService<IRandomGenerator>().Genernate();
-            var wxapp = host.MerchantDetails.SelectMany(o => o.Apps)
+            var nonceStr =this.generator.Genernate();
+            var wxapp =this.sharingHostService.MerchantDetails.SelectMany(o => o.Apps)
                 .FirstOrDefault(o => o.AppId.Equals(context.AppId));
             return new CardExtModel()
             {
                 NonceStr = nonceStr,
                 OuterStr = "Miniprogram",
-                Signature = this.provider.GetService<IWeChatApi>().GenerateSignForApplyMCard(wxapp, context.CardId, timestamp, nonceStr),
+                Signature = this.wxapi.GenerateSignForApplyMCard(wxapp, context.CardId, timestamp, nonceStr),
                 TimeStamp = timestamp.ToString()
             };
         }

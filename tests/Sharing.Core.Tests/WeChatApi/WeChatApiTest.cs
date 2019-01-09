@@ -14,17 +14,17 @@ namespace Sharing.Core.Tests
     [TestClass]
     public class WeChatApiTest
     {
-        private IServiceProvider provider = SharingConfigurations.CreateServiceProvider((collection) =>
-        {
-            collection.AddMcardService();
-            collection.AddWeChatUserService();
-            collection.AddWeChatPayService();
-        });
+        //private IServiceProvider provider = SharingConfigurations.CreateServiceProvider((collection) =>
+        //{
+        //    collection.AddMcardService();
+        //    collection.AddWeChatUserService();
+        //    collection.AddWeChatPayService();
+        //});
         [TestMethod]
         public void SynchronousMemberCards()
         {
-            var service = provider.GetService<IMCardService>();
-            service.Synchronous();
+            //var service = provider.GetService<IMCardService>();
+            //service.Synchronous();
         }
         [TestMethod]
         public void PrepareUnifiedorder()
@@ -38,8 +38,8 @@ namespace Sharing.Core.Tests
                 Code = "cccc",
                 Money = 1
             };
-            var service = provider.GetService<IWeChatPayService>();
-            var trade = service.PrepareUnifiedorder(context);
+            //var service = provider.GetService<IWeChatPayService>();
+            //var trade = service.PrepareUnifiedorder(context);
         }
 
     }

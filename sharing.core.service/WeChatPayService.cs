@@ -11,11 +11,15 @@ namespace Sharing.Core.Services
     using Sharing.Core;
     public class WeChatPayService : IWeChatPayService
     {
-        private readonly IServiceProvider provider = SharingConfigurations.CreateServiceProvider();
+        private readonly IWxUserService wxUserService;
+        public WeChatPayService(IWxUserService wxUserService)
+        {
+            this.wxUserService = wxUserService;
+        }
 
         public Trade PrepareUnifiedorder(TopupContext context)
         {
-            var service = provider.GetService<IWxUserService>();
+            
             var queryString = @"
     INSERT INTO 
     `sharing_trade`(WxUserId,WxOrderId,TradeId,TradeType,TradeState,Money,RealMoney,CreatedTime,Attach, Strategy)
@@ -33,7 +37,7 @@ namespace Sharing.Core.Services
     UPDATE `sharing_trade` SET TradeId=CONCAT(@prefix , LPAD(Id,10,'0')) WHERE WxOrderId = @pWxOrderId;
     SELECT * FROM `sharing_trade` WHERE WxOrderId = @pWxOrderId LIMIT 1;
 ";
-            var pyramid = service.GetSharedContext(context as IWxUserKey)
+            var pyramid = this.wxUserService.GetSharedContext(context as IWxUserKey)
                 .BuildSharedPyramid(context as IWxUserKey, out long basicWxUserId);
             var attach = new WxPayAttach()
             {

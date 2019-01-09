@@ -12,14 +12,21 @@ namespace Sharing.Portal.Api
     using Sharing.WeChat.Models;
     using System.Collections.Generic;
     using Sharing.Core.Models;
-    
+    using Microsoft.Extensions.Logging;
 
     [Produces("application/json")]
     [ApiController]
     public class SharingController : ControllerBase
     {
+        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(SharingController));
+        private readonly ModelClient client;
 
-        private readonly ModelClient client = new ModelClient();
+        public SharingController(
+            ModelClient client)
+        {
+            this.client = client;
+
+        }
 
         [Route("api/sharing/Register")]
         [HttpPost]
@@ -143,7 +150,7 @@ namespace Sharing.Portal.Api
         [HttpGet]
         public void Test()
         {
-
+            Logger.Error("dddddddddddddddd");
             this.Response.Body.Write("ok".ToBytes());
         }
 

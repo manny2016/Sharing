@@ -3,16 +3,17 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:5000",
+      "applicationUrl": "http://localhost:5001",
       "sslPort": 0
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
     "IIS Express": {
-      "commandName": "IISExpress",
+      "commandName": "Project",
+      "workingDirectory": "D:\\Workspaces\\repos\\Sharing\\portals\\sharing.portal.api\\bin\\Debug\\netcoreapp2.1",
       "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchUrl": "api/sharing/test",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,11 +21,11 @@
     "sharing.portal.api": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "/",
+      "launchUrl": "api/sharing/test",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5001;http://localhost"
+      "applicationUrl": "https://localhost:5003;http://localhost:5002"
     }
   }
 }

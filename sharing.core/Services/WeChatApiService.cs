@@ -18,8 +18,12 @@ namespace Sharing.Core.Services
 
     public class WeChatApiService : IWeChatApi
     {
-
-        private readonly IServiceProvider provider = SharingConfigurations.CreateServiceCollection(null).BuildServiceProvider();
+        private readonly IMemoryCache cache;
+        public WeChatApiService(IMemoryCache cache)
+        {
+            this.cache = cache;
+        }
+        //private readonly IServiceProvider provider = SharingConfigurations.CreateServiceCollection(null).BuildServiceProvider();
         /// <summary>
         /// 获取WeChat api token
         /// </summary>
@@ -28,7 +32,7 @@ namespace Sharing.Core.Services
         /// <returns></returns>
         public string GetToken(string appid, string secret)
         {
-            return provider.GetService<IMemoryCache>().GetOrCreate<string>(
+            return this.cache.GetOrCreate<string>(
                 string.Format("Token_{0}", appid),
                 (entity) =>
                 {
@@ -197,8 +201,7 @@ namespace Sharing.Core.Services
         private string GetTicket(string appid, string token)
         {
             string cacheKey = string.Format("ticket-{0}", appid);
-            return provider.GetService<MemoryCache>()
-                .GetOrCreate<string>(cacheKey,
+            return this.cache.GetOrCreate<string>(cacheKey,
                 (entity) =>
                 {
                     var url = string.Format("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={0}&type=wx_card", token);

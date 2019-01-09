@@ -37,40 +37,40 @@ namespace Sharing.Core
                 return section.SlaveDatabaseServers[idx].GenerateDatabase(database);
             }
         }
-        public static IServiceCollection CreateServiceCollection(Action<IServiceCollection> registry = null)
-        {
-            var collection = new ServiceCollection();
-            collection.AddMemoryCache()
-                .AddLogging()
-                .AddWeChatApiService()
-                .AddRandomGenerator();
-            if (registry != null)
-            {
-                registry(collection);
-            }
-            return collection;
-        }
+        //public static IServiceCollection CreateServiceCollection(Action<IServiceCollection> registry = null)
+        //{
+        //    var collection = new ServiceCollection();
+        //    collection.AddMemoryCache()
+        //        .AddLogging()
+        //        .AddWeChatApiService()
+        //        .AddRandomGenerator();
+        //    if (registry != null)
+        //    {
+        //        registry(collection);
+        //    }
+        //    return collection;
+        //}
 
-        private static IServiceProvider provider;
-        private static object lockObj = new object();
-        public static IServiceProvider CreateServiceProvider(Action<IServiceCollection> registry = null)
-        {
-            lock (lockObj)
-            {
-                if (provider == null)
-                {
-                    lock (lockObj)
-                    {
-                        if (provider == null)
-                        {
-                            provider = CreateServiceCollection(registry)
-                                .BuildServiceProvider();
-                        }
-                    }
-                }
-            }
-            return provider;
-        }        
+        //private static IServiceProvider provider;
+        //private static object lockObj = new object();
+        //public static IServiceProvider CreateServiceProvider(Action<IServiceCollection> registry = null)
+        //{
+        //    lock (lockObj)
+        //    {
+        //        if (provider == null)
+        //        {
+        //            lock (lockObj)
+        //            {
+        //                if (provider == null)
+        //                {
+        //                    provider = CreateServiceCollection(registry)
+        //                        .BuildServiceProvider();
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return provider;
+        //}
     }
 
 
