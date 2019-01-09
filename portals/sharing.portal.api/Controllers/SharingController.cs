@@ -26,6 +26,13 @@ namespace Sharing.Portal.Api
             return client.Register(context);
         }
 
+        [Route("api/sharing/UpgradeSharedPyramid")]
+        [HttpPost]
+        public bool UpgradeSharedPyramid(SharingContext context)
+        {
+            return client.UpgradeSharedPyramid(context) > 0;
+        }
+
         [Route("api/sharing/GetSession")]
         [HttpPost]
         public SessionWxResponse GetSession(JSCodeApiToken token)
@@ -124,6 +131,13 @@ namespace Sharing.Portal.Api
 </xml>";
                 this.Response.Body.Write(str.ToBytes());
             }
+        }
+        [Route("api/sharing/Test")]
+
+        [HttpGet]
+        public void Test()
+        {
+            this.Response.Body.Write("ok".ToBytes());
         }
 
     }

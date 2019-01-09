@@ -8,6 +8,7 @@
   <ItemGroup>
     <Folder Include="Core\Models\ApiResponse\" />
     <Folder Include="Core\Services\" />
+    <Folder Include="images\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

@@ -38,6 +38,7 @@ namespace Sharing.Core
         {
             var collection = new ServiceCollection();
             collection.AddMemoryCache()
+                .AddLogging()
                 .AddWeChatApiService()
                 .AddRandomGenerator();
             if (registry != null)
@@ -68,7 +69,7 @@ namespace Sharing.Core
             return provider;
         }
 
-        
+
 
     }
 

@@ -139,7 +139,6 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
             var wxuserservice = this.provider.GetService<IWxUserService>();
 
             ////P3 Need to query from cache.
-
             var payment = service.GetPayment(context.AppId);
             var trade = service.PrepareUnifiedorder(context);
             var data = context.GenerateUnifiedWxPayData(payment.MchId.ToString(), trade.TradeId, payment.PayKey, generator.Genernate());
@@ -202,12 +201,31 @@ VALUES(@invitedBy,@wxUserId,@rewardMoney,@rewardIntegral,@tradeId,@rewardState,@
                     parameters.Add("@createdTime", DateTime.Now.ToUnixStampDateTime(), System.Data.DbType.Int64);
                     parameters.Add("@wxOrderId", notification.TransactionId.Value, System.Data.DbType.String);
                     parameters.Add("@confirmTime", DateTime.Now.ToUnixStampDateTime(), System.Data.DbType.Int64);
-                    parameters.Add("@invitedBy", context.SharedPyramid == null 
-                        ? null 
+                    parameters.Add("@invitedBy", context.SharedPyramid == null
+                        ? null
                         : (long?)context.SharedPyramid.Id, System.Data.DbType.Int64);
                     database.Execute(executeSqlString, parameters, System.Data.CommandType.Text, true);
                 }
 
+            }
+        }
+
+        public int UpgradeSharedPyramid(SharingContext context)
+        {
+            var executeSqlString = @"
+SELECT src.Id INTO @sharedBy FROM `sharing_wxuser` AS src WHERE src.AppId=@SharedByAppId AND src.OpenId = @SharedByOpenId LIMIT 1;
+UPDATE `sharing_wxuser` AS target SET target.`InvitedBy`= @sharedBy
+WHERE target.AppId=@CurrentAppId AND target.OpenId=@CurrentOpenId AND target.`InvitedBy` IS NULL;
+";
+            using (var database = SharingConfigurations.GenerateDatabase(true))
+            {
+                var parameters = new Dapper.DynamicParameters();
+                parameters.Add("SharedByOpenId", context.SharedBy.OpenId, System.Data.DbType.String);
+                parameters.Add("SharedByAppId", context.SharedBy.AppId, System.Data.DbType.String);
+                parameters.Add("CurrentAppId", context.Current.AppId, System.Data.DbType.String);
+                parameters.Add("CurrentOpenId", context.Current.OpenId, System.Data.DbType.String);
+                parameters.Add("sharedBy", null, System.Data.DbType.Int64, System.Data.ParameterDirection.Output);
+                return database.Execute(executeSqlString, parameters, System.Data.CommandType.Text);
             }
         }
     }
