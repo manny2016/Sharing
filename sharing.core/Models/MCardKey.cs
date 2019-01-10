@@ -6,7 +6,7 @@ namespace Sharing.Core.Models
 {
     public class MCardKey : IWxCardKey
     {
-        public long WxUserId { get; set; }
+        
 
         public string CardId { get; set; }
 

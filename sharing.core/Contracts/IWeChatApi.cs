@@ -58,6 +58,15 @@ namespace Sharing.Core
             string cardid,
             long timestamp,
             string nonce_str);
-
+        /// <summary>
+        /// 查询用户已经拥有的会员卡
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="wxuser"></param>
+        /// <param name="mcard"></param>
+        QueryWxUserCardResponse QueryWxUserMCards(
+            IWxApp app,
+            IWxUserOpenId wxuser,
+            IWxMCardId mcard = null);
     }
 }

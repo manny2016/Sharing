@@ -18,6 +18,7 @@ namespace Sharing.Core.Services
 
     public class WeChatApiService : IWeChatApi
     {
+
         private readonly IMemoryCache cache;
         public WeChatApiService(IMemoryCache cache)
         {
@@ -209,6 +210,35 @@ namespace Sharing.Core.Services
                     entity.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(response.Expiresin);
                     return response.Ticket;
                 });
+        }
+
+        public QueryWxUserCardResponse QueryWxUserMCards(
+            IWxApp app,
+            IWxUserOpenId wxuser,
+            IWxMCardId mcard = null)
+        {
+            var url = string.Format("https://api.weixin.qq.com/card/user/getcardlist?access_token={0}"
+                , GetToken(app.AppId, app.Secret));
+            return url.GetUriJsonContent<QueryWxUserCardResponse>((http) =>
+            {
+                http.Method = "POST";
+                http.ContentType = "application/json; encoding=utf-8";
+                var data = new
+                {
+                    openid = wxuser.OpenId,
+                    card_id = (mcard == null || string.IsNullOrWhiteSpace(mcard.CardId))
+                    ? null
+                    : mcard.CardId
+                };
+                using (var stream = http.GetRequestStream())
+                {
+                    var body = data.SerializeToJson();
+                    var buffers = UTF8Encoding.UTF8.GetBytes(body);
+                    stream.Write(buffers, 0, buffers.Length);
+                    stream.Flush();
+                }
+                return http;
+            });
         }
     }
 }

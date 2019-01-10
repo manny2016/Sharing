@@ -11,7 +11,6 @@
   "profiles": {
     "IIS Express": {
       "commandName": "Project",
-      "workingDirectory": "D:\\Workspaces\\repos\\Sharing\\portals\\sharing.portal.api\\bin\\Debug\\netcoreapp2.1",
       "launchBrowser": true,
       "launchUrl": "api/sharing/test",
       "environmentVariables": {

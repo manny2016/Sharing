@@ -12,7 +12,7 @@
     public static class HttpExtension
     {
         public static readonly Encoding DEFAULT_ENCODING = Encoding.UTF8;
-
+        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(HttpExtension));
         public static string GetUriContentDirectly(
             this string uri,
             Func<HttpWebRequest, HttpWebRequest> funcSetCustomSettings = null,
@@ -47,6 +47,7 @@
                 using (var reader = new StreamReader(response.GetResponseStream(), encoding))
                 {
                     string context = reader.ReadToEnd();
+                    Logger.DebugFormat("Url Request:\r\n{0}\r\n{1}", uri, context);
                     return context;
                 }
             }
@@ -103,6 +104,6 @@
 
             return res.ContentLength;
         }
-        
+
     }
 }

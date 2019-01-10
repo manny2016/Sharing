@@ -28,13 +28,17 @@ namespace Sharing.Core.Services
             Parallel.ForEach(this.GetWeChatOfficials(),
                 new ParallelOptions() { MaxDegreeOfParallelism = 5 },
             (app) =>
-            {
-                
+            {   
+                //Sync Merchant Member Card from WeChat Server             
                 foreach (var cardid in api.QueryMCard(app).CardIdList)
                 {
                     var details = this.api.QueryMCardDetails(app, new MCardKey() { CardId = cardid }).CreateMCard(app.MerchantId);
                     cards[cardid] = details;
                 }
+
+                //Sync User Member Card from WeChat Server.
+
+
             });
             this.WriteIntoDatabase(cards.Values.ToList());
         }
@@ -82,5 +86,7 @@ DROP TABLE `tmcards`;";
                 return result;
             }
         }
+
+
     }
 }

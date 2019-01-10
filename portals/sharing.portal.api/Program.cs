@@ -19,27 +19,24 @@ namespace Sharing.Portal.Api
 
     public class Program
     {
-   
+        public static IWebHostBuilder builder;
         public static void Main(string[] args)
         {
-          
-
-            
-
-
-            CreateWebHostBuilder(args)                
-                //.UseContentRoot(Directory.GetCurrentDirectory())
+            builder = CreateWebHostBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     var evn = hostingContext.HostingEnvironment;
                     config.AddEnvironmentVariables();
-
                     config
                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                     .AddJsonFile("appsettings.Development.json",
                       optional: true, reloadOnChange: true);
-                  
-                })                                
+
+                })
+                .ConfigureLogging((hostingContext, logging) =>
+                {
+
+                })
                 .ConfigureServices((collection) =>
                 {
                     collection.AddWeChatApiService();
@@ -56,12 +53,15 @@ namespace Sharing.Portal.Api
                         provider.GetService<IRandomGenerator>(),
                         provider.GetService<IWeChatPayService>(),
                         provider.GetService<ISharingHostService>())));
-                })               
-                .Build().Run();
+                });
+                builder.Build().Run();
+
+
+
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)                  
+            WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
 
     }
