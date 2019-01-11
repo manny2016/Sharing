@@ -86,9 +86,9 @@ namespace Sharing.Portal.Api
         {
             Guard.ArgumentNotNull(context, "context");
             Guard.ArgumentNotNullOrEmpty(
-                new string[] { context.AppID, context.OpenId, context.CardId },
+                new string[] { context.AppId, context.OpenId, context.CardId },
                 new string[] { "AppId", "OpenId", "CardId" });
-            var model = client.GetMCardDetails(context.AppID, context.OpenId, context.CardId);
+            var model = client.GetMCardDetails(context.AppId, context.OpenId, context.CardId);
             return model;
         }
 
@@ -104,9 +104,9 @@ namespace Sharing.Portal.Api
             Logger.Info(context.SerializeToJson());
             Guard.ArgumentNotNull(context, "context");
             Guard.ArgumentNotNullOrEmpty(
-                new string[] { context.AppID, context.OpenId },
+                new string[] { context.AppId, context.OpenId },
                 new string[] { "AppId", "OpenId" });
-            return client.GetMCardDetails(context.AppID, context.OpenId);
+            return client.GetMCardDetails(context.AppId, context.OpenId);
         }
         /// <summary>
         /// 微信消息推送 接收 api
@@ -224,11 +224,12 @@ namespace Sharing.Portal.Api
         {
             return client.GetSharedPyramid(basic);
         }
+
         /// <summary>
         /// 领取会员卡
         /// </summary>
         /// <param name="context"></param>
-        [Route("api/enjoy/GenerateCardExtString")]
+        [Route("api/sharing/ApplyMCard")]
         [HttpPost]
         public CardExtModel ApplyMCard(ApplyMCardContext context)
         {
@@ -239,10 +240,30 @@ namespace Sharing.Portal.Api
                 new string[] { context.AppId, context.CardId, context.OpenId },
                 new string[] { "AppId", "CardId", "OpenId" });
 
-            
             var result = client.PrepareCardSign(context);
             Logger.DebugFormat("resut", result.SerializeToJson());
             return result;
+        }
+
+        /// <summary>
+        /// 登记会员卡
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        [Route("api/sharing/RegisterMCard")]
+        [HttpPost]
+        public bool RegisterMCard(RegisterMCardContext context)
+        {
+            //https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1499332673_Unm7V
+            Logger.Info(context.SerializeToJson());
+            return true;
+        }
+
+        [Route("api/sharing/AddMemberCard")]
+        [HttpPost]
+        public void AddMemberCard(dynamic context)
+        {
+
         }
     }
 }

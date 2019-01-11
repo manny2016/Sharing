@@ -82,6 +82,7 @@ namespace Sharing.Core.Services
 
         public SessionWxResponse GetSession(JSCodeApiToken token)
         {
+
             var url = string.Format("https://api.weixin.qq.com/sns/jscode2session?appid={0}&js_code={1}&secret={2}&grant_type=authorization_code",
                  token.AppId, token.Code, token.Secret);
             return url.GetUriJsonContent<SessionWxResponse>();
@@ -229,6 +230,28 @@ namespace Sharing.Core.Services
                     card_id = (mcard == null || string.IsNullOrWhiteSpace(mcard.CardId))
                     ? null
                     : mcard.CardId
+                };
+                using (var stream = http.GetRequestStream())
+                {
+                    var body = data.SerializeToJson();
+                    var buffers = UTF8Encoding.UTF8.GetBytes(body);
+                    stream.Write(buffers, 0, buffers.Length);
+                    stream.Flush();
+                }
+                return http;
+            });
+        }
+
+        public DecryptCodeWxResponse DecryptMCardUserCode(IWxApp app, string encryptedData)
+        {
+            string url = string.Format("https://api.weixin.qq.com/card/code/decrypt?access_token={0}", GetToken(app.AppId, app.Secret));
+            return url.GetUriJsonContent<DecryptCodeWxResponse>((http) =>
+            {
+                http.Method = "POST";
+                http.ContentType = "application/json; encoding=utf-8";
+                var data = new
+                {
+                    encrypt_code = encryptedData
                 };
                 using (var stream = http.GetRequestStream())
                 {

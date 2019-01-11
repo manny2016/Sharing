@@ -25,6 +25,12 @@ namespace Sharing.Core
         /// <returns></returns>
         T Decrypt<T>(string encryptedData, string iv, string sessionKey);
         /// <summary>
+        /// 解密会员卡Code
+        /// </summary>
+        /// <param name="encryptedData"></param>
+        /// <returns></returns>
+        DecryptCodeWxResponse DecryptMCardUserCode(IWxApp app, string encryptedData);
+        /// <summary>
         /// 通过微信用户登陆Code 获取Session
         /// </summary>
         /// <param name="token"></param>

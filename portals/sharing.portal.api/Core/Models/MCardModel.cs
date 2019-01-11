@@ -2,8 +2,9 @@
 
 namespace Sharing.Portal.Api.Models
 {
+    using Sharing.Core;
     using Newtonsoft.Json;
-    public class MCardModel
+    public class MCardModel:IWxMCardId
     {
         [JsonProperty("title")]
         public virtual string Title { get; set; }
@@ -11,7 +12,7 @@ namespace Sharing.Portal.Api.Models
         [JsonProperty("logoUrl")]
         public virtual string LogoUrl{ get; set; }
 
-        [JsonProperty("cardId")]
+        
         public virtual string CardId { get; set; }
 
         [JsonProperty("brandName")]

@@ -2,18 +2,19 @@
 
 namespace Sharing.Portal.Api.Models
 {
+    using Sharing.Core;
     using Newtonsoft.Json;
-    public class QueryMyMCardContext
+    public class QueryMyMCardContext : IWxAppId, IWxMCardId, IWxUserOpenId
     {
-        [JsonProperty("appid")]
-        public string AppID { get; set; }
+
+        public string AppId { get; set; }
 
 
-        [JsonProperty("openid")]
+
         public string OpenId { get; set; }
 
 
-        [JsonProperty("cardId")]
+
         public string CardId { get; set; }
     }
 }
