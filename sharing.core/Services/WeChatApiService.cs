@@ -200,13 +200,14 @@ namespace Sharing.Core.Services
 
         public string GenerateSignForApplyMCard(
             IWxApp official,
+            IWxApp miniprogram,
             string cardid,
             long timestamp,
             string nonce_str)
         {
             //https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=cardsign
             //卡券签名算法  https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115
-            var api_ticket = GetApiTicket(official.AppId, this.GetToken(official.AppId, official.Secret));
+            var api_ticket = GetApiTicket(miniprogram.AppId, this.GetToken(official.AppId, official.Secret));
 
             var perpare = string.Format("{0}{1}{2}{3}", api_ticket,  timestamp.ToString(), nonce_str,cardid);
         

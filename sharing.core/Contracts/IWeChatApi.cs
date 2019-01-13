@@ -61,6 +61,7 @@ namespace Sharing.Core
 
         string GenerateSignForApplyMCard(
             IWxApp official,           
+            IWxApp miniprogram,
             string cardid,
             long timestamp,
             string nonce_str);

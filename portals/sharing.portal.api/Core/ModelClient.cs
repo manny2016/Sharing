@@ -245,10 +245,11 @@ WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
             var nonceStr = Guid.NewGuid().ToString().Replace("-", string.Empty);
             var official = this.sharingHostService.MerchantDetails.Where(o => o.MCode == context.MCode).SelectMany(o => o.Apps)
                 .FirstOrDefault(o => o.AppType == AppTypes.Official);
-
+            var miniprogram = this.sharingHostService.MerchantDetails.Where(o => o.MCode == context.MCode).SelectMany(o => o.Apps)
+                .FirstOrDefault(o => o.AppType == AppTypes.Miniprogram);
             var cardsign = new CardExtModel()
             {
-                Signature = this.wxapi.GenerateSignForApplyMCard(official, context.CardId, timestamp, nonceStr),
+                Signature = this.wxapi.GenerateSignForApplyMCard(official, miniprogram,context.CardId, timestamp, nonceStr),
                 TimeStamp = timestamp.ToString(),
                 NonceStr = nonceStr,
                 //CardId = context.CardId
@@ -267,7 +268,7 @@ WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
             Guard.ArgumentNotNull(merchant, "merchant");
 
             var official = merchant.Apps.FirstOrDefault(o => o.AppType == AppTypes.Official);
-
+            
             Guard.ArgumentNotNull(official, "official");
             var result = this.wxapi.SaveOrUpdateCardCoupon(official, body);
 
