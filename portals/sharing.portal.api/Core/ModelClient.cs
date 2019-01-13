@@ -11,7 +11,7 @@ namespace Sharing.Portal.Api
     using Sharing.Core.Models;
     using System.Collections.Generic;
     using System.Linq;
-
+    using Newtonsoft.Json.Linq;
 
     public class ModelClient
     {
@@ -20,11 +20,14 @@ namespace Sharing.Portal.Api
         private readonly IRandomGenerator generator;
         private readonly IWeChatPayService weChatPayService;
         private readonly ISharingHostService sharingHostService;
+        private readonly IMCardService mCardService;
+
         public ModelClient(
             IWeChatApi api,
             IWxUserService wxUserService,
             IRandomGenerator generator,
             IWeChatPayService payService,
+            IMCardService mCardService,
             ISharingHostService hostService)
         {
             this.wxapi = api;
@@ -32,6 +35,7 @@ namespace Sharing.Portal.Api
             this.wxUserService = wxUserService;
             this.generator = generator;
             this.weChatPayService = payService;
+            this.mCardService = mCardService;
         }
         public WeChatUserModel Register(RegisterWeChatUserContext context)
         {
@@ -203,9 +207,9 @@ WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
                     parameters.Add("@rewardIntegral", trade.Money / 100, System.Data.DbType.Int32);
                     //parameters.Add("@rewardMoney", trade.Money * 0.1, System.Data.DbType.Int32);
                     parameters.Add("@rewardState", RewardStates.Waitting, System.Data.DbType.String);
-                    parameters.Add("@createdTime", DateTime.Now.ToUnixStampDateTime(), System.Data.DbType.Int64);
+                    parameters.Add("@createdTime", DateTime.UtcNow.ToUnixStampDateTime(), System.Data.DbType.Int64);
                     parameters.Add("@wxOrderId", notification.TransactionId.Value, System.Data.DbType.String);
-                    parameters.Add("@confirmTime", DateTime.Now.ToUnixStampDateTime(), System.Data.DbType.Int64);
+                    parameters.Add("@confirmTime", DateTime.UtcNow.ToUnixStampDateTime(), System.Data.DbType.Int64);
 
                     database.Execute(executeSqlString, parameters, System.Data.CommandType.Text, true);
                 }
@@ -234,18 +238,64 @@ WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
 
         public CardExtModel PrepareCardSign(ApplyMCardContext context)
         {
-                        
-            var timestamp = DateTime.Now.ToUnixStampDateTime();
-            var nonceStr =this.generator.Genernate();
-            var wxapp =this.sharingHostService.MerchantDetails.SelectMany(o => o.Apps)
-                .FirstOrDefault(o => o.AppId.Equals(context.AppId));
-            return new CardExtModel()
+
+            var timestamp = DateTime.UtcNow.ToUnixStampDateTime();
+            //var nonceStr = this.generator.Genernate();// Guid.NewGuid().ToString().Replace("-", string.Empty);
+            //var nonceStr = this.generator.Genernate();
+            var nonceStr = Guid.NewGuid().ToString().Replace("-", string.Empty);
+            var official = this.sharingHostService.MerchantDetails.Where(o => o.MCode == context.MCode).SelectMany(o => o.Apps)
+                .FirstOrDefault(o => o.AppType == AppTypes.Official);
+
+            var cardsign = new CardExtModel()
             {
+                Signature = this.wxapi.GenerateSignForApplyMCard(official, context.CardId, timestamp, nonceStr),
+                TimeStamp = timestamp.ToString(),
                 NonceStr = nonceStr,
-                OuterStr = "Miniprogram",
-                Signature = this.wxapi.GenerateSignForApplyMCard(wxapp, context.CardId, timestamp, nonceStr),
-                TimeStamp = timestamp.ToString()
+                //CardId = context.CardId
             };
+
+
+            return cardsign;
+        }
+
+        public void CreateOrUpdateCoupon(IMCode mcode, JObject body)
+        {
+            Guard.ArgumentNotNull(mcode, "mcode");
+            Guard.ArgumentNotNull(body, "body");
+
+            var merchant = sharingHostService.MerchantDetails.FirstOrDefault(o => o.MCode.Equals(mcode.MCode));
+            Guard.ArgumentNotNull(merchant, "merchant");
+
+            var official = merchant.Apps.FirstOrDefault(o => o.AppType == AppTypes.Official);
+
+            Guard.ArgumentNotNull(official, "official");
+            var result = this.wxapi.SaveOrUpdateCardCoupon(official, body);
+
+            if (result.HasError == false)
+            {
+                this.mCardService.WriteIntoDatabase(new List<MCard>() { body.ParseMCard(merchant.Id, result.CardId) });
+            }
+        }
+        public void Synchronous()
+        {
+            this.mCardService.Synchronous();
+        }
+
+        public void DeleteAllCoupon()
+        {
+            foreach (var app in this.sharingHostService.MerchantDetails.SelectMany(o => o.Apps))
+            {
+                var cards = new string[] { "p18KQ54D6VDTt3kmXHvn3z4MoD4c",
+                    "p18KQ51iyqwX2FXNMJlQgM4TN1o0",
+                    "p18KQ5xNi3i030ERIS_7mhANOWFo",
+                    "p18KQ50w8t3ayGrUr8gbIx65HmBo",
+                    "p18KQ5_U3qrP-5MPNnUmZ770omu0" };
+                foreach (var cardid in cards)
+                {
+                    this.wxapi.DeleteCardCoupon(app, new MCardDetails() { CardId = cardid });
+                }
+
+            }
         }
     }
 }

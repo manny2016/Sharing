@@ -12,7 +12,8 @@
         public static readonly long STICK_HOURLY = 60 * 60;
         public static long ToUnixStampDateTime(this DateTime dateTime)
         {
-            return ((dateTime.Ticks - UNIX_START_DATE.Ticks) / 10000000L) + (3600 * 8);
+            return ((dateTime.Ticks - UNIX_START_DATE.Ticks) / 10000000L) ;
+            //return ((dateTime.Ticks - UNIX_START_DATE.Ticks) / 10000000L) + (3600 * 8);
         }
        
         public static DateTime ToDateTimeFromUnixStamp(this long timestamp)

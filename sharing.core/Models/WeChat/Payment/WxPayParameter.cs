@@ -24,7 +24,7 @@ namespace Sharing.WeChat.Models
             this.AppId = response.AppId.Value;
             this.NonceStr = this.generator.Genernate();
             this.SignType = WxPayData.SIGN_TYPE_HMAC_SHA256;
-            this.TimeStamp = DateTime.Now.ToUnixStampDateTime();
+            this.TimeStamp = DateTime.UtcNow.ToUnixStampDateTime();
 
         }
 

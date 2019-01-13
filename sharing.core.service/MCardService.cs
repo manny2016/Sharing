@@ -11,7 +11,8 @@ namespace Sharing.Core.Services
     using Sharing.Core.Models;
     using Sharing.Core;
     using System.Collections.Concurrent;
-
+    using Newtonsoft.Json.Linq;
+    using Newtonsoft.Json;
     public class MCardService : IMCardService
     {
         //private readonly IServiceProvider provider = SharingConfigurations
@@ -28,11 +29,11 @@ namespace Sharing.Core.Services
             Parallel.ForEach(this.GetWeChatOfficials(),
                 new ParallelOptions() { MaxDegreeOfParallelism = 5 },
             (app) =>
-            {   
+            {
                 //Sync Merchant Member Card from WeChat Server             
                 foreach (var cardid in api.QueryMCard(app).CardIdList)
                 {
-                    var details = this.api.QueryMCardDetails(app, new MCardKey() { CardId = cardid }).CreateMCard(app.MerchantId);
+                    var details = this.api.QueryMCardDetails(app, new MCardKey() { CardId = cardid }).ParseMCard(app.MerchantId);
                     cards[cardid] = details;
                 }
 
@@ -64,13 +65,13 @@ INSERT INTO `sharing_mcard`(MerchantId, CardId, Quantity, TotalQuantity, Discoun
         ON src.CardId = target.CardId AND src.MerchantId = target.MerchantId
      ON DUPLICATE KEY UPDATE  Quantity = VALUES(Quantity), TotalQuantity= VALUES(TotalQuantity);
 DROP TABLE `tmcards`;";
-        private void WriteIntoDatabase(IList<MCard> cards)
+        public int WriteIntoDatabase(IList<MCard> cards)
         {
-            if (cards == null || cards.Count == 0) return;
+            if (cards == null || cards.Count == 0) return 0;
 
             using (var database = SharingConfigurations.GenerateDatabase(true))
             {
-                var executeSql = database.Execute(string.Format(SqlSyncMCard,
+                return database.Execute(string.Format(SqlSyncMCard,
                     string.Join(",", cards.Select(o => o.GenerateMySqlInsertValuesString()))));
             }
         }

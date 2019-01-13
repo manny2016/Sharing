@@ -52,6 +52,7 @@ namespace Sharing.Portal.Api
                         provider.GetService<IWxUserService>(),
                         provider.GetService<IRandomGenerator>(),
                         provider.GetService<IWeChatPayService>(),
+                        provider.GetService<IMCardService>(),
                         provider.GetService<ISharingHostService>())));
                 });
                 builder.Build().Run();

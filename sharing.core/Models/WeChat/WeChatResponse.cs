@@ -24,4 +24,10 @@ namespace Sharing.WeChat.Models
             }
         }
     }
+
+
+    public class NormalWxResponse : WeChatResponse
+    {
+
+    }
 }

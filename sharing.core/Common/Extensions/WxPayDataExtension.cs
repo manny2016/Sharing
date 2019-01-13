@@ -310,8 +310,8 @@ namespace Sharing.Core
             data.Body = "会员卡充值";
             data.Attach = "attach";
             data.OutTradeNo = outTradeNo;
-            data.TimeStart = DateTime.Now.ToString("yyyyMMddHHmmss");
-            data.TimeExpire = DateTime.Now.AddMinutes(10).ToString("yyyyMMddHHmmss"); //"20180905091412"; //
+            data.TimeStart = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+            data.TimeExpire = DateTime.UtcNow.AddMinutes(10).ToString("yyyyMMddHHmmss"); //"20180905091412"; //
             data.AppId = context.AppId; //Constants.WxConfig.AppId;
             data.OpenId = context.OpenId;
             data.TradeType = "JSAPI";

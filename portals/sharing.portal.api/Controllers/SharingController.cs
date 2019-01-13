@@ -100,8 +100,7 @@ namespace Sharing.Portal.Api
         [Route("api/sharing/QueryMyMCardDetails")]
         [HttpPost]
         public IList<MCardDetails> QueryMyMCardDetails(QueryMyMCardContext context)
-        {
-            Logger.Info(context.SerializeToJson());
+        {            
             Guard.ArgumentNotNull(context, "context");
             Guard.ArgumentNotNullOrEmpty(
                 new string[] { context.AppId, context.OpenId },
@@ -204,7 +203,7 @@ namespace Sharing.Portal.Api
         [HttpGet]
         public void Test()
         {
-            Logger.Info("this is a test");
+            //Logger.Info("this is a test");
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             this.Response.Body.Write(
                (string.IsNullOrEmpty(environmentName) ? "environment is null" : environmentName).ToBytes());
@@ -237,16 +236,15 @@ namespace Sharing.Portal.Api
             Logger.DebugFormat("context", context.SerializeToJson());
             Guard.ArgumentNotNull(context, "context");
             Guard.ArgumentNotNullOrEmpty(
-                new string[] { context.AppId, context.CardId, context.OpenId },
-                new string[] { "AppId", "CardId", "OpenId" });
+                new string[] { context.MCode, context.CardId },
+                new string[] { "MCode", "CardId" });
 
-            var result = client.PrepareCardSign(context);
-            Logger.DebugFormat("resut", result.SerializeToJson());
-            return result;
+            return client.PrepareCardSign(context);
+            
         }
 
         /// <summary>
-        /// 登记会员卡
+        /// 登记卡券
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -259,11 +257,25 @@ namespace Sharing.Portal.Api
             return true;
         }
 
-        [Route("api/sharing/AddMemberCard")]
+        [Route("api/sharing/CreateOrUpdateCardCoupon")]
         [HttpPost]
-        public void AddMemberCard(dynamic context)
+        public void CreateOrUpdateCardCoupon(CreateOrUpdateCardCouponContext context)
         {
+            client.CreateOrUpdateCoupon(context, context.Body);
+        }
 
+        [Route("api/sharing/Synchronous")]
+        [HttpPost]
+        public void Synchronous()
+        {
+            client.Synchronous();
+        }
+
+        [Route("api/sharing/ClreaAllCardCoupon")]
+        [HttpPost]
+        public void ClreaAllCardCoupon()
+        {
+            client.DeleteAllCoupon();
         }
     }
 }

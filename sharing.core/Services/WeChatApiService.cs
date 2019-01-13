@@ -15,7 +15,8 @@ namespace Sharing.Core.Services
     using System.Net.Security;
     using System.Security.Cryptography.X509Certificates;
     using Sharing.Core;
-
+    using System.Collections.Generic;
+    using System.Linq;
     public class WeChatApiService : IWeChatApi
     {
 
@@ -24,6 +25,7 @@ namespace Sharing.Core.Services
         {
             this.cache = cache;
         }
+        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(WeChatApiService));
         //private readonly IServiceProvider provider = SharingConfigurations.CreateServiceCollection(null).BuildServiceProvider();
         /// <summary>
         /// 获取WeChat api token
@@ -33,8 +35,22 @@ namespace Sharing.Core.Services
         /// <returns></returns>
         public string GetToken(string appid, string secret)
         {
+            return GetToken(appid, secret, false);
+            //return this.cache.GetOrCreate<string>(
+            //    string.Format("Token_{0}", appid),
+            //    (entity) =>
+            //    {
+            //        var url = string.Format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}",
+            //            appid, secret);
+            //        var token = url.GetUriJsonContent<AccessTokenWxResponse>();
+            //        entity.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(token.Expiresin);
+            //        return token.Token;
+            //    });
+        }
+        private string GetToken(string appid, string secret, bool forApiTicket=false)
+        {
             return this.cache.GetOrCreate<string>(
-                string.Format("Token_{0}", appid),
+                string.Format("Token_{0}_{1}", appid, forApiTicket ? "yes" : "no"),
                 (entity) =>
                 {
                     var url = string.Format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}",
@@ -125,7 +141,7 @@ namespace Sharing.Core.Services
         public JObject QueryMCardDetails(IWxApp official, IWxCardKey card)
         {
             var url = string.Format("https://api.weixin.qq.com/card/get?access_token={0}", GetToken(official.AppId, official.Secret));
-            var result = url.GetUriJsonContent<JObject>((http) =>
+            return url.GetUriJsonContent<JObject>((http) =>
              {
                  http.Method = "POST";
                  http.ContentType = "application/json; encoding=utf-8";
@@ -142,7 +158,7 @@ namespace Sharing.Core.Services
                  }
                  return http;
              });
-            return result;
+
         }
 
 
@@ -183,29 +199,29 @@ namespace Sharing.Core.Services
         }
 
         public string GenerateSignForApplyMCard(
-            IWxApp app,
+            IWxApp official,
             string cardid,
             long timestamp,
             string nonce_str)
         {
+            //https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=cardsign
+            //卡券签名算法  https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115
+            var api_ticket = GetApiTicket(official.AppId, this.GetToken(official.AppId, official.Secret));
 
-            var ticket = GetTicket(app.AppId, this.GetToken(app.AppId, app.Secret));
-            var @params = new string[] {
-                nonce_str,
-                timestamp.ToString(),
-                cardid,
-                ticket
-            };
-            var perpare = string.Format("{0}{1}{2}{3}", ticket, timestamp, nonce_str, cardid);
+            var perpare = string.Format("{0}{1}{2}{3}", api_ticket,  timestamp.ToString(), nonce_str,cardid);
+        
             return perpare.GetSHA1Crypto();
+
         }
 
-        private string GetTicket(string appid, string token)
+        private string GetApiTicket(string appid, string token)
         {
             string cacheKey = string.Format("ticket-{0}", appid);
             return this.cache.GetOrCreate<string>(cacheKey,
                 (entity) =>
                 {
+                    //https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=$accessToken
+                    //https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=wx_card
                     var url = string.Format("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={0}&type=wx_card", token);
                     var response = url.GetUriJsonContent<TicketWxResponse>();
                     entity.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(response.Expiresin);
@@ -253,6 +269,48 @@ namespace Sharing.Core.Services
                 {
                     encrypt_code = encryptedData
                 };
+                using (var stream = http.GetRequestStream())
+                {
+                    var body = data.SerializeToJson();
+                    var buffers = UTF8Encoding.UTF8.GetBytes(body);
+                    stream.Write(buffers, 0, buffers.Length);
+                    stream.Flush();
+                }
+                return http;
+            });
+        }
+
+        public CreateCouponWxResponse SaveOrUpdateCardCoupon(IWxApp official, JObject jObject)
+        {
+
+            var url = string.Format(string.IsNullOrEmpty(jObject.ParseCardId())
+                ? "https://api.weixin.qq.com/card/create?access_token={0}"
+                : "https://api.weixin.qq.com/card/update?access_token={0}",
+                GetToken(official.AppId, official.Secret));
+            return url.GetUriJsonContent<CreateCouponWxResponse>((http) =>
+            {
+                http.Method = "POST";
+                http.ContentType = "application/json;encoding=utf-8";
+                using (var stream = http.GetRequestStream())
+                {
+                    var buffers = UTF8Encoding.UTF8.GetBytes(jObject.ToString());
+                    stream.Write(buffers, 0, buffers.Length);
+                    stream.Flush();
+                }
+                return http;
+            });
+        }
+
+
+
+        public NormalWxResponse DeleteCardCoupon(IWxApp official, IWxMCardId cardId)
+        {
+            var url = string.Format("https://api.weixin.qq.com/card/delete?access_token={0}", GetToken(official.AppId, official.Secret));
+            return url.GetUriJsonContent<NormalWxResponse>((http) =>
+            {
+                var data = new { card_id = cardId.CardId };
+                http.Method = "POST";
+                http.ContentType = "application/json; encoding=utf-8";
                 using (var stream = http.GetRequestStream())
                 {
                     var body = data.SerializeToJson();

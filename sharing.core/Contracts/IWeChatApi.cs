@@ -60,7 +60,7 @@ namespace Sharing.Core
         WxPayParameter Unifiedorder(WxPayData data, string mchid);
 
         string GenerateSignForApplyMCard(
-            IWxApp app,
+            IWxApp official,           
             string cardid,
             long timestamp,
             string nonce_str);
@@ -74,5 +74,22 @@ namespace Sharing.Core
             IWxApp app,
             IWxUserOpenId wxuser,
             IWxMCardId mcard = null);
+
+
+        /// <summary>
+        /// 创建或更新卡券
+        /// </summary>
+        /// <param name="official">商户公众号</param>
+        /// <param name="jObject">卡券Json对象</param>
+        /// <returns></returns>
+        CreateCouponWxResponse SaveOrUpdateCardCoupon(IWxApp official, JObject jObject);
+
+        /// <summary>
+        /// 删除卡券
+        /// </summary>
+        /// <param name="official">商户公众号</param>
+        /// <param name="cardId">卡券Id</param>
+        /// <returns></returns>
+        NormalWxResponse DeleteCardCoupon(IWxApp official, IWxMCardId cardId);
     }
 }

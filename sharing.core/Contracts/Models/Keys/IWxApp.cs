@@ -18,7 +18,7 @@ namespace Sharing.Core
 
     public interface IWxApp : IWxAppId, IWxAppSecret
     {
-        
+        AppTypes AppType { get; }
     }
 
 }

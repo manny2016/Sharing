@@ -56,10 +56,10 @@ namespace Sharing.Core.Services
                     pTradeId = Guid.NewGuid().ToString().Replace("-", string.Empty),
                     pMoney = context.Money * 100,
                     pRealMoney = context.Money * 100 + (context.Money * 100 * 0.2),
-                    pCreatedTime = DateTime.Now.ToUnixStampDateTime(),
+                    pCreatedTime = DateTime.UtcNow.ToUnixStampDateTime(),
                     pStrategy = "{}",
                     pAttach = attach.SerializeToJson(),
-                    prefix = string.Format("T{0}", DateTime.Now.ToString("yyyyMMdd"))
+                    prefix = string.Format("T{0}", DateTime.UtcNow.ToString("yyyyMMdd"))
                 });
             }
         }

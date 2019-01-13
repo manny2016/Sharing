@@ -32,7 +32,7 @@ namespace Sharing.Core
                 var idx = 0;
                 if (section.SlaveDatabaseServers.Count > 0)
                 {
-                    idx = DateTime.Now.Second % section.SlaveDatabaseServers.Count;
+                    idx = DateTime.UtcNow.Second % section.SlaveDatabaseServers.Count;
                 }
                 return section.SlaveDatabaseServers[idx].GenerateDatabase(database);
             }

@@ -15,11 +15,11 @@ namespace Sharing.Portal.Api.Models
         public WxCard[] CardList { get; set; }
 
 
-       
-
         [JsonProperty("encryptedData")]
         public string EncryptedData { get; set; }
 
         public string Secret { get; set; }
+
+        public AppTypes AppType { get; set; }
     }
 }

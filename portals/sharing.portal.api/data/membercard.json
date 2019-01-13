@@ -1,0 +1,89 @@
+{
+  "errcode": 0,
+  "errmsg": "ok",
+  "card": {
+    "card_type": "MEMBER_CARD",
+    "member_card": {
+      "base_info": {
+        "id": "p18KQ51k6hllvEZwFXAx0cGaiohw",
+        "logo_url": "http://mmbiz.qpic.cn/mmbiz_jpg/b7GddiaJdbFovia8BZ7nspHTfRzjwC7vee1XAqdgasSuvOQ2z3diaGGTeekNibc3baA6dn6XYuialFsYSKDGQhh064Q/0?wx_fmt=jpeg",
+        "code_type": "CODE_TYPE_QRCODE",
+        "brand_name": "柠檬工坊",
+        "title": "铂金卡",
+        "sub_title": "",
+        "date_info": {
+          "type": "DATE_TYPE_PERMANENT"
+        },
+        "color": "#10AD61",
+        "notice": "使用时出示会员卡",
+        "description": "",
+        "location_id_list": [
+          491431822
+        ],
+        "get_limit": 1,
+        "can_share": true,
+        "can_give_friend": false,
+        "status": "CARD_STATUS_DISPATCH",
+        "sku": {
+          "quantity": 999999999,
+          "total_quantity": 1000000000
+        },
+        "create_time": 1547292773,
+        "update_time": 1547292784,
+        "use_all_locations": false,
+        "area_code_list": []
+      },
+      "supply_bonus": true,
+      "supply_balance": false,
+      "prerogative": "用卡可享受9折优惠\n会员享有提供免费送货上门",
+      "discount": 10,
+      "auto_activate": false,
+      "wx_activate": true,
+      "bonus_rule": {
+        "cost_money_unit": 100,
+        "increase_bonus": 1,
+        "cost_bonus_unit": 100,
+        "reduce_money": 100
+      },
+      "background_pic_url": "",
+      "advanced_info": {
+        "time_limit": [
+          {
+            "type": "MONDAY"
+          },
+          {
+            "type": "TUESDAY"
+          },
+          {
+            "type": "WEDNESDAY"
+          },
+          {
+            "type": "THURSDAY"
+          },
+          {
+            "type": "FRIDAY"
+          },
+          {
+            "type": "SATURDAY"
+          },
+          {
+            "type": "SUNDAY"
+          }
+        ],
+        "text_image_list": [],
+        "business_service": [
+          "BIZ_SERVICE_FREE_WIFI",
+          "BIZ_SERVICE_WITH_PET",
+          "BIZ_SERVICE_FREE_PARK",
+          "BIZ_SERVICE_DELIVER"
+        ],
+        "consume_share_card_list": [],
+        "use_condition": {
+          "can_use_with_other_discount": false,
+          "can_use_with_membercard": false
+        },
+        "share_friends": false
+      }
+    }
+  }
+}

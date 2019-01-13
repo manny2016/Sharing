@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace Sharing.Portal.Api.Models
 {
-    public class CardExtModel
+    using Sharing.Core;
+    public class CardExtModel 
     {
+        //    [JsonProperty("code")]
+        //    public string Code { get; set; }
+
+        //[JsonProperty("openid")]
+        //public string OpenId { get; set; }
 
         [JsonProperty("timestamp")]
         public string TimeStamp { get; set; }
@@ -15,10 +21,15 @@ namespace Sharing.Portal.Api.Models
         [JsonProperty("signature")]
         public string Signature { get; set; }
 
-        [JsonProperty("nonce_str")]
+        [JsonProperty("nonceStr", NullValueHandling = NullValueHandling.Ignore)]
         public string NonceStr { get; set; }
 
-        [JsonProperty("outer_str")]
-        public string OuterStr { get; set; }
+        //[JsonProperty("outer_str")]
+        //public string OuterStr { get; set; }
+
+        //[JsonProperty("cardId")]
+        //public string CardId { get; set; }
+
+
     }
 }

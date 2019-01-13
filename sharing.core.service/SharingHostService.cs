@@ -39,7 +39,7 @@ merchant.BrandName,
 (
 	SELECT CONCAT(
     '[',
-		GROUP_CONCAT(JSON_OBJECT('appid',wxapp.AppId,'secret',wxapp.Secret,'type',wxapp.`AppType`)),
+		GROUP_CONCAT(JSON_OBJECT('appid',wxapp.AppId,'secret',wxapp.Secret,'appType',wxapp.`AppType`)),
     ']') FROM  
     `sharing_mwechatapp` AS wxapp WHERE wxapp.MerchantId = merchant.Id
 ) AS WxApps
