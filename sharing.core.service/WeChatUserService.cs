@@ -10,6 +10,7 @@ namespace Sharing.Core.Services
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.DependencyInjection;
     using System.Linq;
+    using System.Data;
     public class WeChatUserService : IWxUserService
     {
         private readonly IMemoryCache cache;
@@ -21,6 +22,7 @@ namespace Sharing.Core.Services
         {
             using (var database = SharingConfigurations.GenerateDatabase(true))
             {
+
                 var queryString = @"`spRegisterWeChatUser`";
                 var parameters = new DynamicParameters();
                 parameters.Add("p_UnionId", context.Info.UnionId, System.Data.DbType.String);
@@ -39,7 +41,7 @@ namespace Sharing.Core.Services
                 parameters.Add("o_Id", null, System.Data.DbType.Int64, System.Data.ParameterDirection.Output);
                 parameters.Add("o_mobile", null, System.Data.DbType.String, System.Data.ParameterDirection.Output);
                 parameters.Add("o_rewardMoney", null, System.Data.DbType.Int32, System.Data.ParameterDirection.Output);
-                database.Execute(queryString, parameters, System.Data.CommandType.StoredProcedure);
+                database.Execute(queryString, parameters, System.Data.CommandType.StoredProcedure, true);
                 return new Membership()
                 {
                     AppId = context.WxApp.AppId,
@@ -48,20 +50,20 @@ namespace Sharing.Core.Services
                     RewardMoney = parameters.Get<int?>("o_rewardMoney"),
                     OpenId = context.Info.OpenId
                 };
+
             }
         }
 
-        public IList<ISharedContext> GetSharedContext(IWxUserKey key)
+        public IList<ISharedContext> GetSharedContext(IMchId key)
         {
-            var cacheKey = string.Format("pyramid_{0}", key.AppId);
-        
+            var cacheKey = string.Format("pyramid_{0}", key.MchId);
             return this.cache.GetOrCreate<IList<ISharedContext>>(cacheKey, (entity) =>
             {
                 entity.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
                 using (var database = SharingConfigurations.GenerateDatabase(false))
                 {
-                    var queryString = @"SELECT `Id`, `OpenId`,`InvitedBy` FROM `sharing_wxuser` WHERE AppId=@AppId";
-                    return database.SqlQuery<SharedContext>(queryString, new { AppId = key.AppId })
+                    var queryString = @"SELECT `WxUserId` AS Id,`MchId`,`InvitedBy` FROM `sharing_sharingcontext` WHERE `MchId`=@MchId";
+                    return database.SqlQuery<SharedContext>(queryString, new { MchId = key.MchId })
                     .ToList<ISharedContext>();
                 }
             });
@@ -70,7 +72,7 @@ namespace Sharing.Core.Services
 
         public long GetWxUserId(IWxUserKey key)
         {
-            var context = GetSharedContext(key).FirstOrDefault(o => o.OpenId.Equals(key.OpenId));
+            var context = GetSharedContext(key).FirstOrDefault(o => o.Id.Equals(key.Id));
             Guard.ArgumentNotNull(context, "SharedContext");
             return context.Id;
         }

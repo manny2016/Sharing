@@ -5,9 +5,8 @@ namespace Sharing.Core.Entities
     public class WxUser : IWxUserKey, ISharedContext
     {
         public virtual long Id { get; set; }
+        public virtual long MchId { get; set; }
         public virtual string UnionId { get; set; }
-        public virtual string AppId { get; set; }
-        public virtual string OpenId { get; set; }
         public virtual long? InvitedBy { get; set; }
         public virtual string Mobile { get; set; }
         public virtual AppTypes RegistrySource { get; set; }
@@ -18,5 +17,9 @@ namespace Sharing.Core.Entities
         public virtual string AvatarUrl { get; set; }
         public virtual long CreatedTime { get; set; }
         public virtual long LastActivityTime { get; set; }
+
+        public string AppId { get; set; }
+
+        public string OpenId { get; set; }
     }
 }

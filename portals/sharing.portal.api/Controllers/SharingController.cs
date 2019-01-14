@@ -48,6 +48,11 @@ namespace Sharing.Portal.Api
         [HttpPost]
         public bool UpgradeSharedPyramid(SharingContext context)
         {
+            if (context.SharedBy.AppId != context.Current.AppId)
+                throw new ArgumentNullException("Current.AppId must be equals to SharedBy.AppId ");
+
+            if (context.SharedBy.OpenId == context.Current.OpenId)
+                return false;
             return client.UpgradeSharedPyramid(context) > 0;
         }
 
@@ -100,7 +105,7 @@ namespace Sharing.Portal.Api
         [Route("api/sharing/QueryMyMCardDetails")]
         [HttpPost]
         public IList<MCardDetails> QueryMyMCardDetails(QueryMyMCardContext context)
-        {            
+        {
             Guard.ArgumentNotNull(context, "context");
             Guard.ArgumentNotNullOrEmpty(
                 new string[] { context.AppId, context.OpenId },
@@ -240,7 +245,7 @@ namespace Sharing.Portal.Api
                 new string[] { "MCode", "CardId" });
 
             return client.PrepareCardSign(context);
-            
+
         }
 
         /// <summary>
@@ -248,12 +253,11 @@ namespace Sharing.Portal.Api
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        [Route("api/sharing/RegisterMCard")]
+        [Route("api/sharing/RegisterCardCoupon")]
         [HttpPost]
-        public bool RegisterMCard(RegisterMCardContext context)
+        public bool RegisterCardCoupon(RegisterCardCouponContext context)
         {
-            //https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1499332673_Unm7V
-            Logger.Info(context.SerializeToJson());
+            client.RegisterCardCoupon(context);
             return true;
         }
 

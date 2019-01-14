@@ -6,9 +6,14 @@ namespace Sharing.Core.Models
 {
     public class WxUserKey : IWxUserKey
     {
-        
+        public long Id { get; set; }
+
         public string AppId { get; set; }
 
         public string OpenId { get; set; }
+
+        public long MchId { get; set; }
+
+        
     }
 }

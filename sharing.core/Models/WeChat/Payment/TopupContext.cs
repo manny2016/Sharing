@@ -31,5 +31,9 @@ namespace Sharing.WeChat.Models
         /// </summary>
         [JsonProperty("mcode")]
         public string MCode { get; set; }
+
+        public long MchId { get; set; }
+
+        public long Id { get; set; }
     }
 }

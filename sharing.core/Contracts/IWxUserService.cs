@@ -17,7 +17,7 @@
         /// </returns>
         Membership Register(RegisterWxUserContext context);
 
-        IList<ISharedContext> GetSharedContext(IWxUserKey key);
+        IList<ISharedContext> GetSharedContext(IMchId key);
 
         long GetWxUserId(IWxUserKey key);
     }

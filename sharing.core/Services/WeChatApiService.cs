@@ -209,7 +209,7 @@ namespace Sharing.Core.Services
             //卡券签名算法  https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115
             var api_ticket = GetApiTicket(miniprogram.AppId, this.GetToken(official.AppId, official.Secret));
 
-            var perpare = string.Format("{0}{1}{2}{3}", api_ticket,  timestamp.ToString(), nonce_str,cardid);
+            var perpare = string.Format("{0}{1}{2}{3}", timestamp, nonce_str,api_ticket, cardid );
         
             return perpare.GetSHA1Crypto();
 

@@ -12,6 +12,7 @@ namespace Sharing.Portal.Api
     using System.Collections.Generic;
     using System.Linq;
     using Newtonsoft.Json.Linq;
+    using System.Text;
 
     public class ModelClient
     {
@@ -227,7 +228,7 @@ WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
                 parameters.Add("pSharedByAppId", context.SharedBy.AppId, System.Data.DbType.String);
                 parameters.Add("pCurrentAppId", context.Current.AppId, System.Data.DbType.String);
                 parameters.Add("pCurrentOpenId", context.Current.OpenId, System.Data.DbType.String);
-                return database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure);
+                return database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure,true);
             }
         }
         public ISharedPyramid GetSharedPyramid(IWxUserKey basic)
@@ -249,7 +250,7 @@ WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
                 .FirstOrDefault(o => o.AppType == AppTypes.Miniprogram);
             var cardsign = new CardExtModel()
             {
-                Signature = this.wxapi.GenerateSignForApplyMCard(official, miniprogram,context.CardId, timestamp, nonceStr),
+                Signature = this.wxapi.GenerateSignForApplyMCard(official, miniprogram, context.CardId, timestamp, nonceStr),
                 TimeStamp = timestamp.ToString(),
                 NonceStr = nonceStr,
                 //CardId = context.CardId
@@ -268,7 +269,7 @@ WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
             Guard.ArgumentNotNull(merchant, "merchant");
 
             var official = merchant.Apps.FirstOrDefault(o => o.AppType == AppTypes.Official);
-            
+
             Guard.ArgumentNotNull(official, "official");
             var result = this.wxapi.SaveOrUpdateCardCoupon(official, body);
 
@@ -297,6 +298,22 @@ WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
                 }
 
             }
+        }
+
+        public void RegisterCardCoupon(RegisterCardCouponContext context)
+        {
+            var strBld = new StringBuilder();
+            var details = this.sharingHostService.MerchantDetails;
+            
+            foreach (var card in context.CardList)
+            {
+                if (card.IsSuccess)
+                {
+                    var response = this.wxapi.DecryptMCardUserCode(details.ChooseOfficial(context)
+                    , card.EncryptedCode);
+                }
+            }
+
         }
     }
 }

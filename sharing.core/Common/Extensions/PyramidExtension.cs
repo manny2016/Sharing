@@ -14,7 +14,7 @@ namespace Sharing.Core
             out long basicWxUserId,
             int levelLimit = WeChatConstant.AllowSharedPyramidLevel)
         {
-            var basicSharedContext = context.FirstOrDefault(o => o.OpenId.Equals(basic.OpenId));
+            var basicSharedContext = context.FirstOrDefault(o => o.Id.Equals(basic.Id));
             var invitedBy = basicSharedContext.InvitedBy;
             basicWxUserId = basicSharedContext.Id;
             if (invitedBy == null)

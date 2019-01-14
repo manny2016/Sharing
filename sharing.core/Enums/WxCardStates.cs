@@ -6,8 +6,11 @@ namespace Sharing.Core
 {
     public enum WxCardStates
     {
-        Normal = 1,
-        Abnormal = 2
+        UnActivated = 1,
+
+        Normal = 2,
+
+        Abnormal = 3
 
     }
 }

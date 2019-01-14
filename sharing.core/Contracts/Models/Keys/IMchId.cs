@@ -4,11 +4,12 @@ using System.Text;
 
 namespace Sharing.Core
 {
-    public interface ISharedContext : IMchId
+    public interface IMchId
+    {
+        long MchId { get; }
+    }
+    public interface ISharingUserId
     {
         long Id { get; }
-
-       
-        long? InvitedBy { get; }
     }
 }

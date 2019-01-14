@@ -6,9 +6,8 @@ namespace Sharing.Core.Models
 {
     public class SharedContext : ISharedContext
     {
-        public long Id { get; set; }
-
-        public string OpenId { get; set; }
+        public long Id { get; set; }       
+        public long MchId { get; set; }
 
         public long? InvitedBy { get; set; }
     }
