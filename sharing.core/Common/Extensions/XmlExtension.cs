@@ -11,10 +11,14 @@ namespace Sharing.Core
         public static T DeserializeFromXml<T>(this string document)
           where T : class
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            return document.DeserializeFromXml(typeof(T)) as T;
+        }
+        public static object DeserializeFromXml(this string document, Type type)
+        {
+            XmlSerializer serializer = new XmlSerializer(type);
             using (var stream = new MemoryStream(UTF8Encoding.UTF8.GetBytes(document), false))
             {
-                return serializer.Deserialize(stream) as T;
+                return serializer.Deserialize(stream);
             }
         }
         public static string SerializeToXml(this object obj)
@@ -31,7 +35,7 @@ namespace Sharing.Core
                 return text;
             }
         }
-                             
+
 
 
     }

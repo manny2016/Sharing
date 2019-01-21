@@ -98,7 +98,7 @@ namespace Sharing.Core
                 if (connection.State != ConnectionState.Open)
                     connection.Open();
                 transcation = connection.BeginTransaction();
-                var result = connection.Execute(executeSql, parameters, transcation);
+                var result = connection.Execute(executeSql, parameters, transcation,null,type);
                 transcation.Commit();
                 return result;
             }

@@ -9,7 +9,7 @@ namespace Sharing.Core.Models
         public long Id { get; set; }
 
         public int Level { get; set; }
-
+        public long MchId { get; set; }
         public ISharedPyramid Parent { get; set; }
     }
 }

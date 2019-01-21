@@ -2,10 +2,13 @@
 namespace Sharing.WeChat.Models
 {
     using Sharing.Core;
+    using System.Xml.Serialization;
+
+    [XmlRoot("xml")]
     public class WeChatEncryptMsg : IWeChatEncryptMsg
     {
-        public string ToUserName => throw new System.NotImplementedException();
+        public string ToUserName { get; set; }
 
-        public string Encrypt => throw new System.NotImplementedException();
+        public string Encrypt { get; set; }        
     }
 }

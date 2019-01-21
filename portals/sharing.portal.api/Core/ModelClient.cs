@@ -13,6 +13,7 @@ namespace Sharing.Portal.Api
     using System.Linq;
     using Newtonsoft.Json.Linq;
     using System.Text;
+    using Dapper;
 
     public class ModelClient
     {
@@ -22,14 +23,16 @@ namespace Sharing.Portal.Api
         private readonly IWeChatPayService weChatPayService;
         private readonly ISharingHostService sharingHostService;
         private readonly IMCardService mCardService;
-
+        private readonly IWeChatMsgHandler handler;
+        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(ModelClient));
         public ModelClient(
             IWeChatApi api,
             IWxUserService wxUserService,
             IRandomGenerator generator,
             IWeChatPayService payService,
             IMCardService mCardService,
-            ISharingHostService hostService)
+            ISharingHostService hostService,
+            IWeChatMsgHandler weChatMsgHandler)
         {
             this.wxapi = api;
             this.sharingHostService = hostService;
@@ -37,6 +40,7 @@ namespace Sharing.Portal.Api
             this.generator = generator;
             this.weChatPayService = payService;
             this.mCardService = mCardService;
+            this.handler = weChatMsgHandler;
         }
         public WeChatUserModel Register(RegisterWeChatUserContext context)
         {
@@ -86,19 +90,19 @@ WHERE merchant.MCode=mcode";
             }
         }
 
-
         public MCardDetails GetMCardDetails(string appid, string openid, string cardid)
         {
             var queryString = @"
+
 SELECT 
 	mcard.BrandName,
     mcard.Title,
-    IFNULL(ucard.WxUserId,0) AS Ready,
+    IFNULL(ucard.`WxUserId`,0) AS Ready,
     mcard.CardId,
     mcard.Prerogative,
     ucard.UserCode,
-    IFNULL(ucard.Money,0)/100,
-    IFNULL(ucard.RewardMoney,0)/100,
+    IFNULL(ucard.Money,0)/100 AS Money,
+    IFNULL(ucard.RewardMoney,0)/100 AS RewardMoney,
     (
 		SELECT Address FROM  `sharing_merchant` AS merchant WHERE merchant.Id = mcard.MerchantId
         LIMIT 1
@@ -106,8 +110,8 @@ SELECT
 FROM `sharing_wxusercard` AS ucard
 	RIGHT JOIN `sharing_mcard` AS mcard
 		ON ucard.CardId = mcard.CardId AND mcard.CardId =@pCardid
-	LEFT JOIN  `sharing_wxuser` AS wxuser
-		ON ucard.WxUserId = wxuser.Id AND wxuser.AppId=@pAppid AND wxuser.OpenId=@pOpenId
+	LEFT JOIN  `sharing_wxuser_identity` AS wxuser
+		ON ucard.`WxUserId` = wxuser.WxUserId AND wxuser.AppId=@pAppid AND wxuser.OpenId=@pOpenId
 WHERE mcard.CardId =@pCardid  
 ";
             using (var database = SharingConfigurations.GenerateDatabase(false))
@@ -123,6 +127,7 @@ WHERE mcard.CardId =@pCardid
         public List<MCardDetails> GetMCardDetails(string appid, string openid)
         {
             var queryString = @"
+
 SELECT 
 	mcard.BrandName,
     mcard.Title,
@@ -130,8 +135,8 @@ SELECT
     mcard.CardId,
     mcard.Prerogative,
     ucard.UserCode,
-    IFNULL(ucard.Money,0) / 100,
-    IFNULL(ucard.RewardMoney,0) / 100,
+    IFNULL(ucard.Money,0) / 100 AS Money,
+    IFNULL(ucard.RewardMoney,0) / 100 AS RewardMoney,
     (
 		SELECT Address FROM  `sharing_merchant` AS merchant WHERE merchant.Id = mcard.MerchantId
         LIMIT 1
@@ -139,8 +144,8 @@ SELECT
 FROM `sharing_wxusercard` AS ucard
 	RIGHT JOIN `sharing_mcard` AS mcard
 		ON ucard.CardId = mcard.CardId 
-	LEFT JOIN  `sharing_wxuser` AS wxuser
-		ON ucard.WxUserId = wxuser.Id AND wxuser.AppId=@pAppId AND wxuser.OpenId=@pOpenId
+	LEFT JOIN  `sharing_wxuser_identity` AS wxuser
+		ON ucard.WxUserId = wxuser.WxUserId AND wxuser.AppId=@pAppId AND wxuser.OpenId=@pOpenId
 WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
 ";
             using (var database = SharingConfigurations.GenerateDatabase(false))
@@ -192,11 +197,8 @@ UPDATE `sharing_trade` SET `TradeState`=@tradeState,`ConfirmTime`=@confirmTime,`
 WHERE Id=@tradeId;
 /*修改用户卡余额*/
 UPDATE `sharing_wxusercard` SET Money = Money + @realMoney,Integral = Integral+@rewardIntegral  
-WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
-                //context.SharedPyramid == null
-                //? @"INSERT INTO `sharing-uat`.`sharing_rewardlogging`(`WxUserId`,`GeneratedFromWxUserId`,`RewardMoney`,`RewardIntegral`,`RelevantTradeId`,`State`,`CreatedTime`)
-                //VALUES(@invitedBy,@wxUserId,@rewardMoney,@rewardIntegral,@tradeId,@rewardState,@createdTime);"
-                //: string.Empty);
+WHERE `WxUserId`=@wxUserId AND UserCode=@userCode;";
+
                 using (var database = SharingConfigurations.GenerateDatabase(true))
                 {
                     var parameters = new Dapper.DynamicParameters();
@@ -228,7 +230,7 @@ WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
                 parameters.Add("pSharedByAppId", context.SharedBy.AppId, System.Data.DbType.String);
                 parameters.Add("pCurrentAppId", context.Current.AppId, System.Data.DbType.String);
                 parameters.Add("pCurrentOpenId", context.Current.OpenId, System.Data.DbType.String);
-                return database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure,true);
+                return database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure, true);
             }
         }
         public ISharedPyramid GetSharedPyramid(IWxUserKey basic)
@@ -287,11 +289,10 @@ WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
         {
             foreach (var app in this.sharingHostService.MerchantDetails.SelectMany(o => o.Apps))
             {
-                var cards = new string[] { "p18KQ54D6VDTt3kmXHvn3z4MoD4c",
-                    "p18KQ51iyqwX2FXNMJlQgM4TN1o0",
-                    "p18KQ5xNi3i030ERIS_7mhANOWFo",
-                    "p18KQ50w8t3ayGrUr8gbIx65HmBo",
-                    "p18KQ5_U3qrP-5MPNnUmZ770omu0" };
+                var cards = new string[] {
+                    "p18KQ51k6hllvEZwFXAx0cGaiohw",
+"p18KQ55QuuWfC9NxcM2yKBGAKUbk",
+"p18KQ5zUZpRtl3EN6BN_otBkuiJM" };
                 foreach (var cardid in cards)
                 {
                     this.wxapi.DeleteCardCoupon(app, new MCardDetails() { CardId = cardid });
@@ -304,16 +305,47 @@ WHERE WxUserId=@wxUserId AND UserCode=@userCode;";
         {
             var strBld = new StringBuilder();
             var details = this.sharingHostService.MerchantDetails;
-            
             foreach (var card in context.CardList)
             {
                 if (card.IsSuccess)
                 {
                     var response = this.wxapi.DecryptMCardUserCode(details.ChooseOfficial(context)
                     , card.EncryptedCode);
+                    
+                    if (response.HasError == false)
+                    {
+                        strBld.AppendFormat(@"
+INSERT INTO `sharing_wxusercard`(`WxUserId`,`AppId`,`OpenId`,`CardId`,`UserCode`,`State`,`CreatedTime`)
+VALUES((SELECT `WxUserId` FROM  `sharing_wxuser_identity` WHERE AppId = @AppId AND OpenId=@OpenId),
+@AppId,@OpenId,'{0}','{1}','UnActivated',{2});", card.CardId, response.Code, DateTime.UtcNow.ToUnixStampDateTime());
+                        Logger.DebugFormat("UserCode:{0}",response.Code);
+                    }
+                    else
+                    {
+                        Logger.Error(response.SerializeToJson());
+                    }
+
                 }
             }
+            if (strBld.Length == 0) return;
+            //using (var database = SharingConfigurations.GenerateDatabase(true))
+            //{
+            //    var paremeters = new DynamicParameters();
+            //    paremeters.Add("@AppId", context.AppId);
+            //    paremeters.Add("@OpenId", context.OpenId);
+            //    database.Execute(strBld.ToString(), paremeters, System.Data.CommandType.Text, true);
+            //}
 
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="encryptMsg"></param>
+        public void ProccessWeChatMsg(WxMsgToken token)
+        {
+            var wxapp = sharingHostService.MerchantDetails.SelectMany(o => o.Apps).Where(o => o.OriginalId == token.OriginalId)
+                .FirstOrDefault();
+            this.handler.Proccess(token, wxapp.AppId);
         }
     }
 }

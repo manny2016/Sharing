@@ -10,6 +10,8 @@ namespace Sharing.Core
 
         int Level { get; }
 
+        long MchId { get; }
+
         ISharedPyramid Parent { get; set; }
     }
 

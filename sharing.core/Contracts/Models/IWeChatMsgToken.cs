@@ -9,8 +9,7 @@ namespace Sharing.Core
         string BizMsgToken { get; }
         string EncodingAESKey { get; }
         string Nonce { get; }
-        string ReqMsg { get; }
-        string[] AppIds { get; }
-        string CurrentAppId { get; set; }
+        string ReqMsg { get; }        
+        
     }
 }

@@ -27,5 +27,10 @@ namespace Sharing.Core.Services
             collection.Add(new ServiceDescriptor(typeof(ISharingHostService), typeof(SharingHostService), ServiceLifetime.Singleton));
             return collection;
         }
+        public static IServiceCollection AddWeChatMsgHandler(this IServiceCollection collection)
+        {
+            collection.Add(new ServiceDescriptor(typeof(IWeChatMsgHandler), typeof(WeChatMsgHandler), ServiceLifetime.Transient));
+            return collection;
+        }
     }
 }

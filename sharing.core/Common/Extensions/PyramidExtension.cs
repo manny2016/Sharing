@@ -14,31 +14,39 @@ namespace Sharing.Core
             out long basicWxUserId,
             int levelLimit = WeChatConstant.AllowSharedPyramidLevel)
         {
+            basicWxUserId = 0;
             var basicSharedContext = context.FirstOrDefault(o => o.Id.Equals(basic.Id));
-            var invitedBy = basicSharedContext.InvitedBy;
+            if (basicSharedContext == null || basicSharedContext.InvitedBy == null)
+                return default(ISharedPyramid);
+
             basicWxUserId = basicSharedContext.Id;
-            if (invitedBy == null)
-                return null;
-            else
+            //构建第一级 basicSharedContext 本身
+            var level = 1;
+            var pyramid = new SharedPyramid()
             {
-                var pyramid = new SharedPyramid() { Id = invitedBy ?? 0, Level = 1, Parent = null };
-                int level = 1;
-                var lastPyramid = pyramid;
-                while (level < levelLimit)
+                Id = basicSharedContext.Id,
+                Level = level,
+                Parent = null,
+                MchId = basic.MchId
+            };
+            var lastInvitedBy = basicSharedContext.InvitedBy ?? 0;
+            var lastPyramid = pyramid;
+            while (level <= levelLimit)
+            {
+                level++;
+                var sharedContext = context.FirstOrDefault(o => o.Id.Equals(lastInvitedBy));
+                if (sharedContext == null )
                 {
-                    level++;
-                    var parent = context.FirstOrDefault(o => o.InvitedBy == lastPyramid.Id);
-                    if (parent == null)
-                        break;
-                    else
-                    {
-                        var parentPyramid = new SharedPyramid() { Id = parent.Id, Level = level, Parent = null };
-                        lastPyramid.Parent = parentPyramid;
-                        lastPyramid = parentPyramid;
-                    }
+                    lastPyramid.Parent = new SharedPyramid() { Id = lastInvitedBy, Level = level, MchId = basic.MchId, Parent = null };
+                    break;
                 }
-                return pyramid;
+                var parent = new SharedPyramid() { Id = sharedContext.Id, Level = level, MchId = basic.MchId, Parent = null };
+                lastPyramid.Parent = parent;
+                lastInvitedBy = sharedContext.InvitedBy??0;
+                lastPyramid = parent;
+
             }
+            return pyramid;
 
         }
 

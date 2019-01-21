@@ -23,7 +23,7 @@ namespace Sharing.Core
     //-40009 :  base64加密异常
     //-40010 :  base64解密异常
 
-    public class WXBizMsgCrypt
+    public  class WXBizMsgCrypt
     {
         //string m_sToken;
         //string m_sEncodingAESKey;
@@ -43,13 +43,15 @@ namespace Sharing.Core
             WXBizMsgCrypt_DecodeBase64_Error = -40010
         };
         private IWeChatMsgToken token = null;
+        public string AppId { get; private set; }
         //构造函数
         // @param sToken: 公众平台上，开发者设置的Token
         // @param sEncodingAESKey: 公众平台上，开发者设置的EncodingAESKey
         // @param sAppID: 公众帐号的appid
-        public WXBizMsgCrypt(IWeChatMsgToken token)
+        public WXBizMsgCrypt(IWeChatMsgToken token, string appid = "")
         {
             this.token = token;
+            this.AppId = appid;
             //m_sToken = token.BizMsgToken;
             //m_sAppID = token.AppId;
             //m_sEncodingAESKey = token.EncodingAESKey;
@@ -78,7 +80,7 @@ namespace Sharing.Core
                 root = doc.FirstChild;
                 sEncryptMsg = root["Encrypt"].InnerText;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_ParseXml_Error;
             }
@@ -102,9 +104,9 @@ namespace Sharing.Core
                 return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_DecryptAES_Error;
             }
             //// P1 需要验证appid 是否在平台 appid中
-            if (token.AppIds.Any(id => id.Equals(cpid)) == false)
-                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_ValidateAppid_Error;
-            token.CurrentAppId = cpid;
+            //if (token.AppIds.Any(id => id.Equals(cpid)) == false)
+            //    return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_ValidateAppid_Error;
+            //token.CurrentAppId = cpid;
             return 0;
         }
 
@@ -124,7 +126,7 @@ namespace Sharing.Core
             string raw = "";
             try
             {
-                raw = Cryptography.AES_encrypt(sReplyMsg, this.token.EncodingAESKey, this.token.CurrentAppId);
+                raw = Cryptography.AES_encrypt(sReplyMsg, this.token.EncodingAESKey, this.AppId);
             }
             catch (Exception)
             {
@@ -153,28 +155,7 @@ namespace Sharing.Core
             return 0;
         }
 
-        public class DictionarySort : System.Collections.IComparer
-        {
-            public int Compare(object oLeft, object oRight)
-            {
-                string sLeft = oLeft as string;
-                string sRight = oRight as string;
-                int iLeftLength = sLeft.Length;
-                int iRightLength = sRight.Length;
-                int index = 0;
-                while (index < iLeftLength && index < iRightLength)
-                {
-                    if (sLeft[index] < sRight[index])
-                        return -1;
-                    else if (sLeft[index] > sRight[index])
-                        return 1;
-                    else
-                        index++;
-                }
-                return iLeftLength - iRightLength;
-
-            }
-        }
+     
         //Verify Signature
         private static int VerifySignature(string sToken, string sTimeStamp, string sNonce, string sMsgEncrypt, string sSigture)
         {

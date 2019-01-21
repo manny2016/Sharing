@@ -46,6 +46,7 @@ namespace Sharing.Portal.Api
                     collection.AddWeChatUserService();
                     collection.AddMcardService();
                     collection.AddMemoryCache();
+                    collection.AddWeChatMsgHandler();
                     var provider = collection.BuildServiceProvider();
                     collection.Add(new ServiceDescriptor(typeof(ModelClient), new ModelClient(
                         provider.GetService<IWeChatApi>(),
@@ -53,9 +54,11 @@ namespace Sharing.Portal.Api
                         provider.GetService<IRandomGenerator>(),
                         provider.GetService<IWeChatPayService>(),
                         provider.GetService<IMCardService>(),
-                        provider.GetService<ISharingHostService>())));
+                        provider.GetService<ISharingHostService>(),
+                        provider.GetService<IWeChatMsgHandler>()
+                        )));
                 });
-                builder.Build().Run();
+            builder.Build().Run();
 
 
 

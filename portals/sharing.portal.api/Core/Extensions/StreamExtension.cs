@@ -16,7 +16,7 @@ namespace Sharing.Portal.Api
                 encoding = defaultEncoding;
             using (stream)
             {
-                var bytes = new byte[1024 * 1024 * 64];
+                var bytes = new byte[1024 * 1024 * 1024];
                 var read = stream.Read(bytes, 0, bytes.Length);
                 return encoding.GetString(bytes, 0, read);
             }

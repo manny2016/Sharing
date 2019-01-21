@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>sharing.portal.api</AssemblyName>
     <RootNamespace>Sharing.Portal.Api</RootNamespace>
+    <UserSecretsId>8e5741c1-d610-4059-9c20-7f609ad5da22</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

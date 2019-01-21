@@ -17,6 +17,8 @@ namespace Sharing.Core.Services
     using Sharing.Core;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Collections;
+
     public class WeChatApiService : IWeChatApi
     {
 
@@ -208,9 +210,15 @@ namespace Sharing.Core.Services
             //https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=cardsign
             //卡券签名算法  https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115
             var api_ticket = GetApiTicket(miniprogram.AppId, this.GetToken(official.AppId, official.Secret));
+            ArrayList AL = new ArrayList();
+            AL.Add(api_ticket);
+            AL.Add(timestamp);
+            AL.Add(nonce_str);
+            AL.Add(cardid);
+            AL.Sort(new DictionarySort());
 
-            var perpare = string.Format("{0}{1}{2}{3}", timestamp, nonce_str,api_ticket, cardid );
-        
+            //var perpare = string.Format("{0}{1}{2}{3}", timestamp, nonce_str,api_ticket, cardid );
+            var perpare = string.Join(string.Empty, AL.ToArray());
             return perpare.GetSHA1Crypto();
 
         }

@@ -1,17 +1,18 @@
-﻿
-
-using Sharing.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Sharing.WeChat.Models
 {
-    public class WeChatMsgToken : IWeChatMsgToken
+    using Sharing.Core;
+    public class WxMsgToken : IWeChatMsgToken
     {
-        public WeChatMsgToken(
+        public WxMsgToken(
             string signature,
             string timestamp,
             string nonce,
             string reqmsg,
-            string[] appids)
+            string wxAppOriginalId)
         {
             this.Signature = signature;
             this.TimeStamp = timestamp;
@@ -19,7 +20,7 @@ namespace Sharing.WeChat.Models
             this.ReqMsg = reqmsg;
             this.BizMsgToken = WeChatConstant.WxBizMsgToken;
             this.EncodingAESKey = WeChatConstant.EncodingAESKey;
-            this.AppIds = appids;
+            this.OriginalId = wxAppOriginalId;
         }
 
         public string Signature { get; private set; }
@@ -30,12 +31,10 @@ namespace Sharing.WeChat.Models
 
         public string ReqMsg { get; private set; }
 
+        public string OriginalId { get; private set; }
+
         public string BizMsgToken { get; private set; }
 
         public string EncodingAESKey { get; private set; }
-
-        public string[] AppIds { get; private set; }
-        public string CurrentAppId { get; set; }
     }
 }
-

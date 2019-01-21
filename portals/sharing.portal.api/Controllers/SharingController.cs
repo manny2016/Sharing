@@ -26,7 +26,6 @@ namespace Sharing.Portal.Api
             ModelClient client)
         {
             this.client = client;
-
         }
         /// <summary>
         /// 注册微信用户，提供给小程序的用户注册 API
@@ -137,9 +136,9 @@ namespace Sharing.Portal.Api
             string echostr = null)
         {
             var body = this.HttpContext.Request.Body.ReadAsStringAsync();
-            Logger.DebugFormat("Received message pushed by WeChat:\r\n Url:{0}\r\n{1}",
-                this.HttpContext.Request.QueryString.Value,
-                body);
+            Logger.DebugFormat(this.HttpContext.Request.QueryString.ToUriComponent());
+            Logger.Debug(body);
+            
             if (this.Request.Method.Equals("GET", StringComparison.OrdinalIgnoreCase))
             {
 
@@ -147,6 +146,8 @@ namespace Sharing.Portal.Api
             }
             else
             {
+                var encryptMsg = body.DeserializeFromXml<WeChatEncryptMsg>();
+                this.client.ProccessWeChatMsg(new WxMsgToken(msg_signature, timestamp, nonce, body, encryptMsg.ToUserName));
 
             }
         }
@@ -226,7 +227,8 @@ namespace Sharing.Portal.Api
         [HttpPost]
         public ISharedPyramid GetSharedPyramid(WxUserKey basic)
         {
-            return client.GetSharedPyramid(basic);
+            var pyrmaid = client.GetSharedPyramid(basic);
+            return pyrmaid;
         }
 
         /// <summary>
@@ -237,15 +239,12 @@ namespace Sharing.Portal.Api
         [HttpPost]
         public CardExtModel ApplyMCard(ApplyMCardContext context)
         {
-
             Logger.DebugFormat("context", context.SerializeToJson());
             Guard.ArgumentNotNull(context, "context");
             Guard.ArgumentNotNullOrEmpty(
                 new string[] { context.MCode, context.CardId },
                 new string[] { "MCode", "CardId" });
-
             return client.PrepareCardSign(context);
-
         }
 
         /// <summary>

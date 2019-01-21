@@ -28,9 +28,7 @@ namespace Sharing.Core.Services
                 parameters.Add("p_UnionId", context.Info.UnionId, System.Data.DbType.String);
                 parameters.Add("p_AppId", context.WxApp.AppId, System.Data.DbType.String);
                 parameters.Add("p_OpenId", context.Info.OpenId, System.Data.DbType.String);
-                parameters.Add("p_InvitedBy", context.InvitedBy, System.Data.DbType.String);
-                parameters.Add("p_Mobile", string.Empty, System.Data.DbType.String);
-                parameters.Add("p_RegistrySource", context.AppType, System.Data.DbType.String);
+                parameters.Add("p_RegistrySource", context.AppType.ToString(), System.Data.DbType.String);
                 parameters.Add("p_NickName", context.Info.NickName, System.Data.DbType.String);
                 parameters.Add("p_Country", context.Info.Country, System.Data.DbType.String);
                 parameters.Add("p_Province", context.Info.Province, System.Data.DbType.String);
@@ -59,7 +57,7 @@ namespace Sharing.Core.Services
             var cacheKey = string.Format("pyramid_{0}", key.MchId);
             return this.cache.GetOrCreate<IList<ISharedContext>>(cacheKey, (entity) =>
             {
-                entity.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
+                entity.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60);
                 using (var database = SharingConfigurations.GenerateDatabase(false))
                 {
                     var queryString = @"SELECT `WxUserId` AS Id,`MchId`,`InvitedBy` FROM `sharing_sharingcontext` WHERE `MchId`=@MchId";
