@@ -10,10 +10,14 @@ namespace Sharing.Core.Services
     using System.IO;
     using System.Text;
     using System.Collections.Generic;
+    using Dapper;
+    using System.Data;
+    using Sharing.Core.Models;
 
     public class WeChatMsgHandler : IWeChatMsgHandler
     {
         private readonly ISharingHostService service;
+        private readonly IWeChatUserService wxUserService;
         Dictionary<WeChatEventTypes, Type> dictnoary = new Dictionary<WeChatEventTypes, Type>()
         {
             //{ WeChatEventTypes.card_not_pass_check, typeof(CardCouponAuditkWeChatEventArgs) },
@@ -33,9 +37,10 @@ namespace Sharing.Core.Services
             //{ WeChatEventTypes.Nothing, typeof(DoNothingWeChatMsgModel) }
         };
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(WeChatMsgHandler));
-        public WeChatMsgHandler(ISharingHostService service)
+        public WeChatMsgHandler(ISharingHostService service, IWeChatUserService wxUserService)
         {
             this.service = service;
+            this.wxUserService = wxUserService;
         }
         public void Proccess(IWeChatMsgToken token, string appid)
         {
@@ -58,7 +63,7 @@ namespace Sharing.Core.Services
                         }
                         var message = xmlMsg.DeserializeFromXml(dictnoary[eventtype]) as IWeChatMsg;
                         var invoking = GenernateWeChatProccesor(message);
-                        invoking(message);
+                        invoking(message, appid);
                     }
                 }
             }
@@ -68,7 +73,7 @@ namespace Sharing.Core.Services
             }
         }
 
-        private Action<IWeChatMsg> GenernateWeChatProccesor(IWeChatMsg weChatMsg)
+        private Action<IWeChatMsg, string> GenernateWeChatProccesor(IWeChatMsg weChatMsg)
         {
             switch (weChatMsg.Event)
             {
@@ -78,13 +83,9 @@ namespace Sharing.Core.Services
             return null;
         }
         #region 微信消息处理器
-        private void UserGetCardProccesor(IWeChatMsg msg)
-        {
-            var getcard = msg as GetCardCouponWeChatMsg;
-            using(var database = SharingConfigurations.GenerateDatabase(true))
-            {
-                //var queryString = "INSERT INTO "
-            }
+        private void UserGetCardProccesor(IWeChatMsg message, string appid)
+        {            
+            this.wxUserService.RegisterCardCoupon(message.Convert(appid));
         }
         #endregion
     }

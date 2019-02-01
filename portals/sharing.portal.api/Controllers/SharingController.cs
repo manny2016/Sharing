@@ -138,7 +138,7 @@ namespace Sharing.Portal.Api
             var body = this.HttpContext.Request.Body.ReadAsStringAsync();
             Logger.DebugFormat(this.HttpContext.Request.QueryString.ToUriComponent());
             Logger.Debug(body);
-            
+
             if (this.Request.Method.Equals("GET", StringComparison.OrdinalIgnoreCase))
             {
 
@@ -163,19 +163,21 @@ namespace Sharing.Portal.Api
         {
             Guard.ArgumentNotNull(context, "context");
             Guard.ArgumentNotNullOrEmpty(
-                new string[] { context.MCode, context.OpenId, context.AppId, context.CardId, context.Code },
-                new string[] { "MCode", "OpenId", "AppId", "CardId", "Code" }
+                new string[] { context.MCode, context.CardId, context.UserCode },
+                new string[] { "MCode", "CardId", "UserCode" }
             );
+
+
+
             return client.GenerateUnifiedorder(context);
         }
 
         /// <summary>
         /// 接收支付结果通知
         /// </summary>
-        /// <remarks>
-        /// 用  api/enjoy/paynotify 是个历史遗留问题
+        /// <remarks>     
         /// </remarks>
-        [Route("api/enjoy/PayNotify")]
+        [Route("api/sharing/PayNotify")]
         [HttpGet]
         [HttpPost]
         public void PayNotify()
@@ -184,7 +186,7 @@ namespace Sharing.Portal.Api
             {
                 var body = this.Request.Body.ReadAsStringAsync();
                 Logger.DebugFormat("Obtain WeChat pay notification:\r\n{0}", body);
-                var notify = this.Request.Body.ReadAsStringAsync().DeserializeFromXml<PayNotification>();
+                var notify =body.DeserializeFromXml<PayNotification>();
                 client.TodoPayNotify(notify);
                 var str = @"
 <xml>
@@ -195,6 +197,7 @@ namespace Sharing.Portal.Api
             }
             catch (Exception ex)
             {
+                Logger.Error(ex);
                 var str = @"
 <xml>
     <return_code><![CDATA[Fail]]></return_code>
@@ -207,6 +210,7 @@ namespace Sharing.Portal.Api
 
         [Route("api/sharing/Test")]
         [HttpGet]
+        [HttpPost]
         public void Test()
         {
             //Logger.Info("this is a test");

@@ -18,7 +18,7 @@ namespace Sharing.Portal.Api
     public class ModelClient
     {
         private readonly IWeChatApi wxapi;
-        private readonly IWxUserService wxUserService;
+        private readonly IWeChatUserService wxUserService;
         private readonly IRandomGenerator generator;
         private readonly IWeChatPayService weChatPayService;
         private readonly ISharingHostService sharingHostService;
@@ -27,7 +27,7 @@ namespace Sharing.Portal.Api
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(ModelClient));
         public ModelClient(
             IWeChatApi api,
-            IWxUserService wxUserService,
+            IWeChatUserService wxUserService,
             IRandomGenerator generator,
             IWeChatPayService payService,
             IMCardService mCardService,
@@ -161,8 +161,15 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
         {
             ////P3 Need to query from cache.
             var payment = this.weChatPayService.GetPayment(context.AppId);
-            var trade = this.weChatPayService.PrepareUnifiedorder(context);
-            var data = context.GenerateUnifiedWxPayData(payment.MchId.ToString(), trade.TradeId, payment.PayKey, this.generator.Genernate());
+            var trade = this.weChatPayService.PrepareUnifiedorder(context, out WxPayAttach attach);
+            var data = context.GenerateUnifiedWxPayData(
+                payment.MchId.ToString(),
+                trade.TradeId,
+                payment.PayKey,
+                attach.NonceStr,
+                attach.Paysign);
+
+            var xml = data.SerializeToXml();
             var parameter = this.wxapi.Unifiedorder(data, payment.MchId.ToString());
             parameter.PaySign = parameter.MakeSign(payment.PayKey);
 
@@ -190,31 +197,26 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
                     throw new WeChatPayException("Only Waitting status pay order can be modify.");
 
                 var attach = trade.Attach.DeserializeToObject<WxPayAttach>();
-
-                var executeSqlString = @"
-/*修改交易状态*/
-UPDATE `sharing_trade` SET `TradeState`=@tradeState,`ConfirmTime`=@confirmTime,`WxOrderId`=@wxOrderId 
-WHERE Id=@tradeId;
-/*修改用户卡余额*/
-UPDATE `sharing_wxusercard` SET Money = Money + @realMoney,Integral = Integral+@rewardIntegral  
-WHERE `WxUserId`=@wxUserId AND UserCode=@userCode;";
-
+                var mchid = sharingHostService.MerchantDetails.First(o => o.MCode.Equals(attach.MCode)).Id;
+                var pyarmid = this.GetSharedPyramid(new WxUserKey()
+                {
+                    Id = trade.WxUserId,
+                    MchId = mchid
+                });
+                var executeSqlString = @"spUpgradeforTopupConfirm";
                 using (var database = SharingConfigurations.GenerateDatabase(true))
                 {
                     var parameters = new Dapper.DynamicParameters();
-                    parameters.Add("@tradeState", TradeStates.Success.ToString(), System.Data.DbType.String);
-                    parameters.Add("@tradeId", trade.Id, System.Data.DbType.Int64);
-                    parameters.Add("@realMoney", trade.RealMoney, System.Data.DbType.Int32);
-                    parameters.Add("@wxUserId", trade.WxUserId, System.Data.DbType.Int64);
-                    parameters.Add("@userCode", attach.UserCode, System.Data.DbType.String);
-                    parameters.Add("@rewardIntegral", trade.Money / 100, System.Data.DbType.Int32);
-                    //parameters.Add("@rewardMoney", trade.Money * 0.1, System.Data.DbType.Int32);
-                    parameters.Add("@rewardState", RewardStates.Waitting, System.Data.DbType.String);
-                    parameters.Add("@createdTime", DateTime.UtcNow.ToUnixStampDateTime(), System.Data.DbType.Int64);
-                    parameters.Add("@wxOrderId", notification.TransactionId.Value, System.Data.DbType.String);
-                    parameters.Add("@confirmTime", DateTime.UtcNow.ToUnixStampDateTime(), System.Data.DbType.Int64);
-
-                    database.Execute(executeSqlString, parameters, System.Data.CommandType.Text, true);
+                    parameters.Add("p_Id", trade.Id, System.Data.DbType.Int64);
+                    parameters.Add("p_CardId", attach.CardId, System.Data.DbType.String);
+                    parameters.Add("p_UserCode", attach.UserCode, System.Data.DbType.String);
+                    parameters.Add("p_Money", trade.RealMoney, System.Data.DbType.Int32);//充值金额 （赠送后的金额）                             
+                    parameters.Add("p_confirmTime", DateTime.UtcNow.ToUnixStampDateTime(), System.Data.DbType.Int64);
+                    parameters.Add("p_RewardTo", pyarmid.Parent == null ? (int?)null : (int?)pyarmid.Parent.Id, System.Data.DbType.Int64);
+                    parameters.Add("p_WxUserId", pyarmid.Id, System.Data.DbType.Int64);
+                    parameters.Add("p_RewardMoney", trade.Money * 0.1, System.Data.DbType.Int32);
+                    parameters.Add("p_MchId", pyarmid.MchId, System.Data.DbType.Int32);
+                    database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure, true);
                 }
 
             }
@@ -311,14 +313,24 @@ WHERE `WxUserId`=@wxUserId AND UserCode=@userCode;";
                 {
                     var response = this.wxapi.DecryptMCardUserCode(details.ChooseOfficial(context)
                     , card.EncryptedCode);
-                    
+
                     if (response.HasError == false)
                     {
-                        strBld.AppendFormat(@"
-INSERT INTO `sharing_wxusercard`(`WxUserId`,`AppId`,`OpenId`,`CardId`,`UserCode`,`State`,`CreatedTime`)
-VALUES((SELECT `WxUserId` FROM  `sharing_wxuser_identity` WHERE AppId = @AppId AND OpenId=@OpenId),
-@AppId,@OpenId,'{0}','{1}','UnActivated',{2});", card.CardId, response.Code, DateTime.UtcNow.ToUnixStampDateTime());
-                        Logger.DebugFormat("UserCode:{0}",response.Code);
+                        var cardcoupon = new RegisterCardCoupon()
+                        {
+                            ActiveTime = DateTime.UtcNow.ToUnixStampDateTime(),
+                            AppId = context.AppId,
+                            CardId = card.CardId,
+                            Event = WeChatEventTypes.user_get_card,
+                            MsgType = WeChatMsgTypes.@event,
+                            FriendOpenId = string.Empty,
+                            IsGiveByFriend = false,
+                            IsRestoreMemberCard = false,
+                            OpenId = context.OpenId,
+                            UserCode = response.Code,
+                            UnionId = context.UnionId
+                        };
+                        this.wxUserService.RegisterCardCoupon(cardcoupon);
                     }
                     else
                     {
@@ -327,15 +339,6 @@ VALUES((SELECT `WxUserId` FROM  `sharing_wxuser_identity` WHERE AppId = @AppId A
 
                 }
             }
-            if (strBld.Length == 0) return;
-            //using (var database = SharingConfigurations.GenerateDatabase(true))
-            //{
-            //    var paremeters = new DynamicParameters();
-            //    paremeters.Add("@AppId", context.AppId);
-            //    paremeters.Add("@OpenId", context.OpenId);
-            //    database.Execute(strBld.ToString(), paremeters, System.Data.CommandType.Text, true);
-            //}
-
         }
         /// <summary>
         /// 

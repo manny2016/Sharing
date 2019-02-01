@@ -12,9 +12,9 @@ namespace Sharing.WeChat.Models
         private readonly IRandomGenerator generator;
         public WxPayParameter(IRandomGenerator generator)
         {
-            this.generator=generator;
+            this.generator = generator;
         }
-        public WxPayParameter(WeChatUnifiedorderResponse response)
+        public WxPayParameter(WeChatUnifiedorderResponse response, IRandomGenerator generator) : this(generator)
         {
             this.ReturnCode = response.ReturnCode.Value;
             this.ReturnMsg = response.ReturnMsg.Value;

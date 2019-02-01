@@ -11,7 +11,7 @@ namespace Sharing.Core.Services
     using Microsoft.Extensions.DependencyInjection;
     using System.Linq;
     using System.Data;
-    public class WeChatUserService : IWxUserService
+    public class WeChatUserService : IWeChatUserService
     {
         private readonly IMemoryCache cache;
         public WeChatUserService(IMemoryCache cache)
@@ -25,7 +25,7 @@ namespace Sharing.Core.Services
 
                 var queryString = @"`spRegisterWeChatUser`";
                 var parameters = new DynamicParameters();
-                parameters.Add("p_UnionId", context.Info.UnionId, System.Data.DbType.String);
+                parameters.Add("p_UnionId", context.Info.UnionId, System.Data.DbType.String);                
                 parameters.Add("p_AppId", context.WxApp.AppId, System.Data.DbType.String);
                 parameters.Add("p_OpenId", context.Info.OpenId, System.Data.DbType.String);
                 parameters.Add("p_RegistrySource", context.AppType.ToString(), System.Data.DbType.String);
@@ -52,16 +52,16 @@ namespace Sharing.Core.Services
             }
         }
 
-        public IList<ISharedContext> GetSharedContext(IMchId key)
+        public IList<ISharedContext> GetSharedContext(IMchId mch)
         {
-            var cacheKey = string.Format("pyramid_{0}", key.MchId);
+            var cacheKey = string.Format("pyramid_{0}", mch.MchId);
             return this.cache.GetOrCreate<IList<ISharedContext>>(cacheKey, (entity) =>
             {
                 entity.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60);
                 using (var database = SharingConfigurations.GenerateDatabase(false))
                 {
                     var queryString = @"SELECT `WxUserId` AS Id,`MchId`,`InvitedBy` FROM `sharing_sharingcontext` WHERE `MchId`=@MchId";
-                    return database.SqlQuery<SharedContext>(queryString, new { MchId = key.MchId })
+                    return database.SqlQuery<SharedContext>(queryString, new { MchId = mch.MchId })
                     .ToList<ISharedContext>();
                 }
             });
@@ -74,5 +74,31 @@ namespace Sharing.Core.Services
             Guard.ArgumentNotNull(context, "SharedContext");
             return context.Id;
         }
+
+        public void RegisterCardCoupon(RegisterCardCoupon registerCard)
+        {
+
+            using (var database = SharingConfigurations.GenerateDatabase(true))
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("p_AppId", registerCard.AppId);
+                parameters.Add("p_OpenId", registerCard.OpenId);
+                parameters.Add("p_UnionId", registerCard.UnionId);
+                parameters.Add("p_CardId", registerCard.CardId);
+                parameters.Add("p_UserCode", registerCard.UserCode);
+                parameters.Add("p_IsGiveByFriend", registerCard.IsGiveByFriend);
+                parameters.Add("p_IsRestoreMemberCard", registerCard.IsRestoreMemberCard);
+                parameters.Add("p_FriendOpenId", registerCard.FriendOpenId);
+                parameters.Add("p_ActiveTime", registerCard.ActiveTime);
+                parameters.Add("error_code", null, DbType.Int32, ParameterDirection.Output);
+                database.Execute("spRegisterWxUserCard", parameters, System.Data.CommandType.StoredProcedure, true);
+                //error_code = -1000 表示用户信息稍微登记
+                if (parameters.Get<int>("error_code") > 0)
+                    throw new SharingException(string.Format("Error occured on proccess get card coupon. error code:{0}",
+                        parameters.Get<int>("error_code")));
+            }
+        }
+
+      
     }
 }

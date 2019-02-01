@@ -6,7 +6,7 @@
     using Sharing.Core.Entities;
 
 
-    public interface IWxUserService
+    public interface IWeChatUserService
     {
         /// <summary>
         /// 登记一个微信用户，并返回平台Id
@@ -17,8 +17,11 @@
         /// </returns>
         Membership Register(RegisterWxUserContext context);
 
-        IList<ISharedContext> GetSharedContext(IMchId key);
+        void RegisterCardCoupon(RegisterCardCoupon registerCard);
+
+        IList<ISharedContext> GetSharedContext(IMchId app);
 
         long GetWxUserId(IWxUserKey key);
+        
     }
 }

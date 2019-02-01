@@ -4,6 +4,7 @@
 
 namespace Sharing.Core
 {
+    using Sharing.Core.Models;
     using Sharing.WeChat.Models;
     using System.Linq;
 

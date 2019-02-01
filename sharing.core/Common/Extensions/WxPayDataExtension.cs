@@ -304,28 +304,35 @@ namespace Sharing.Core
             return result;
         }
 
-        public static WxPayData GenerateUnifiedWxPayData(this TopupContext context, string mchid, string outTradeNo, string payKey, string noceStr)
+        public static WxPayData GenerateUnifiedWxPayData(
+            this TopupContext context, 
+            string mchid, 
+            string outTradeNo, 
+            string payKey, 
+            string noceStr, 
+            string signature)
         {
-            var data = new WxPayData();
-            data.Body = "会员卡充值";
-            data.Attach = "attach";
-            data.OutTradeNo = outTradeNo;
-            data.TimeStart = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-            data.TimeExpire = DateTime.UtcNow.AddMinutes(10).ToString("yyyyMMddHHmmss"); //"20180905091412"; //
-            data.AppId = context.AppId; //Constants.WxConfig.AppId;
-            data.OpenId = context.OpenId;
-            data.TradeType = "JSAPI";
-            data.GoodsTag = "会员卡充值";
-            data.MchId = mchid;
-            data.Totalfee = context.Money * 100;
-            data.NotifyUrl = "https://www.yourc.club/api/enjoy/PayNotify";
-            data.SpbillCreateIp = "118.24.139.228";
-            data.NonceStr = noceStr;
-            data.SignType = WxPayData.SIGN_TYPE_HMAC_SHA256;
-            //data.SceneInfo = "";
+            var data = new WxPayData()
+            {
+                AppId = context.AppId,
+                TimeStart = DateTime.Now.ToString("yyyyMMddHHmmss"),
+                TimeExpire = DateTime.Now.AddMinutes(10).ToString("yyyyMMddHHmmss"), //"20180905091412"; //
+                Body = "会员卡充值",
+                Attach = signature,
+                OutTradeNo = outTradeNo,
+                GoodsTag = "会员卡充值",
+                TradeType = "JSAPI",
+                MchId = mchid,
+                Totalfee = context.Money,
+                NotifyUrl = "https://www.yourc.club/api/sharing/PayNotify",
+                SpbillCreateIp = "118.24.139.228",
+                NonceStr = noceStr,
+                SignType = WxPayData.SIGN_TYPE_HMAC_SHA256,
+                OpenId = context.OpenId
+                //   SceneInfo = "{'h5_info': {'type':'Miniprogarm','app_name': '利群奶茶店','package_name': 'com.tencent.tmgp.sgame'}}"
+            };
             data.Sign = data.MakeSign(payKey);
-            //data.ProductId = "12235413214070356458058";
-            //data.SceneInfo = "";
+
             if (data.WithRequired(out string errMsg) == false)
             {
                 throw new WeChatPayException(errMsg);

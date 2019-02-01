@@ -11,20 +11,22 @@ namespace Sharing.Core.Services
     using Sharing.Core;
     public class WeChatPayService : IWeChatPayService
     {
-        private readonly IWxUserService wxUserService;
-        public WeChatPayService(IWxUserService wxUserService)
+        private readonly IWeChatUserService wxUserService;
+        private readonly IRandomGenerator generator;
+        public WeChatPayService(IWeChatUserService wxUserService, IRandomGenerator generator)
         {
             this.wxUserService = wxUserService;
+            this.generator = generator;
         }
 
-        public Trade PrepareUnifiedorder(TopupContext context)
+        public Trade PrepareUnifiedorder(TopupContext context, out WxPayAttach attach)
         {
-            
+
             var queryString = @"
     INSERT INTO 
     `sharing_trade`(WxUserId,WxOrderId,TradeId,TradeType,TradeState,Money,RealMoney,CreatedTime,Attach, Strategy)
     SELECT 
-    (SELECT Id FROM `sharing_wxuser` WHERE AppId=@pAppId AND OpenId=@pOpenId LIMIT 1) AS WxUserId,
+    (SELECT WxUserId FROM `sharing_wxuser_identity` WHERE AppId=@pAppId AND OpenId=@pOpenId LIMIT 1) AS WxUserId,
     @pWxOrderId AS WxOrderId,
     @pTradeId AS TradeId,
     'Recharge' AS TradeType,
@@ -37,15 +39,18 @@ namespace Sharing.Core.Services
     UPDATE `sharing_trade` SET TradeId=CONCAT(@prefix , LPAD(Id,10,'0')) WHERE WxOrderId = @pWxOrderId;
     SELECT * FROM `sharing_trade` WHERE WxOrderId = @pWxOrderId LIMIT 1;
 ";
-            var pyramid = this.wxUserService.GetSharedContext(context as IWxUserKey)
-                .BuildSharedPyramid(context as IWxUserKey, out long basicWxUserId);
-            var attach = new WxPayAttach()
+            //var pyramid = this.wxUserService.GetSharedContext(context as IWxUserKey)
+            //    .BuildSharedPyramid(context as IWxUserKey, out long basicWxUserId);
+            attach = new WxPayAttach()
             {
-                PayBy = basicWxUserId,
                 CardId = context.CardId,
-                Paysign = string.Empty,
-                SharedPyramid = pyramid
+                NonceStr = this.generator.Genernate(),
+                TimeStamp = DateTime.UtcNow.ToUnixStampDateTime(),
+                UserCode = context.UserCode,
+                MCode = context.MCode
             };
+            context.Money = context.Money * 100;
+            attach.Sign(context.Money);
             using (var database = SharingConfigurations.GenerateDatabase(true))
             {
                 return database.SqlQuerySingleOrDefaultTransaction<Trade>(queryString, new
@@ -54,8 +59,8 @@ namespace Sharing.Core.Services
                     pOpenId = context.OpenId,
                     pWxOrderId = Guid.NewGuid().ToString().Replace("-", string.Empty),
                     pTradeId = Guid.NewGuid().ToString().Replace("-", string.Empty),
-                    pMoney = context.Money * 100,
-                    pRealMoney = context.Money * 100 + (context.Money * 100 * 0.2),
+                    pMoney = context.Money,
+                    pRealMoney = context.Money + (context.Money * 0.2),
                     pCreatedTime = DateTime.UtcNow.ToUnixStampDateTime(),
                     pStrategy = "{}",
                     pAttach = attach.SerializeToJson(),

@@ -3,7 +3,7 @@
     using Newtonsoft.Json;
     public interface IWxMCardId
     {
-        [JsonProperty("card_id")]
+        [JsonProperty("cardid")]
         string CardId { get; }
     }
     public interface IWxCardCode

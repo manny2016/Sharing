@@ -23,9 +23,11 @@ namespace Sharing.Core.Services
     {
 
         private readonly IMemoryCache cache;
-        public WeChatApiService(IMemoryCache cache)
+        private readonly IRandomGenerator generator;
+        public WeChatApiService(IMemoryCache cache,IRandomGenerator generator)
         {
             this.cache = cache;
+            this.generator = generator;
         }
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(WeChatApiService));
         //private readonly IServiceProvider provider = SharingConfigurations.CreateServiceCollection(null).BuildServiceProvider();
@@ -190,7 +192,7 @@ namespace Sharing.Core.Services
                 }
                 return http;
             }).DeserializeFromXml<WeChatUnifiedorderResponse>();
-            return new WxPayParameter(order);
+            return new WxPayParameter(order,this.generator);
         }
 
 

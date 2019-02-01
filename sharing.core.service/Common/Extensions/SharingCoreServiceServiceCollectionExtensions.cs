@@ -9,7 +9,7 @@ namespace Sharing.Core.Services
     {
         public static IServiceCollection AddWeChatUserService(this IServiceCollection collection)
         {
-            collection.Add(new ServiceDescriptor(typeof(IWxUserService), typeof(WeChatUserService), ServiceLifetime.Transient));
+            collection.Add(new ServiceDescriptor(typeof(IWeChatUserService), typeof(WeChatUserService), ServiceLifetime.Transient));
             return collection;
         }
         public static IServiceCollection AddMcardService(this IServiceCollection collection)

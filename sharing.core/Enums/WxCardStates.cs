@@ -10,7 +10,8 @@ namespace Sharing.Core
 
         Normal = 2,
 
-        Abnormal = 3
+        Deleted = 3,
 
+        Abnormal = 4,
     }
 }
