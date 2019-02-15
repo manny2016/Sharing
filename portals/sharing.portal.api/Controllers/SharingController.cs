@@ -186,7 +186,7 @@ namespace Sharing.Portal.Api
             {
                 var body = this.Request.Body.ReadAsStringAsync();
                 Logger.DebugFormat("Obtain WeChat pay notification:\r\n{0}", body);
-                var notify =body.DeserializeFromXml<PayNotification>();
+                var notify = body.DeserializeFromXml<PayNotification>();
                 client.TodoPayNotify(notify);
                 var str = @"
 <xml>
@@ -283,6 +283,23 @@ namespace Sharing.Portal.Api
         public void ClreaAllCardCoupon()
         {
             client.DeleteAllCoupon();
+        }
+
+        [Route("api/sharing/GetHotSalesProducts")]
+        [HttpPost]
+        public IList<List<ProductModel>> GetHotSalesProducts(MerchantKey key)
+        {
+            Guard.ArgumentNotNull(key, "merchantkey");
+            Guard.ArgumentNotNullOrEmpty(key.MCode, "mcode");
+            return client.GetHotSalesProducts(key);
+        }
+        [Route("api/sharing/GetProductTreeNodeModels")]
+        [HttpPost]
+        public ProductTreeNodeModel[] GetProductTreeNodeModels(MerchantKey key)
+        {
+            Guard.ArgumentNotNull(key, "merchantkey");
+            Guard.ArgumentNotNullOrEmpty(key.MCode, "mcode");
+            return client.GetProductTreeNodeModels(key);
         }
     }
 }

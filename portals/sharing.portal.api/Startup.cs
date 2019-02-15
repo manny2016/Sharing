@@ -57,7 +57,7 @@ namespace Sharing.Portal.Api
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                Path.Combine(Directory.GetCurrentDirectory(), "images")),
+                Path.Combine(Directory.GetCurrentDirectory(), "images/")),
                 RequestPath = "/images"
             });
             app.UseHttpsRedirection();

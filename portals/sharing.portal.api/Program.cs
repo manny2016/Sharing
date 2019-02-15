@@ -23,27 +23,7 @@ namespace Sharing.Portal.Api
         public static IWebHostBuilder builder;
         public static void Main(string[] args)
         {
-            var xml = @"
-<xml>
-	<appid><![CDATA[wx6a15c5888e292f99]]></appid>
-	<attach><![CDATA[7080c4b96ec7eca229c471753d037ca5d3840699]]></attach>
-	<bank_type><![CDATA[CCB_CREDIT]]></bank_type>
-	<cash_fee><![CDATA[2000]]></cash_fee>
-	<fee_type><![CDATA[CNY]]></fee_type>
-	<is_subscribe><![CDATA[N]]></is_subscribe>
-	<mch_id><![CDATA[1520961881]]></mch_id>
-	<nonce_str><![CDATA[1008705247]]></nonce_str>
-	<openid><![CDATA[o_SjX5Yt_H5En9323Syhw1Aic3Jk]]></openid>
-	<out_trade_no><![CDATA[T201901240000000036]]></out_trade_no>
-	<result_code><![CDATA[SUCCESS]]></result_code>
-	<return_code><![CDATA[SUCCESS]]></return_code>
-	<sign><![CDATA[B12E08FA08200D13B819F14E82C3D60A0E2465FC37368FDCFC90B1914000E024]]></sign>
-	<time_end><![CDATA[20190124205631]]></time_end>
-	<total_fee>2000</total_fee>
-	<trade_type><![CDATA[JSAPI]]></trade_type>
-	<transaction_id><![CDATA[4200000265201901242415603552]]></transaction_id>
-</xml>
-";
+
             
 
 

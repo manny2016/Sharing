@@ -18,10 +18,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "tools\ConsoleApp\ConsoleApp.csproj", "{D9594DF4-C416-402A-9346-2C60D9B95F25}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{B8D1B4B9-E3E2-4910-A6F3-75FC5A726B62}"
-	ProjectSection(SolutionItems) = preProject
-		Merchant.sql = Merchant.sql
-		MShop.sql = MShop.sql
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "portals", "portals", "{F9364E31-41CC-4193-91B1-FE340F2F972D}"
 EndProject

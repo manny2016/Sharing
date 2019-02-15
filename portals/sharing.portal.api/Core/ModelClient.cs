@@ -350,5 +350,20 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
                 .FirstOrDefault();
             this.handler.Proccess(token, wxapp.AppId);
         }
+        public IList<List<ProductModel>> GetHotSalesProducts(MerchantKey key)
+        {
+            var result = new List<ProductModel[]>();
+            var merchant = sharingHostService.MerchantDetails.Where(o => o.MCode.Equals(key.MCode)).FirstOrDefault();
+            Guard.ArgumentNotNull(merchant, "merchant");
+            return sharingHostService
+                .GetHotSaleProducts(merchant.Id)
+                .Split(2).ToList();
+        }
+        public ProductTreeNodeModel[] GetProductTreeNodeModels(MerchantKey key)
+        {
+            var merchant = sharingHostService.MerchantDetails.Where(o => o.MCode.Equals(key.MCode)).FirstOrDefault();
+            Guard.ArgumentNotNull(merchant, "merchant");
+            return sharingHostService.GetProductTree(merchant.Id);
+        }
     }
 }
