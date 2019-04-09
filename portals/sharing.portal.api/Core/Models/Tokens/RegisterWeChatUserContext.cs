@@ -20,8 +20,8 @@ namespace Sharing.Portal.Api.Models
         [JsonProperty("sessionKey")]
         public string SessionKey { get; set; }
 
-        [JsonProperty("invitedBy")]
-        public string InvitedBy { get; set; }
+        //[JsonProperty("sharedBy")]
+        //public string SharedBy { get; set; }
 
         [JsonProperty("wx")]
         public WeChatUserInfo WxChatUser { get; set; }

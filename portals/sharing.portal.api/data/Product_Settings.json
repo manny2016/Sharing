@@ -1,0 +1,71 @@
+﻿{
+  "banners": [],
+  "options": [
+    {
+      "name": "规格",
+      "options": [
+        {
+          "name": "大杯",
+          "price": 1000
+        },
+        {
+          "name": "小杯",
+          "price": 800
+        }
+      ],
+      "current": 0
+    },
+    {
+      "name": "温度",
+      "options": [
+        {
+          "name": "热",
+          "price": 0
+        },
+        {
+          "name": "温热",
+          "price": 0
+        },
+        {
+          "name": "常温",
+          "price": 0
+        },
+        {
+          "name": "多冰",
+          "price": 0
+        },
+        {
+          "name": "少冰",
+          "price": 0
+        },
+        {
+          "name": "去冰",
+          "price": 0
+        }
+      ],
+      "current": 2
+    },
+    {
+      "name": "甜度",
+      "options": [
+        {
+          "name": "全糖",
+          "price": 0
+        },
+        {
+          "name": "半糖",
+          "price": 0
+        },
+        {
+          "name": "少糖",
+          "price": 0
+        },
+        {
+          "name": "无糖",
+          "price": 0
+        }
+      ],
+      "current": 2
+    }
+  ]
+}

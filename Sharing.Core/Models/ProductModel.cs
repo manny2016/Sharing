@@ -2,6 +2,8 @@
 namespace Sharing.Core.Models
 {
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+
     public class ProductModel
     {
         [JsonProperty("id")]
@@ -32,6 +34,28 @@ namespace Sharing.Core.Models
 
         [JsonProperty("imageUrl")]
         public string ImageUrl { get; set; }
+
+        [JsonProperty("settings")]
+        public ProductSettings ProductSettings
+        {
+            get
+            {
+                var settings = new ProductSettings();//set default imageurl as banner
+                if (!string.IsNullOrEmpty(this.Settings))
+                {
+                    settings = this.Settings.DeserializeToObject<ProductSettings>();
+                }
+                if (object.Equals(settings.Banners, null) || settings.Banners.Length.Equals(0))
+                {
+                    settings.Banners = new string[] { this.ImageUrl };
+                }
+                return settings;
+            }
+        }
+
+        [JsonIgnore]
+        public string Settings { get; set; }
+
     }
     public class ProductTreeNodeModel
     {

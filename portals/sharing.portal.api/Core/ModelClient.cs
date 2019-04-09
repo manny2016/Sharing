@@ -49,8 +49,7 @@ namespace Sharing.Portal.Api
             var membership = wxUserService.Register(new Core.Models.RegisterWxUserContext()
             {
                 AppType = AppTypes.Miniprogram,
-                Info = info,
-                InvitedBy = context.InvitedBy,
+                Info = info,               
                 WxApp = new WxApp()
                 {
                     AppId = context.AppId
@@ -364,6 +363,18 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
             var merchant = sharingHostService.MerchantDetails.Where(o => o.MCode.Equals(key.MCode)).FirstOrDefault();
             Guard.ArgumentNotNull(merchant, "merchant");
             return sharingHostService.GetProductTree(merchant.Id);
+        }
+        public ProductModel GetProductDetails(long id)
+        {
+            var queryString = @"SET group_concat_max_len := @@max_allowed_packet;
+
+SELECT `Id`, `Name`,`Price`,`SalesVol`,`SortNo`,`ImageUrl`,CONVERT(BINARY CONVERT(Settings USING utf8) USING utf8) AS Settings    
+FROM `sharing-uat`.`sharing_product` AS products WHERE products.`Id` = @id;";
+            using (var database = SharingConfigurations.GenerateDatabase(false))
+            {
+                var result = database.SqlQuerySingleOrDefault<ProductModel>(queryString, new { id = id });
+                return result;
+            }
         }
     }
 }

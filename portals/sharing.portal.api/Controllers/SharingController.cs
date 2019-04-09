@@ -36,6 +36,7 @@ namespace Sharing.Portal.Api
         [HttpPost]
         public WeChatUserModel Register(RegisterWeChatUserContext context)
         {
+            Logger.Info(context.SerializeToJson());
             return client.Register(context);
         }
         /// <summary>
@@ -52,6 +53,7 @@ namespace Sharing.Portal.Api
 
             if (context.SharedBy.OpenId == context.Current.OpenId)
                 return false;
+            Logger.Info(context.SerializeToJson());
             return client.UpgradeSharedPyramid(context) > 0;
         }
 
@@ -301,5 +303,14 @@ namespace Sharing.Portal.Api
             Guard.ArgumentNotNullOrEmpty(key.MCode, "mcode");
             return client.GetProductTreeNodeModels(key);
         }
+
+        [Route("api/sharing/GetProductDetails")]
+        [HttpPost]
+        public ProductModel GetProductDetails(SharingPrimaryKey key)
+        {
+            Guard.ArgumentNotNull(key.Id, "key");
+            return client.GetProductDetails(key.Id);
+        }
+
     }
 }
