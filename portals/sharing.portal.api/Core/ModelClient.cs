@@ -49,7 +49,7 @@ namespace Sharing.Portal.Api
             var membership = wxUserService.Register(new Core.Models.RegisterWxUserContext()
             {
                 AppType = AppTypes.Miniprogram,
-                Info = info,               
+                Info = info,
                 WxApp = new WxApp()
                 {
                     AppId = context.AppId
@@ -59,7 +59,11 @@ namespace Sharing.Portal.Api
             {
                 Mobile = membership.Mobile,
                 OpenId = membership.OpenId,
-                UnionId = info.UnionId
+                UnionId = info.UnionId,
+                Id = membership.Id ?? 0,
+                AppId = membership.AppId,
+                MchId = membership.MchId ?? 0
+
             };
         }
 
@@ -162,15 +166,22 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
             var payment = this.weChatPayService.GetPayment(context.AppId);
             var trade = this.weChatPayService.PrepareUnifiedorder(context, out WxPayAttach attach);
             var data = context.GenerateUnifiedWxPayData(
-                payment.MchId.ToString(),
-                trade.TradeId,
-                payment.PayKey,
-                attach.NonceStr,
-                attach.Paysign);
-
+                       payment.MchId.ToString(),
+                       trade.TradeId,
+                       payment.PayKey,
+                       attach.NonceStr,
+                       attach.Paysign);
+            return GenernatePullWxPayData(trade, data, payment.MchId.ToString(), payment.PayKey);
+        }
+        private PullWxPayData GenernatePullWxPayData(
+            Trade trade,
+            WxPayData data,
+            string mchid,
+            string paykey)
+        {
             var xml = data.SerializeToXml();
-            var parameter = this.wxapi.Unifiedorder(data, payment.MchId.ToString());
-            parameter.PaySign = parameter.MakeSign(payment.PayKey);
+            var parameter = this.wxapi.Unifiedorder(data, mchid);
+            parameter.PaySign = parameter.MakeSign(paykey);
 
             return new PullWxPayData()
             {
@@ -181,7 +192,18 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
                 timeStamp = parameter.TimeStamp.ToString()
             };
         }
-
+        public PullWxPayData GenerateUnifiedorder(OrderContext context)
+        {
+            var payment = this.weChatPayService.GetPayment(context.AppId);
+            var trade = this.weChatPayService.PrepareUnifiedorder(context, out WxPayAttach attach);
+            var data = context.GenerateUnifiedWxPayData(
+                       payment.MchId.ToString(),
+                       trade.TradeId,
+                       payment.PayKey,
+                       attach.NonceStr,
+                       attach.Paysign);
+            return GenernatePullWxPayData(trade, data, payment.MchId.ToString(), payment.PayKey);
+        }
         public void TodoPayNotify(PayNotification notification)
         {
             Guard.ArgumentNotNull(notification, "notification");
@@ -189,32 +211,49 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
             {
                 var trade = this.weChatPayService.GetTradeByTradeId(notification.OutTradeNo.Value);
                 Guard.ArgumentNotNull(trade, "trade");
-
                 if (trade.Money != notification.TotalFee)////P1 TODO: need change to sign verify.
                     throw new WeChatPayException("There is a error happend on transaction to verify.(pay money)");
                 if (trade.TradeState != TradeStates.Waiting)
                     throw new WeChatPayException("Only Waitting status pay order can be modify.");
-
-                var attach = trade.Attach.DeserializeToObject<WxPayAttach>();
-                var mchid = sharingHostService.MerchantDetails.First(o => o.MCode.Equals(attach.MCode)).Id;
-                var pyarmid = this.GetSharedPyramid(new WxUserKey()
+                var pyarmid = (ISharedPyramid)null;
+                string cardid = string.Empty;
+                string usercode = string.Empty;
+                if (trade.TradeType == TradeTypes.Recharge)
                 {
-                    Id = trade.WxUserId,
-                    MchId = mchid
-                });
+                    var attach = trade.Attach.DeserializeToObject<WxPayAttach>();
+                    var mchid = sharingHostService.MerchantDetails.First(o => o.MCode.Equals(attach.MCode)).Id;
+                    pyarmid = this.GetSharedPyramid(new WxUserKey()
+                    {
+                        Id = trade.WxUserId,
+                        MchId = mchid
+                    }) ?? new SharedPyramid() { Id = trade.WxUserId, MchId = mchid };
+                    cardid = attach.CardId;
+                    usercode = attach.UserCode;
+
+                }
+                else if (trade.TradeType == TradeTypes.Consume)
+                {
+                    var context = trade.Attach.DeserializeToObject<OrderContext>();
+                    pyarmid = this.GetSharedPyramid(new WxUserKey()
+                    {
+                        Id = context.Id,
+                        MchId = context.MchId
+                    }) ?? new SharedPyramid() { Id = context.Id, MchId = context.MchId };
+                }
+
                 var executeSqlString = @"spUpgradeforTopupConfirm";
                 using (var database = SharingConfigurations.GenerateDatabase(true))
                 {
                     var parameters = new Dapper.DynamicParameters();
                     parameters.Add("p_Id", trade.Id, System.Data.DbType.Int64);
-                    parameters.Add("p_CardId", attach.CardId, System.Data.DbType.String);
-                    parameters.Add("p_UserCode", attach.UserCode, System.Data.DbType.String);
-                    parameters.Add("p_Money", trade.RealMoney, System.Data.DbType.Int32);//充值金额 （赠送后的金额）                             
+                    parameters.Add("p_CardId", cardid, System.Data.DbType.String);
+                    parameters.Add("p_UserCode", usercode, System.Data.DbType.String);
+                    parameters.Add("p_Money", trade.RealMoney, System.Data.DbType.Int32);//充值金额或消费金额 （赠送后的金额）                             
                     parameters.Add("p_confirmTime", DateTime.UtcNow.ToUnixStampDateTime(), System.Data.DbType.Int64);
                     parameters.Add("p_RewardTo", pyarmid.Parent == null ? (int?)null : (int?)pyarmid.Parent.Id, System.Data.DbType.Int64);
                     parameters.Add("p_WxUserId", pyarmid.Id, System.Data.DbType.Int64);
                     parameters.Add("p_RewardMoney", trade.Money * 0.1, System.Data.DbType.Int32);
-                    parameters.Add("p_MchId", pyarmid.MchId, System.Data.DbType.Int32);
+                    parameters.Add("p_MchId", pyarmid.MchId, System.Data.DbType.Int64);
                     database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure, true);
                 }
 

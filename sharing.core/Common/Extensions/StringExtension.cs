@@ -32,6 +32,8 @@ namespace Sharing.Core
             ArrayList AL = new ArrayList();
             foreach (var parameter in parameters)
             {
+                if (string.IsNullOrEmpty(parameter))
+                    continue;
                 AL.Add(parameter);
             }
             AL.Sort(new DictionarySort());
@@ -40,7 +42,7 @@ namespace Sharing.Core
         }
         public static void Sign(this WxPayAttach attach, int money)
         {
-            var array = new string[] { attach.NonceStr, attach.TimeStamp.ToString(), attach.UserCode, attach.CardId, money.ToString() };
+            var array = new string[] { attach.NonceStr, attach.TimeStamp.ToString(), attach.UserCode??"", attach.CardId??"", money.ToString() };
             attach.Paysign = array.Sign();
         }
     }

@@ -339,5 +339,40 @@ namespace Sharing.Core
             }
             return data;
         }
+        public static WxPayData GenerateUnifiedWxPayData(
+            this OrderContext context,
+            string mchid,
+            string outTradeNo,
+            string payKey,
+            string noceStr,
+            string signature)
+        {
+            var data = new WxPayData()
+            {
+                AppId = context.AppId,
+                TimeStart = DateTime.Now.ToString("yyyyMMddHHmmss"),
+                TimeExpire = DateTime.Now.AddMinutes(10).ToString("yyyyMMddHHmmss"), //"20180905091412"; //
+                Body = "购买商品",
+                Attach = signature,
+                OutTradeNo = outTradeNo,
+                GoodsTag = "奶茶饮品",
+                TradeType = "JSAPI",
+                MchId = mchid,
+                Totalfee = context.Totalfee,
+                NotifyUrl = "https://www.yourc.club/api/sharing/PayNotify",
+                SpbillCreateIp = "118.24.139.228",
+                NonceStr = noceStr,
+                SignType = WxPayData.SIGN_TYPE_HMAC_SHA256,
+                OpenId = context.OpenId
+                //   SceneInfo = "{'h5_info': {'type':'Miniprogarm','app_name': '利群奶茶店','package_name': 'com.tencent.tmgp.sgame'}}"
+            };
+            data.Sign = data.MakeSign(payKey);
+
+            if (data.WithRequired(out string errMsg) == false)
+            {
+                throw new WeChatPayException(errMsg);
+            }
+            return data;
+        }
     }
 }

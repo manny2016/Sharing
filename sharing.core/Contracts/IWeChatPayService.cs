@@ -15,6 +15,7 @@ namespace Sharing.Core
         /// <param name="context"></param>
         /// <returns></returns>
         Trade PrepareUnifiedorder(TopupContext context, out WxPayAttach attach);
+        Trade PrepareUnifiedorder(OrderContext context, out WxPayAttach attach);
         /// <summary>
         /// 获取支付账户
         /// </summary>
@@ -24,7 +25,7 @@ namespace Sharing.Core
 
         Trade GetTradeByTradeId(string tradeId);
 
-        
+
 
     }
 }

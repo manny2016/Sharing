@@ -10,6 +10,7 @@ namespace Sharing.Core.Models
         public virtual string AppId { get; set; }
         public virtual string OpenId { get; set; }
         public virtual string Mobile { get; set; }
+        public virtual long? MchId { get; set; }
         public virtual int? RewardMoney { get; set; }
     }
 }

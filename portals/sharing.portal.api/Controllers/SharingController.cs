@@ -168,12 +168,18 @@ namespace Sharing.Portal.Api
                 new string[] { context.MCode, context.CardId, context.UserCode },
                 new string[] { "MCode", "CardId", "UserCode" }
             );
-
-
-
             return client.GenerateUnifiedorder(context);
         }
 
+        [Route("api/sharing/GenerateUnifiedorderforOrder")]
+        [HttpPost]
+        public PullWxPayData GenerateUnifiedorderforOrder(OrderContext context)
+        {
+            Guard.ArgumentNotNull(context, "context");
+            Guard.ArgumentNotNullOrZero(context.Details, "content.orders");
+            return client.GenerateUnifiedorder(context);
+
+        }
         /// <summary>
         /// 接收支付结果通知
         /// </summary>

@@ -39,6 +39,7 @@ namespace Sharing.Core.Services
                 parameters.Add("o_Id", null, System.Data.DbType.Int64, System.Data.ParameterDirection.Output);
                 parameters.Add("o_mobile", null, System.Data.DbType.String, System.Data.ParameterDirection.Output);
                 parameters.Add("o_rewardMoney", null, System.Data.DbType.Int32, System.Data.ParameterDirection.Output);
+                parameters.Add("o_mchid", null, System.Data.DbType.Int64, System.Data.ParameterDirection.Output);
                 database.Execute(queryString, parameters, System.Data.CommandType.StoredProcedure, true);
                 return new Membership()
                 {
@@ -46,6 +47,7 @@ namespace Sharing.Core.Services
                     Id = parameters.Get<long?>("o_Id"),
                     Mobile = parameters.Get<string>("o_mobile"),
                     RewardMoney = parameters.Get<int?>("o_rewardMoney"),
+                    MchId = parameters.Get<long?>("o_mchid"),
                     OpenId = context.Info.OpenId
                 };
 

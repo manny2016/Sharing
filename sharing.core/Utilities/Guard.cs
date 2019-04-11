@@ -50,5 +50,11 @@ namespace Sharing.Core
                 throw new NullReferenceException(strBld.ToString());
             }
         }
+        public static void ArgumentNotNullOrZero(object[] argumentValues, string argumentName)
+        {
+            ArgumentNotNull(argumentValues, argumentName);
+            if (argumentValues.Length < 1) throw new ArgumentException($"Argement length can not be zero \"{argumentName}\"");
+        }
+
     }
 }

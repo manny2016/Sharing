@@ -3,7 +3,8 @@
 namespace Sharing.Portal.Api.Models
 {
     using Newtonsoft.Json;
-    public class WeChatUserModel
+    using Sharing.Core;
+    public class WeChatUserModel:IWxUserKey
     {
 
         [JsonProperty("openid")]
@@ -27,5 +28,14 @@ namespace Sharing.Portal.Api.Models
 
         [JsonProperty("mobile")]
         public string Mobile { get; set; }
+
+        [JsonProperty("appid")]
+        public string AppId { get; set; }
+
+        [JsonProperty("mchid")]
+        public long MchId { get; set; }
+
+        [JsonProperty("id")]
+        public long Id { get; set; }
     }
 }
