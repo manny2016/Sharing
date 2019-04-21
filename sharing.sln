@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sharing.core", "Sharing.Core\sharing.core.csproj", "{FA79B239-ABE2-450C-980D-CBEE39B51ABB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Core", "Sharing.Core\Sharing.Core.csproj", "{FA79B239-ABE2-450C-980D-CBEE39B51ABB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4C0A82E1-C121-4197-A9E0-ABF9DE92F007}"
 EndProject
@@ -21,9 +21,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{B8D1B4B9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "portals", "portals", "{F9364E31-41CC-4193-91B1-FE340F2F972D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sharing.core.services", "sharing.core.service\sharing.core.services.csproj", "{20A67B19-086E-4AEE-AF38-43D8791BB2BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Core.Services", "sharing.core.service\Sharing.Core.Services.csproj", "{20A67B19-086E-4AEE-AF38-43D8791BB2BE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sharing.portal.api", "portals\sharing.portal.api\sharing.portal.api.csproj", "{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Portal.Api", "portals\sharing.portal.api\Sharing.Portal.Api.csproj", "{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharing.Potral.Web", "portals\Sharing.Potral.Web\Sharing.Potral.Web.csproj", "{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agents", "Agents", "{DCFFB5D5-32D3-4499-B922-01E5A3A95C1F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharing.Agents.Printer", "Agents\Sharing.Agents.Printer\Sharing.Agents.Printer.csproj", "{4C1E2C88-5DC6-484B-9227-29F826DEEEC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharing.Agent.Delivery", "Agents\Sharing.Agent.Delivery\Sharing.Agent.Delivery.csproj", "{9752D4F6-38DB-4E89-93CE-9CBA0EE90809}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +65,18 @@ Global
 		{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C1E2C88-5DC6-484B-9227-29F826DEEEC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C1E2C88-5DC6-484B-9227-29F826DEEEC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C1E2C88-5DC6-484B-9227-29F826DEEEC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C1E2C88-5DC6-484B-9227-29F826DEEEC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9752D4F6-38DB-4E89-93CE-9CBA0EE90809}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9752D4F6-38DB-4E89-93CE-9CBA0EE90809}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9752D4F6-38DB-4E89-93CE-9CBA0EE90809}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9752D4F6-38DB-4E89-93CE-9CBA0EE90809}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +87,9 @@ Global
 		{D9594DF4-C416-402A-9346-2C60D9B95F25} = {5EF2BB8E-72DA-4A13-A7AB-03A5F8BAC78D}
 		{B8D1B4B9-E3E2-4910-A6F3-75FC5A726B62} = {15E51319-FB13-43BF-9FFE-F319320E9491}
 		{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7} = {F9364E31-41CC-4193-91B1-FE340F2F972D}
+		{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E} = {F9364E31-41CC-4193-91B1-FE340F2F972D}
+		{4C1E2C88-5DC6-484B-9227-29F826DEEEC4} = {DCFFB5D5-32D3-4499-B922-01E5A3A95C1F}
+		{9752D4F6-38DB-4E89-93CE-9CBA0EE90809} = {DCFFB5D5-32D3-4499-B922-01E5A3A95C1F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {486C7E1F-A769-448F-BDC7-9C877CF27FC8}

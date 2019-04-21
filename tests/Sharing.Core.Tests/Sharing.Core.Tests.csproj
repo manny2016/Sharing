@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\sharing.core.service\sharing.core.services.csproj" />
-    <ProjectReference Include="..\..\Sharing.Core\sharing.core.csproj" />
+    <ProjectReference Include="..\..\sharing.core.service\Sharing.Core.Services.csproj" />
+    <ProjectReference Include="..\..\Sharing.Core\Sharing.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -20,4 +20,11 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Utilities\Tencent\Cloud\" />
+    <Folder Include="Utilities\Tencent\WeChat\Auth\" />
+    <Folder Include="Utilities\Tencent\WeChat\CardCoupon\" />
+    <Folder Include="Utilities\Tencent\WeChat\Pay\" />
+  </ItemGroup>
+
 </Project>
