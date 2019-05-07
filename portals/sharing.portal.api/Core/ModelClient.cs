@@ -415,5 +415,35 @@ FROM `sharing-uat`.`sharing_product` AS products WHERE products.`Id` = @id;";
                 return result;
             }
         }
+
+        public void Test()
+        {
+            var result = wxapi.SendRedpack(new WxApp()
+            {
+                AppId = "wx20da9548445a2ca7",
+                AppType = AppTypes.Official,
+                OriginalId = "gh_085392ac0d21",
+                Secret = "6be5c3202dfd0d074851615588596e6c"
+            }, "EA62B75D5D3941C3A632B8F18C7B3575",
+             new Redpack(nonce_str: generator.Genernate(),
+             mch_billno: string.Format("1520961881{0}", DateTime.Now.ToString("yyyyMMddHHmmss")),
+             mch_id: "1520961881",
+             wxappid: "wx20da9548445a2ca7",
+             send_name: "东坡区丽群奶茶店",
+             re_openid: "o18KQ54oC3bWFss8Zzk__G8CW9TU",
+             total_amount: 100,
+             total_num: 1,
+             wishing: "感谢你的推荐,请收下这笔推广佣金!",
+             client_ip: "49.76.219.137", act_name: "推广赚佣金", remark: "来自柠檬工坊东坡里店的推广佣金"));
+        }
+        public void QueryWxUsers()
+        {
+            wxapi.QueryAllWxUsers(new WxApp()
+            {
+                AppId = "wx20da9548445a2ca7",
+                Secret = "6be5c3202dfd0d074851615588596e6c",
+                OriginalId = "gh_085392ac0d21"
+            }).ToList();
+        }
     }
 }

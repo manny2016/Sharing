@@ -242,6 +242,26 @@ namespace Sharing.Core
             .OrderBy(o => o.name);//必须对参数排序否则签名不正确
             return string.Join("&", @params.Select(o => string.Format("{0}={1}", o.name, o.value)));
         }
+        public static string PrepareSign(this Redpack redpack)
+        {
+            var sorted = new SortedDictionary<string, string>();
+            sorted.Add("nonce_str", redpack.NonceStr.Value);
+            sorted.Add("mch_billno", redpack.MchBillno.Value);
+            sorted.Add("mch_id", redpack.MchId.Value);
+            sorted.Add("wxappid", redpack.WxAppId.Value);
+            sorted.Add("send_name", redpack.SendName.Value);
+            sorted.Add("re_openid", redpack.ReOpenId.Value);
+            sorted.Add("total_amount", redpack.TotalAmount.Value);
+            sorted.Add("total_num", redpack.TotalNum.Value);
+            sorted.Add("wishing", redpack.Wishing.Value);
+            sorted.Add("client_ip", redpack.ClientIP.Value);
+            sorted.Add("act_name", redpack.ActName.Value);
+            sorted.Add("remark", redpack.Remark.Value);            
+            return string.Join("&", sorted.OrderBy(ctx => ctx.Key).Select((ctx) =>
+            {
+                  return string.Format("{0}={1}", ctx.Key, ctx.Value);
+            }));
+        }
         public static string MakeSign(this WxPayData data, string payKey)
         {
             //转url格式
@@ -257,6 +277,7 @@ namespace Sharing.Core
             str += "&key=" + paykey;
             return MakeSign(str, data.SignType, paykey);
         }
+
         public static string MakeSign(this string plaintext, string signType, string payKey)
         {
             if (signType == WxPayData.SIGN_TYPE_MD5)
@@ -305,11 +326,11 @@ namespace Sharing.Core
         }
 
         public static WxPayData GenerateUnifiedWxPayData(
-            this TopupContext context, 
-            string mchid, 
-            string outTradeNo, 
-            string payKey, 
-            string noceStr, 
+            this TopupContext context,
+            string mchid,
+            string outTradeNo,
+            string payKey,
+            string noceStr,
             string signature)
         {
             var data = new WxPayData()

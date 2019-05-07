@@ -5,6 +5,7 @@ namespace Sharing.Core
 {
     using Sharing.WeChat.Models;
     using Newtonsoft.Json.Linq;
+    using System.Collections.Generic;
 
     public interface IWeChatApi
     {
@@ -60,7 +61,7 @@ namespace Sharing.Core
         WxPayParameter Unifiedorder(WxPayData data, string mchid);
 
         string GenerateSignForApplyMCard(
-            IWxApp official,           
+            IWxApp official,
             IWxApp miniprogram,
             string cardid,
             long timestamp,
@@ -92,5 +93,12 @@ namespace Sharing.Core
         /// <param name="cardId">卡券Id</param>
         /// <returns></returns>
         NormalWxResponse DeleteCardCoupon(IWxApp official, IWxMCardId cardId);
+        /// <summary>
+        /// 发放现金红包
+        /// </summary>
+        /// <param name="official"></param>
+        RedpackResponse SendRedpack(IWxApp official, string payKey, Redpack redpack);
+
+        IEnumerable<WeChatUserInfo> QueryAllWxUsers(IWxApp official);
     }
 }

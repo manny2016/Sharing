@@ -24,7 +24,7 @@ namespace Sharing.Core.Services
 
         private readonly IMemoryCache cache;
         private readonly IRandomGenerator generator;
-        public WeChatApiService(IMemoryCache cache,IRandomGenerator generator)
+        public WeChatApiService(IMemoryCache cache, IRandomGenerator generator)
         {
             this.cache = cache;
             this.generator = generator;
@@ -51,7 +51,7 @@ namespace Sharing.Core.Services
             //        return token.Token;
             //    });
         }
-        private string GetToken(string appid, string secret, bool forApiTicket=false)
+        private string GetToken(string appid, string secret, bool forApiTicket = false)
         {
             return this.cache.GetOrCreate<string>(
                 string.Format("Token_{0}_{1}", appid, forApiTicket ? "yes" : "no"),
@@ -192,7 +192,7 @@ namespace Sharing.Core.Services
                 }
                 return http;
             }).DeserializeFromXml<WeChatUnifiedorderResponse>();
-            return new WxPayParameter(order,this.generator);
+            return new WxPayParameter(order, this.generator);
         }
 
 
@@ -331,6 +331,45 @@ namespace Sharing.Core.Services
                 }
                 return http;
             });
+        }
+
+        public RedpackResponse SendRedpack(IWxApp official, string payKey, Redpack redpack)
+        {
+            var url = "https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack";
+            var sign = string.Concat(redpack.PrepareSign(), $"&key={payKey}").MakeSign(WxPayData.SIGN_TYPE_MD5, payKey);
+            redpack.SetSign(sign);
+            var xml = redpack.SerializeToXml();
+            var result = url.GetUriContentDirectly((http) =>
+            {
+                http.Method = "POST";
+                http.ContentType = "text/xml";
+                var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+                store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly|OpenFlags.MaxAllowed);                
+                var cert = store.Certificates.Find(X509FindType.FindByIssuerName, "MmpaymchCA", false);
+                http.ClientCertificates.Add(cert[0]);
+                using (var stream = http.GetRequestStream())
+                {
+                    var body = redpack.SerializeToXml();
+                    var buffers = UTF8Encoding.UTF8.GetBytes(body);
+                    stream.Write(buffers, 0, buffers.Length);
+                    stream.Flush();
+                }
+                return http;
+            });
+            return new RedpackResponse();
+        }
+
+        public IEnumerable<WeChatUserInfo> QueryAllWxUsers(IWxApp official)
+        {
+            var list = $"https://api.weixin.qq.com/cgi-bin/user/get?access_token={this.GetToken(official.AppId, official.Secret)}"
+                .GetUriJsonContent<QueryWxUserListResponse>();
+            foreach (var openid in list.Data.OpenIds)
+            {
+                var data = $"https://api.weixin.qq.com/cgi-bin/user/info?access_token={this.GetToken(official.AppId, official.Secret)}&openid={openid}&lang=zh_CN"
+                      .GetUriJsonContent<WeChatUserInfo>();
+                Logger.Info(data);
+            }
+            return Enumerable.Empty<WeChatUserInfo>();
         }
     }
 }

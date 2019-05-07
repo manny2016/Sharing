@@ -5,6 +5,9 @@ namespace Sharing.WeChat.Models
     using Newtonsoft.Json;
     public class WeChatUserInfo
     {        
+        
+        [JsonProperty("subscribe")]
+        public bool Subscribe { get; set; }
 
         [JsonProperty("openid")]
         public string OpenId { get; set; }
