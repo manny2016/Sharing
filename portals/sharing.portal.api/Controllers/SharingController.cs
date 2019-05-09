@@ -48,6 +48,8 @@ namespace Sharing.Portal.Api
         [HttpPost]
         public bool UpgradeSharedPyramid(SharingContext context)
         {
+            if (context.Current == null || context.SharedBy == null) return false;
+
             if (context.SharedBy.AppId != context.Current.AppId)
                 throw new ArgumentNullException("Current.AppId must be equals to SharedBy.AppId ");
 
@@ -225,7 +227,7 @@ namespace Sharing.Portal.Api
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             this.Response.Body.Write(
                (string.IsNullOrEmpty(environmentName) ? "environment is null" : environmentName).ToBytes());
-            client.Test();
+            //client.Test();
             //client.QueryWxUsers();
             //
         }

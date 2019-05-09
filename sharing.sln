@@ -25,13 +25,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Core.Services", "sh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Portal.Api", "portals\sharing.portal.api\Sharing.Portal.Api.csproj", "{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharing.Potral.Web", "portals\Sharing.Potral.Web\Sharing.Potral.Web.csproj", "{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Potral.Web", "portals\Sharing.Potral.Web\Sharing.Potral.Web.csproj", "{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agents", "Agents", "{DCFFB5D5-32D3-4499-B922-01E5A3A95C1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharing.Agents.Printer", "Agents\Sharing.Agents.Printer\Sharing.Agents.Printer.csproj", "{4C1E2C88-5DC6-484B-9227-29F826DEEEC4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharing.Agent.Synchronizer", "Agents\Sharing.Agent.Synchronizer\Sharing.Agent.Synchronizer.csproj", "{BD5BB0E6-5E75-4C80-9B09-10C1F0C9F5BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharing.Agent.Delivery", "Agents\Sharing.Agent.Delivery\Sharing.Agent.Delivery.csproj", "{9752D4F6-38DB-4E89-93CE-9CBA0EE90809}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharing.Agent.Delivery", "Agents\Sharing.Agent.Delivery\Sharing.Agent.Delivery.csproj", "{42EE86A9-19FD-4F59-9EFC-FD8CFC957661}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,14 +69,14 @@ Global
 		{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C1E2C88-5DC6-484B-9227-29F826DEEEC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C1E2C88-5DC6-484B-9227-29F826DEEEC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C1E2C88-5DC6-484B-9227-29F826DEEEC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C1E2C88-5DC6-484B-9227-29F826DEEEC4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9752D4F6-38DB-4E89-93CE-9CBA0EE90809}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9752D4F6-38DB-4E89-93CE-9CBA0EE90809}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9752D4F6-38DB-4E89-93CE-9CBA0EE90809}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9752D4F6-38DB-4E89-93CE-9CBA0EE90809}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD5BB0E6-5E75-4C80-9B09-10C1F0C9F5BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD5BB0E6-5E75-4C80-9B09-10C1F0C9F5BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD5BB0E6-5E75-4C80-9B09-10C1F0C9F5BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD5BB0E6-5E75-4C80-9B09-10C1F0C9F5BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42EE86A9-19FD-4F59-9EFC-FD8CFC957661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42EE86A9-19FD-4F59-9EFC-FD8CFC957661}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42EE86A9-19FD-4F59-9EFC-FD8CFC957661}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42EE86A9-19FD-4F59-9EFC-FD8CFC957661}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,8 +88,8 @@ Global
 		{B8D1B4B9-E3E2-4910-A6F3-75FC5A726B62} = {15E51319-FB13-43BF-9FFE-F319320E9491}
 		{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7} = {F9364E31-41CC-4193-91B1-FE340F2F972D}
 		{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E} = {F9364E31-41CC-4193-91B1-FE340F2F972D}
-		{4C1E2C88-5DC6-484B-9227-29F826DEEEC4} = {DCFFB5D5-32D3-4499-B922-01E5A3A95C1F}
-		{9752D4F6-38DB-4E89-93CE-9CBA0EE90809} = {DCFFB5D5-32D3-4499-B922-01E5A3A95C1F}
+		{BD5BB0E6-5E75-4C80-9B09-10C1F0C9F5BF} = {DCFFB5D5-32D3-4499-B922-01E5A3A95C1F}
+		{42EE86A9-19FD-4F59-9EFC-FD8CFC957661} = {DCFFB5D5-32D3-4499-B922-01E5A3A95C1F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {486C7E1F-A769-448F-BDC7-9C877CF27FC8}

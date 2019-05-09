@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Sharing.Agents.Printer
+namespace Sharing.Agent.Synchronizer
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            
         }
     }
 }
