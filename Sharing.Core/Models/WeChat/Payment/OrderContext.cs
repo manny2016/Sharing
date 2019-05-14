@@ -5,8 +5,9 @@ namespace Sharing.Core.Models
     using Newtonsoft.Json;
     public class OrderContext : IMchId, IWxUserKey
     {
-        [JsonProperty("appid")]
-        public string AppId { get; set; }
+        [JsonProperty("delivery")] public DeliveryTypes Delivery { get; set; }
+
+        [JsonProperty("appid")]public string AppId { get; set; }
 
         public long MchId { get; set; }
 
@@ -25,10 +26,16 @@ namespace Sharing.Core.Models
                 return null;
             }
         }
+        /// <summary>
+        /// 派送费
+        /// </summary>
+        [JsonProperty("fare")]
+        public string Fare { get; set; }
+
         [JsonProperty("openid")]
         public string OpenId { get; set; }
 
-        [JsonProperty("address")]
+        [JsonProperty("addrdetail")]
         public string Address { get; set; }
 
         [JsonProperty("customer")]

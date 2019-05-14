@@ -5,7 +5,7 @@ namespace Sharing.Core.Configuration
     public class DberverConfigurationSection : ConfigurationSection
     {
         public const string SectionName = "dbConfigSection";
-        private static DberverConfigurationSection instance = null;
+        //private static DberverConfigurationSection instance = null;
         public static DberverConfigurationSection GetInstance()
         {
             var configuration = ConfigurationManager.OpenExeConfiguration( ConfigurationUserLevel.None);

@@ -14,7 +14,7 @@ namespace Sharing.Portal.Api
     using Newtonsoft.Json.Linq;
     using System.Text;
     using Dapper;
-
+    using Sharing.Core.CMQ;
     public class ModelClient
     {
         private readonly IWeChatApi wxapi;
@@ -25,6 +25,7 @@ namespace Sharing.Portal.Api
         private readonly IMCardService mCardService;
         private readonly IWeChatMsgHandler handler;
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(ModelClient));
+        private static readonly TencentCMQClient<OnlineOrder> cmqclient = TencentCMQClientFactory.Create<OnlineOrder>("lemon");
         public ModelClient(
             IWeChatApi api,
             IWeChatUserService wxUserService,
@@ -44,8 +45,11 @@ namespace Sharing.Portal.Api
         }
         public WeChatUserModel Register(RegisterWeChatUserContext context)
         {
+            var info = (WeChatUserInfo)null;
+            info = context.WxChatUser.OpenId == null
+                ? this.wxapi.Decrypt<WeChatUserInfo>(context.Data, context.IV, context.SessionKey)
+                : context.WxChatUser;
 
-            var info = this.wxapi.Decrypt<WeChatUserInfo>(context.Data, context.IV, context.SessionKey);
             var membership = wxUserService.Register(new Core.Models.RegisterWxUserContext()
             {
                 AppType = AppTypes.Miniprogram,
@@ -62,8 +66,8 @@ namespace Sharing.Portal.Api
                 UnionId = info.UnionId,
                 Id = membership.Id ?? 0,
                 AppId = membership.AppId,
-                MchId = membership.MchId ?? 0
-
+                MchId = membership.MchId ?? 0,
+                RewardMoney = ((membership.RewardMoney ?? 0) / 100).ToString("0.00")
             };
         }
 
@@ -164,6 +168,8 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
         {
             ////P3 Need to query from cache.
             var payment = this.weChatPayService.GetPayment(context.AppId);
+            var merchant = this.sharingHostService.MerchantDetails.FirstOrDefault(o => o.MCode.Equals(context.MCode));
+            context.MchId = merchant.Id;
             var trade = this.weChatPayService.PrepareUnifiedorder(context, out WxPayAttach attach);
             var data = context.GenerateUnifiedWxPayData(
                        payment.MchId.ToString(),
@@ -254,7 +260,13 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
                     parameters.Add("p_WxUserId", pyarmid.Id, System.Data.DbType.Int64);
                     parameters.Add("p_RewardMoney", trade.Money * 0.1, System.Data.DbType.Int32);
                     parameters.Add("p_MchId", pyarmid.MchId, System.Data.DbType.Int64);
+                    parameters.Add("o_Details", null, System.Data.DbType.String, System.Data.ParameterDirection.Output);
+                    parameters.Add("o_Code", null, System.Data.DbType.Int32, System.Data.ParameterDirection.Output);
                     database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure, true);
+                    var details = parameters.Get<string>("o_Details");
+                    var code = parameters.Get<int>("o_Code");
+                    cmqclient.Push(new OnlineOrder[] { details.DeserializeToObject<OrderContext>().Convert(code) });
+
                 }
 
             }

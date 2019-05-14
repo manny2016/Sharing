@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>Sharing.Core.Services</RootNamespace>
-    <AssemblyName>sharing.core.services</AssemblyName>
+    <AssemblyName>Sharing.Core.Services</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

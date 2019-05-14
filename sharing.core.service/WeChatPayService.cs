@@ -21,12 +21,14 @@ namespace Sharing.Core.Services
 
         public Trade PrepareUnifiedorder(TopupContext context, out WxPayAttach attach)
         {
-
+            
             var queryString = @"
     INSERT INTO 
-    `sharing_trade`(WxUserId,WxOrderId,TradeId,TradeType,TradeState,Money,RealMoney,CreatedTime,Attach, Strategy)
+    `sharing_trade`(MchId,WxUserId,Code,WxOrderId,TradeId,TradeType,TradeState,Money,RealMoney,CreatedTime,Attach, Strategy)
     SELECT 
+    @pMchId,
     (SELECT WxUserId FROM `sharing_wxuser_identity` WHERE AppId=@pAppId AND OpenId=@pOpenId LIMIT 1) AS WxUserId,
+    (SELECT COUNT(Id) + 1 FROM sharing_trade WHERE DATE(DATE_ADD('1970-01-01',INTERVAL CreatedTime SECOND)) = CURDATE()) AS `Code`,
     @pWxOrderId AS WxOrderId,
     @pTradeId AS TradeId,
     'Recharge' AS TradeType,
@@ -56,6 +58,7 @@ namespace Sharing.Core.Services
                 return database.SqlQuerySingleOrDefaultTransaction<Trade>(queryString, new
                 {
                     pAppId = context.AppId,
+                    pMchId = context.MchId,
                     pOpenId = context.OpenId,
                     pWxOrderId = Guid.NewGuid().ToString().Replace("-", string.Empty),
                     pTradeId = Guid.NewGuid().ToString().Replace("-", string.Empty),
@@ -93,9 +96,11 @@ namespace Sharing.Core.Services
         {
             var queryString = @"
     INSERT INTO 
-    `sharing_trade`(WxUserId,WxOrderId,TradeId,TradeType,TradeState,Money,RealMoney,CreatedTime,Attach, Strategy)
+    `sharing_trade`(MchId,WxUserId,`Code`,WxOrderId,TradeId,TradeType,TradeState,Money,RealMoney,CreatedTime,Attach, Strategy)
     SELECT 
+    @pMchId,
     (SELECT WxUserId FROM `sharing_wxuser_identity` WHERE AppId=@pAppId AND OpenId=@pOpenId LIMIT 1) AS WxUserId,
+    (SELECT COUNT(Id) + 1 FROM sharing_trade WHERE DATE(DATE_ADD('1970-01-01',INTERVAL CreatedTime SECOND)) = CURDATE()) AS `Code`,
     @pWxOrderId AS WxOrderId,
     @pTradeId AS TradeId,
     'Consume' AS TradeType,
@@ -126,6 +131,7 @@ namespace Sharing.Core.Services
                 {
                     pAppId = context.AppId,
                     pOpenId = context.OpenId,
+                    pMchId = context.MchId,
                     pWxOrderId = Guid.NewGuid().ToString().Replace("-", string.Empty),
                     pTradeId = Guid.NewGuid().ToString().Replace("-", string.Empty),
                     pMoney = context.Totalfee,

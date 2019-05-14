@@ -5,7 +5,7 @@ namespace Sharing.WeChat.Models
 {
     using Newtonsoft.Json;
     using Sharing.Core;
-    public class TopupContext : IWxUserOpenId, IWxAppId, IWxCardCode, IWxMCardId, IMCode
+    public class TopupContext : IWxUserOpenId, IWxAppId, IWxCardCode, IWxMCardId, IMCode,IMchId
     {
 
 
@@ -21,5 +21,6 @@ namespace Sharing.WeChat.Models
         public string CardId { get; set; }        
 
         public string MCode { get; set; }
+        public long MchId { get; set; }
     }
 }

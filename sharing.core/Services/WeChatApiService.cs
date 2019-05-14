@@ -103,7 +103,7 @@ namespace Sharing.Core.Services
         public SessionWxResponse GetSession(JSCodeApiToken token)
         {
             return this.cache.GetOrCreate<SessionWxResponse>(
-              string.Format("Session_{0}_{1}", token.AppId,token.Code),
+              string.Format("Session_{0}", token.AppId),
               (entity) =>
               {
                       var url = string.Format("https://api.weixin.qq.com/sns/jscode2session?appid={0}&js_code={1}&secret={2}&grant_type=authorization_code",

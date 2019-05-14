@@ -14,7 +14,7 @@ namespace Sharing.Core
         {
 
         }
-
+        
         public const string DefaultDatabase = "sharing-uat";
         public static IDatabase GenerateDatabase(string database, bool isWrite)
         {
@@ -36,41 +36,7 @@ namespace Sharing.Core
                 }
                 return section.SlaveDatabaseServers[idx].GenerateDatabase(database);
             }
-        }
-        //public static IServiceCollection CreateServiceCollection(Action<IServiceCollection> registry = null)
-        //{
-        //    var collection = new ServiceCollection();
-        //    collection.AddMemoryCache()
-        //        .AddLogging()
-        //        .AddWeChatApiService()
-        //        .AddRandomGenerator();
-        //    if (registry != null)
-        //    {
-        //        registry(collection);
-        //    }
-        //    return collection;
-        //}
-
-        //private static IServiceProvider provider;
-        //private static object lockObj = new object();
-        //public static IServiceProvider CreateServiceProvider(Action<IServiceCollection> registry = null)
-        //{
-        //    lock (lockObj)
-        //    {
-        //        if (provider == null)
-        //        {
-        //            lock (lockObj)
-        //            {
-        //                if (provider == null)
-        //                {
-        //                    provider = CreateServiceCollection(registry)
-        //                        .BuildServiceProvider();
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return provider;
-        //}
+        }     
     }
 
 
@@ -81,6 +47,11 @@ namespace Sharing.Core
         public const int SMSAppId = 1400108197;
         public const string SMSAppKey = "1add466d18076fcbb47e0e3b28e55490";
 
+        public const string CloudAPI_SecrectId = "AKIDRju17pcex48CFD9YoX2UkpiNn7lHwVnw";
+        public const string CloudAPI_SecretKey = "A9DVbFi05yQnJdVv8IMBpZDsMft1xy75";
+        public const string CloudAPI_APPID = "1256489221";
+        public const string CloudAPI_CMQ__TOPIC_ENDPOINT = "https://cmq-topic-cd.api.qcloud.com";
+        public const string CloudAPI_CMQ_QUEUE_ENDPOINT = "https://cmq-queue-cd.api.qcloud.com";
         public const int AllowSharedPyramidLevel = 2;
     }
 }
