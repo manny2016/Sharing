@@ -22,7 +22,7 @@ namespace Sharing.Core.Services
         public Trade PrepareUnifiedorder(TopupContext context, out WxPayAttach attach)
         {
             
-            var queryString = @"
+            var queryString = $@"
     INSERT INTO 
     `sharing_trade`(MchId,WxUserId,Code,WxOrderId,TradeId,TradeType,TradeState,Money,RealMoney,CreatedTime,Attach, Strategy)
     SELECT 
@@ -32,7 +32,7 @@ namespace Sharing.Core.Services
     @pWxOrderId AS WxOrderId,
     @pTradeId AS TradeId,
     'Recharge' AS TradeType,
-    'Waiting' AS TradeState,
+    {(int)TradeStates.Newly} AS TradeState,
     @pMoney AS Money,
     @pRealMoney AS RealMoney,
     @pCreatedTime AS CreatedTime,
@@ -94,7 +94,7 @@ namespace Sharing.Core.Services
 
         public Trade PrepareUnifiedorder(OrderContext context, out WxPayAttach attach)
         {
-            var queryString = @"
+            var queryString = $@"
     INSERT INTO 
     `sharing_trade`(MchId,WxUserId,`Code`,WxOrderId,TradeId,TradeType,TradeState,Money,RealMoney,CreatedTime,Attach, Strategy)
     SELECT 
@@ -104,7 +104,7 @@ namespace Sharing.Core.Services
     @pWxOrderId AS WxOrderId,
     @pTradeId AS TradeId,
     'Consume' AS TradeType,
-    'Waiting' AS TradeState,
+    {(int)TradeStates.HavePay} AS TradeState,
     @pMoney AS Money,
     @pRealMoney AS RealMoney,
     @pCreatedTime AS CreatedTime,
@@ -123,8 +123,10 @@ namespace Sharing.Core.Services
                 //UserCode = context.UserCode,
                 //MCode = context.MCode
             };
+            
             //context.Money = context.Totalfee.ToString();
             attach.Sign(context.Totalfee ?? 0);
+            
             using (var database = SharingConfigurations.GenerateDatabase(true))
             {
                 return database.SqlQuerySingleOrDefaultTransaction<Trade>(queryString, new

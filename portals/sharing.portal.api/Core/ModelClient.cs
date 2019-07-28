@@ -219,7 +219,7 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
                 Guard.ArgumentNotNull(trade, "trade");
                 if (trade.Money != notification.TotalFee)////P1 TODO: need change to sign verify.
                     throw new WeChatPayException("There is a error happend on transaction to verify.(pay money)");
-                if (trade.TradeState != TradeStates.Waiting)
+                if (trade.TradeState != TradeStates.Newly)
                     throw new WeChatPayException("Only Waitting status pay order can be modify.");
                 var pyarmid = (ISharedPyramid)null;
                 string cardid = string.Empty;
@@ -260,12 +260,13 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
                     parameters.Add("p_WxUserId", pyarmid.Id, System.Data.DbType.Int64);
                     parameters.Add("p_RewardMoney", trade.Money * 0.1, System.Data.DbType.Int32);
                     parameters.Add("p_MchId", pyarmid.MchId, System.Data.DbType.Int64);
+                    parameters.Add("p_state", (int)TradeStates.AckPay, System.Data.DbType.Int32);
                     parameters.Add("o_Details", null, System.Data.DbType.String, System.Data.ParameterDirection.Output);
                     parameters.Add("o_Code", null, System.Data.DbType.Int32, System.Data.ParameterDirection.Output);
                     database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure, true);
                     var details = parameters.Get<string>("o_Details");
                     var code = parameters.Get<int>("o_Code");
-                    cmqclient.Push(new OnlineOrder[] { details.DeserializeToObject<OrderContext>().Convert(code) });
+                    cmqclient.Push(new OnlineOrder[] { details.DeserializeToObject<OrderContext>().Convert(trade.TradeId, code) });
 
                 }
 
@@ -456,6 +457,20 @@ FROM `sharing-uat`.`sharing_product` AS products WHERE products.`Id` = @id;";
                 Secret = "6be5c3202dfd0d074851615588596e6c",
                 OriginalId = "gh_085392ac0d21"
             }).ToList();
+        }
+        public OnlineOrder[] QueryOnlineOrders(OnineOrderQueryFilter filter)
+        {
+
+            using (var database = SharingConfigurations.GenerateDatabase(false))
+            {
+                var queryString = string.Concat("SELECT TradeId,Code,Attach FROM sharing_trade ", filter.GenernateWhereCase());
+                var results = database.SqlQuery<TradeDetails>(queryString);
+                if (results == null || results.Count().Equals(0)) return new OnlineOrder[] { };
+                return results.Select((ctx) =>
+                {
+                    return ctx.Attach.DeserializeToObject<OrderContext>().Convert(ctx.TradeId, ctx.Code);
+                }).ToArray();
+            }
         }
     }
 }

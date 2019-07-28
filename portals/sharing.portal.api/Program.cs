@@ -9,11 +9,12 @@ namespace Sharing.Portal.Api
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Sharing.Core;
     using Sharing.Core.Services;
     using Microsoft.Extensions.Caching;
-    using Microsoft.Extensions.DependencyInjection;
+    
     using System.Xml;
     using System.Reflection;
     using Sharing.WeChat.Models;
@@ -23,10 +24,6 @@ namespace Sharing.Portal.Api
         public static IWebHostBuilder builder;
         public static void Main(string[] args)
         {
-
-            
-
-
             builder = CreateWebHostBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {

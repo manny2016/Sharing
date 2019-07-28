@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4C0A82E1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "database", "database", "{15E51319-FB13-43BF-9FFE-F319320E9491}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "sharing", "database\sharing\sharing.sqlproj", "{F96C9B46-A3AD-493E-8C86-A76B1344BFB2}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Sharing", "database\Sharing\Sharing.Sqlproj", "{F96C9B46-A3AD-493E-8C86-A76B1344BFB2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Core.Tests", "tests\Sharing.Core.Tests\Sharing.Core.Tests.csproj", "{853D6543-7275-40C4-A96A-F1BBA1C570F5}"
 EndProject
@@ -19,19 +19,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "tools\Console
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{B8D1B4B9-E3E2-4910-A6F3-75FC5A726B62}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "portals", "portals", "{F9364E31-41CC-4193-91B1-FE340F2F972D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Portals", "Portals", "{F9364E31-41CC-4193-91B1-FE340F2F972D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Core.Services", "sharing.core.service\Sharing.Core.Services.csproj", "{20A67B19-086E-4AEE-AF38-43D8791BB2BE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Portal.Api", "portals\sharing.portal.api\Sharing.Portal.Api.csproj", "{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Portal.Api", "Portals\Sharing.Portal.Api\Sharing.Portal.Api.csproj", "{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Potral.Web", "portals\Sharing.Potral.Web\Sharing.Potral.Web.csproj", "{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Potral.Web", "Portals\Sharing.Potral.Web\Sharing.Potral.Web.csproj", "{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agents", "Agents", "{DCFFB5D5-32D3-4499-B922-01E5A3A95C1F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharing.Agent.Synchronizer", "Agents\Sharing.Agent.Synchronizer\Sharing.Agent.Synchronizer.csproj", "{BD5BB0E6-5E75-4C80-9B09-10C1F0C9F5BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharing.Agent.Delivery", "Agents\Sharing.Agent.Delivery\Sharing.Agent.Delivery.csproj", "{8182065C-DBCE-4502-ABB4-CC4FBB102F83}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharing.Agent.Delivery", "Agents\Sharing.Agent.Delivery\Sharing.Agent.Delivery.csproj", "{0C7A462B-5B30-44C0-AD6C-4934524681BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,10 +73,10 @@ Global
 		{BD5BB0E6-5E75-4C80-9B09-10C1F0C9F5BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD5BB0E6-5E75-4C80-9B09-10C1F0C9F5BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD5BB0E6-5E75-4C80-9B09-10C1F0C9F5BF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8182065C-DBCE-4502-ABB4-CC4FBB102F83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8182065C-DBCE-4502-ABB4-CC4FBB102F83}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8182065C-DBCE-4502-ABB4-CC4FBB102F83}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8182065C-DBCE-4502-ABB4-CC4FBB102F83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C7A462B-5B30-44C0-AD6C-4934524681BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C7A462B-5B30-44C0-AD6C-4934524681BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C7A462B-5B30-44C0-AD6C-4934524681BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C7A462B-5B30-44C0-AD6C-4934524681BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,7 +89,7 @@ Global
 		{725A90CB-56DD-41F3-8C05-ABEA1F6CF4D7} = {F9364E31-41CC-4193-91B1-FE340F2F972D}
 		{DB0C6097-F7F6-42DC-9284-9AEC7451CB1E} = {F9364E31-41CC-4193-91B1-FE340F2F972D}
 		{BD5BB0E6-5E75-4C80-9B09-10C1F0C9F5BF} = {DCFFB5D5-32D3-4499-B922-01E5A3A95C1F}
-		{8182065C-DBCE-4502-ABB4-CC4FBB102F83} = {DCFFB5D5-32D3-4499-B922-01E5A3A95C1F}
+		{0C7A462B-5B30-44C0-AD6C-4934524681BC} = {DCFFB5D5-32D3-4499-B922-01E5A3A95C1F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {486C7E1F-A769-448F-BDC7-9C877CF27FC8}

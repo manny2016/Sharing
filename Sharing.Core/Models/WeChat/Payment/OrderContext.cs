@@ -7,7 +7,7 @@ namespace Sharing.Core.Models
     {
         [JsonProperty("delivery")] public DeliveryTypes Delivery { get; set; }
 
-        [JsonProperty("appid")]public string AppId { get; set; }
+        [JsonProperty("appid")] public string AppId { get; set; }
 
         public long MchId { get; set; }
 
@@ -55,6 +55,7 @@ namespace Sharing.Core.Models
         public long Id { get; set; }
         [JsonProperty("remarks")]
         public string Remarks { get; set; }
+     
     }
     public class OrderDetail
     {

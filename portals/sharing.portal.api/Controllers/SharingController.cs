@@ -319,6 +319,19 @@ namespace Sharing.Portal.Api
             Guard.ArgumentNotNull(key.Id, "key");
             return client.GetProductDetails(key.Id);
         }
+        [Route("api/sharing/QueryOnlineOrders")]
+        [HttpPost]
+        public OnlineOrder[] QueryOnlineOrders(OnineOrderQueryFilter filter)
+        {
+            if (filter.Keys == null || filter.Keys.Length.Equals(0))
+            {
+                filter.Start = filter.Start ?? DateTime.Now.Date;
+                filter.End = filter.End ?? DateTime.Now.Date.AddDays(1);
+            }
 
+            filter.Type = filter.Type ?? TradeTypes.Consume;
+            filter.State = filter.State ?? TradeStates.AckPay;
+            return client.QueryOnlineOrders(filter);
+        }
     }
 }

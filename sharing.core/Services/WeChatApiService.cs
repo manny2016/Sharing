@@ -106,9 +106,9 @@ namespace Sharing.Core.Services
               string.Format("Session_{0}", token.AppId),
               (entity) =>
               {
-                      var url = string.Format("https://api.weixin.qq.com/sns/jscode2session?appid={0}&js_code={1}&secret={2}&grant_type=authorization_code",
-                        token.AppId, token.Code, token.Secret);
-                      return url.GetUriJsonContent<SessionWxResponse>();
+                  var url = string.Format("https://api.weixin.qq.com/sns/jscode2session?appid={0}&js_code={1}&secret={2}&grant_type=authorization_code",
+                    token.AppId, token.Code, token.Secret);
+                  return url.GetUriJsonContent<SessionWxResponse>();
               });
         }
 
@@ -348,7 +348,7 @@ namespace Sharing.Core.Services
                 http.Method = "POST";
                 http.ContentType = "text/xml";
                 var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
-                store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly|OpenFlags.MaxAllowed);                
+                store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly | OpenFlags.MaxAllowed);
                 var cert = store.Certificates.Find(X509FindType.FindByIssuerName, "MmpaymchCA", false);
                 http.ClientCertificates.Add(cert[0]);
                 using (var stream = http.GetRequestStream())
@@ -371,9 +371,32 @@ namespace Sharing.Core.Services
             {
                 var data = $"https://api.weixin.qq.com/cgi-bin/user/info?access_token={this.GetToken(official.AppId, official.Secret)}&openid={openid}&lang=zh_CN"
                       .GetUriJsonContent<WeChatUserInfo>();
-                Logger.Info(data);
+                yield return data;
             }
-            return Enumerable.Empty<WeChatUserInfo>();
+        }
+
+        public NormalWxResponse SendWeChatMessage(IWxApp official, string openid, string text)
+        {
+            var data = new CustomMessageContext()
+            {
+                MsgType = "text",
+                Text = new CustomMessageContent() { Content = text },
+                ToUser = openid
+            };
+            var url = $"https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token={this.GetToken(official.AppId, official.Secret)}";
+            return url.GetUriJsonContent<NormalWxResponse>((http) =>
+            {
+                http.Method = "POST";
+                http.ContentType = "application/json; encoding=utf-8";
+                using (var stream = http.GetRequestStream())
+                {
+                    var body = data.SerializeToJson();
+                    var buffers = UTF8Encoding.UTF8.GetBytes(body);
+                    stream.Write(buffers, 0, buffers.Length);
+                    stream.Flush();
+                }
+                return http;
+            });
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 
 namespace Sharing.Core.Models
 {
@@ -13,6 +11,9 @@ namespace Sharing.Core.Models
 
         [JsonProperty("name")]
         public string Name { get; set; }
+
+        [JsonProperty("tradeId")]
+        public string TradeId { get; set;  }
 
         [JsonProperty("address")]
         public string Address { get; set; }
@@ -58,4 +59,5 @@ namespace Sharing.Core.Models
         [JsonProperty("money")]
         public decimal Money { get; set; }
     }
+
 }

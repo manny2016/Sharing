@@ -78,7 +78,7 @@ namespace Sharing.Core.CMQ
             return subscription;
         }
 
-        public void Monitor(string[] queueNames, Action<T> notify)
+        public async Task Monitor(string[] queueNames, Action<T> notify)
         {
             Parallel.ForEach(queueNames, (name) =>
             {
@@ -106,9 +106,9 @@ namespace Sharing.Core.CMQ
             this.Cancellation.Cancel();
         }
 
-        public void Monitor(Action<T> notify)
+        public async void Monitor(Action<T> notify)
         {
-            this.Monitor(new string[] { this.Meta.QueueName }, notify);
+           await this.Monitor(new string[] { this.Meta.QueueName }, notify);
         }
         public void Push(T[] models)
         {

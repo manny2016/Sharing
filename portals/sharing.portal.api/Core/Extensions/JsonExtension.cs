@@ -7,10 +7,11 @@ namespace Sharing.Portal.Api
     using System.Linq;
     public static class JsonExtension
     {
-        public static OnlineOrder Convert(this OrderContext context, int code)
+        public static OnlineOrder Convert(this OrderContext context, string tradeid, int code)
         {
             return new OnlineOrder()
             {
+                TradeId = tradeid,
                 Code = code.ToString("000"),
                 Address = context.Address ?? string.Empty,
                 Mobile = context.Tel,
@@ -28,12 +29,12 @@ namespace Sharing.Portal.Api
                     };
                 }).ToArray(),
                 Fare = context.Fare.DecimalValue(),
-                Delivery= context.Delivery
+                Delivery = context.Delivery
             };
         }
         public static decimal? DecimalValue(this string text)
         {
-            if(decimal.TryParse(text,out decimal result))
+            if (decimal.TryParse(text, out decimal result))
             {
                 return result;
             }

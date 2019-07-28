@@ -100,5 +100,7 @@ namespace Sharing.Core
         RedpackResponse SendRedpack(IWxApp official, string payKey, Redpack redpack);
 
         IEnumerable<WeChatUserInfo> QueryAllWxUsers(IWxApp official);
+
+        NormalWxResponse SendWeChatMessage(IWxApp official,string openid, string text);
     }
 }
