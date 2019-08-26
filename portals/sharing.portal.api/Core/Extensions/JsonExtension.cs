@@ -3,11 +3,12 @@
 
 namespace Sharing.Portal.Api
 {
+    using Sharing.Core;
     using Sharing.Core.Models;
     using System.Linq;
     public static class JsonExtension
     {
-        public static OnlineOrder Convert(this OrderContext context, string tradeid, int code)
+        public static OnlineOrder Convert(this OrderContext context, string tradeid, int code, TradeStates state)
         {
             return new OnlineOrder()
             {
@@ -29,7 +30,8 @@ namespace Sharing.Portal.Api
                     };
                 }).ToArray(),
                 Fare = context.Fare.DecimalValue(),
-                Delivery = context.Delivery
+                Delivery = context.Delivery,
+                State = state
             };
         }
         public static decimal? DecimalValue(this string text)

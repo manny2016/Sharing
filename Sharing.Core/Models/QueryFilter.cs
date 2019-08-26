@@ -26,7 +26,8 @@ namespace Sharing.Core.Models
     {
         [JsonProperty("type")]
         public TradeTypes? Type { get; set; }
-        public TradeStates? State { get; set; }
+        public TradeStates[] States { get; set; }
+        public TradeStates[] ExcludeStates { get; set; }
         public override string GenernateWhereCase()
         {
             var subcase = new List<string>();
@@ -51,9 +52,23 @@ namespace Sharing.Core.Models
             {
                 subcase.Add($"TradeType='{this.Type.ToString()}'");
             }
-            if (this.State != null)
+            if (this.States != null && this.States.Length > 0)
             {
-                subcase.Add($"TradeState & { (int)this.State }={(int)this.State}");
+                var includeStates = new List<string>();
+                foreach(var state in this.States)
+                {
+                    includeStates.Add($" TradeState & { (int)state}={(int)state}");                    
+                }
+                subcase.Add($"({string.Join(" OR ", includeStates) })");
+            }
+            if (this.ExcludeStates != null && this.ExcludeStates.Length > 0)
+            {
+                var excludeStates = new List<string>();
+                foreach (var state in this.ExcludeStates)
+                {
+                    excludeStates.Add($" TradeState & { (int)state}=0");
+                }
+                subcase.Add($"({string.Join(" OR ", excludeStates) })");
             }
             return string.Join(" AND ", subcase);
         }

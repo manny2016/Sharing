@@ -323,15 +323,24 @@ namespace Sharing.Portal.Api
         [HttpPost]
         public OnlineOrder[] QueryOnlineOrders(OnineOrderQueryFilter filter)
         {
+            Guard.ArgumentNotNull(filter, "filter");
             if (filter.Keys == null || filter.Keys.Length.Equals(0))
             {
                 filter.Start = filter.Start ?? DateTime.Now.Date;
                 filter.End = filter.End ?? DateTime.Now.Date.AddDays(1);
             }
-
-            filter.Type = filter.Type ?? TradeTypes.Consume;
-            filter.State = filter.State ?? TradeStates.AckPay;
+            filter.Type = filter.Type ?? TradeTypes.Consume;          
             return client.QueryOnlineOrders(filter);
+        }
+
+        [Route("api/sharing/UpgradeTradeState")]
+        [HttpPost]
+        public dynamic UpgradeTradeState(TradeStateContext context)
+        {
+            return new
+            {
+                state = client.UpgradeTradeState(context.TradeId, context.TradeState)
+            };
         }
     }
 }

@@ -266,7 +266,7 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
                     database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure, true);
                     var details = parameters.Get<string>("o_Details");
                     var code = parameters.Get<int>("o_Code");
-                    cmqclient.Push(new OnlineOrder[] { details.DeserializeToObject<OrderContext>().Convert(trade.TradeId, code) });
+                    cmqclient.Push(new OnlineOrder[] { details.DeserializeToObject<OrderContext>().Convert(trade.TradeId, code, TradeStates.AckPay) });
 
                 }
 
@@ -460,16 +460,28 @@ FROM `sharing-uat`.`sharing_product` AS products WHERE products.`Id` = @id;";
         }
         public OnlineOrder[] QueryOnlineOrders(OnineOrderQueryFilter filter)
         {
-
             using (var database = SharingConfigurations.GenerateDatabase(false))
             {
-                var queryString = string.Concat("SELECT TradeId,Code,Attach FROM sharing_trade ", filter.GenernateWhereCase());
+                var queryString = string.Concat("SELECT TradeId,Code,TradeState,CreatedTime,Attach FROM sharing_trade ", filter.GenernateWhereCase());
                 var results = database.SqlQuery<TradeDetails>(queryString);
                 if (results == null || results.Count().Equals(0)) return new OnlineOrder[] { };
                 return results.Select((ctx) =>
                 {
-                    return ctx.Attach.DeserializeToObject<OrderContext>().Convert(ctx.TradeId, ctx.Code);
+                    return ctx.Attach.DeserializeToObject<OrderContext>().Convert(ctx.TradeId, ctx.Code, ctx.TradeState);
                 }).ToArray();
+            }
+        }
+        public TradeStates? UpgradeTradeState(string tradeId, TradeStates state)
+        {
+            var executeSqlString = @"spUpgradeTradeState";
+            using (var database = SharingConfigurations.GenerateDatabase(true))
+            {
+                var parameters = new Dapper.DynamicParameters();
+                parameters.Add("p_tradeid", tradeId, System.Data.DbType.String);
+                parameters.Add("p_state", (int)state, System.Data.DbType.Int32);
+                parameters.Add("o_state", null, System.Data.DbType.Int32, System.Data.ParameterDirection.Output);
+                 database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure, true);
+                return parameters.Get<TradeStates>("o_state");
             }
         }
     }

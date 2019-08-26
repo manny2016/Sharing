@@ -1,15 +1,21 @@
 ﻿
-using System.Windows.Forms;
-using Sharing.Core.Models;
-using System.Linq;
-using System.Drawing.Drawing2D;
-using System.Drawing;
+
 
 namespace Sharing.Agent.Delivery.Components
 {
     using System.Windows.Forms;
+    using Sharing.Core.Models;
+    using System.Linq;
+    using System.Drawing;
+    using System.Collections.Generic;
+    using Sharing.Core;
+    using System.Text;
+    using Sharing.Agent.Delivery.Models;
+    public delegate void OnlineOrderCcompletedEventHandler(object sender, OnlineOrder order);
+
     public partial class OnlineOrderComponent : UserControl
     {
+        public event OnlineOrderCcompletedEventHandler OnlineOrderCcompletedCompleted;
         public OnlineOrder OrderContext { get; private set; }
 
         public bool Selected { get; private set; }
@@ -17,6 +23,7 @@ namespace Sharing.Agent.Delivery.Components
             : this()
         {
             this.OrderContext = context;
+
         }
         public OnlineOrderComponent()
         {
@@ -29,7 +36,7 @@ namespace Sharing.Agent.Delivery.Components
         private void OnlineOrderComponent_Click(object sender, System.EventArgs e)
         {
             this.Selected = !this.Selected;
-            this.BackColor = this.Selected ? Color.Red : Color.Green;
+            this.panel_left_side.BackColor = this.Selected ? Color.Red : Color.Green;
             this.BorderStyle = this.Selected ? BorderStyle.Fixed3D : BorderStyle.None;
             this.OnClick(e);
         }
@@ -49,6 +56,84 @@ namespace Sharing.Agent.Delivery.Components
                 {
                     return o.Money;
                 }).ToString("0.00元");
+                this.lab_state.Text = this.OrderContext.State.GenernateTradeStateString();
+
+            }
+        }
+        /// <summary>
+        /// 开始制作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tbtn_marking_Click(object sender, System.EventArgs e)
+        {
+            this.UpgradeTradeState(TradeStates.Marking);
+        }
+        /// <summary>
+        /// 制作完成,并交付
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tsbtn_done_Click(object sender, System.EventArgs e)
+        {
+            this.UpgradeTradeState(TradeStates.Ready);
+        }
+        private void UpgradeTradeState(TradeStates state)
+        {
+            var url = string.Format(Constants.API, "UpgradeTradeState");
+            var result = url.GetUriJsonContent<TradeStateResponse>((http) =>
+            {
+                var data = new
+                {
+                    TradeId = this.OrderContext.TradeId,
+                    TradeState = state
+                };
+                http.Method = "POST";
+                http.ContentType = "application/json";
+                using (var stream = http.GetRequestStream())
+                {
+                    var body = data.SerializeToJson();
+                    var buffers = UTF8Encoding.UTF8.GetBytes(body);
+                    stream.Write(buffers, 0, buffers.Length);
+                    stream.Flush();
+                }
+                return http;
+            });
+            this.lab_state.Text = result.State.GenernateTradeStateString();
+            this.OrderContext.State = result.State;
+        }
+        /// <summary>
+        /// 重新打印
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tsbtn_print_Click(object sender, System.EventArgs e)
+        {
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripButton2_Click(object sender, System.EventArgs e)
+        {
+            if ((this.OrderContext.State & TradeStates.Marking) != TradeStates.Marking &&
+                (this.OrderContext.State & TradeStates.HavePay) == TradeStates.HavePay)
+            {
+                if (MessageBox.Show("订单已支付,真的要取消吗?", "友情提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                    == DialogResult.Yes)
+                {
+                    this.UpgradeTradeState(TradeStates.Canceled);
+                    this.Parent.Controls.Remove(this);
+                }
+            }
+            else if (((this.OrderContext.State & TradeStates.Marking) == TradeStates.Marking) ||
+                ((this.OrderContext.State & TradeStates.Ready) == TradeStates.Ready))
+            {
+                this.UpgradeTradeState(TradeStates.Ready | TradeStates.Delivered);
+                this.Parent.Controls.Remove(this);
+                OnlineOrderCcompletedCompleted?.Invoke(this, this.OrderContext);
             }
         }
     }

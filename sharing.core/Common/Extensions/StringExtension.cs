@@ -8,6 +8,7 @@ namespace Sharing.Core
     using System.Linq;
     using System.Collections;
     using Sharing.WeChat.Models;
+    using System.Collections.Generic;
 
     public static class StringExtension
     {
@@ -44,6 +45,28 @@ namespace Sharing.Core
         {
             var array = new string[] { attach.NonceStr, attach.TimeStamp.ToString(), attach.UserCode??"", attach.CardId??"", money.ToString() };
             attach.Paysign = array.Sign();
+        }
+
+        public static string GenernateTradeStateString(this TradeStates state)
+        {
+            var states = new List<string>();
+            if ((state & Core.TradeStates.AckPay) == Core.TradeStates.AckPay)
+            {
+                states.Add("已支付");
+            }
+            if ((state & Core.TradeStates.Marking) == Core.TradeStates.Marking)
+            {
+                states.Add("制作中");
+            }
+            if ((state & Core.TradeStates.Ready) == Core.TradeStates.Ready)
+            {
+                states.Add("制作完成");
+            }
+            if ((state & Core.TradeStates.Delivered) == Core.TradeStates.Delivered)
+            {
+                states.Add("已交付");
+            }
+            return string.Join("|", states);
         }
     }
 }

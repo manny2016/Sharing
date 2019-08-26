@@ -28,9 +28,13 @@ namespace Sharing.Core
         /// </summary>
         Marking = 16,
         /// <summary>
+        /// 制作完成
+        /// </summary>
+        Ready = 32,
+        /// <summary>
         /// 已交付
         /// </summary>        
-        Delivered = 32,
+        Delivered = 64,
 
     }
 }

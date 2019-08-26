@@ -3,6 +3,8 @@
 namespace Sharing.Core.Models
 {
     using Newtonsoft.Json;
+    using System;
+
     public class OnlineOrder : ICMQMessageHandle
     {
         /// <summary>
@@ -13,7 +15,7 @@ namespace Sharing.Core.Models
         public string Name { get; set; }
 
         [JsonProperty("tradeId")]
-        public string TradeId { get; set;  }
+        public string TradeId { get; set; }
 
         [JsonProperty("address")]
         public string Address { get; set; }
@@ -32,15 +34,26 @@ namespace Sharing.Core.Models
 
         [JsonProperty("receiptHandle", NullValueHandling = NullValueHandling.Ignore)]
         public string ReceiptHandle { get; set; }
+
         /// <summary>
         /// 派送费
         /// </summary>
         [JsonProperty("fare")]
         public decimal? Fare { get; set; }
 
-
+        [JsonProperty("state")]
+        public TradeStates State
+        {
+            get; set;
+        }
         [JsonProperty("delivery")]
         public DeliveryTypes Delivery { get; set; }
+
+        /// <summary>
+        /// 订单创建时间
+        /// </summary>
+        [JsonProperty("createdTime")]
+        public DateTime CreatedTime { get; set; }
     }
     public class OnlineOrderItem
     {

@@ -27,6 +27,7 @@ namespace Sharing.Agent.Delivery
         private async void FrmMain_Load(object sender, EventArgs e)
         {
             this.InitializeNewOnlineOrders();
+            this.InitializeHistoryOnlineOrders();
             ThreadPool.QueueUserWorkItem((state) =>
             {
                 var client = state as TencentCMQClient<OnlineOrder>;
@@ -52,15 +53,16 @@ namespace Sharing.Agent.Delivery
                 this.flp_NewOrder.Controls.Add(new OnlineOrderComponent(model));
             }
         }
-        private async Task<OnlineOrder[]> QueryOnineOrders(TradeStates state)
+        private async Task<OnlineOrder[]> QueryOnineOrders(TradeStates[] includeStates, TradeStates[] excludeStates)
         {
-            var url = $"https://www.yourc.club/api/sharing/QueryOnlineOrders";
+            var url = string.Format(Constants.API, "QueryOnlineOrders");
             var result = url.GetUriJsonContent<OnlineOrder[]>((http) =>
             {
                 var queryFilter = new OnineOrderQueryFilter()
                 {
                     MchId = 1,
-                    State = state,
+                    States = includeStates,
+                    ExcludeStates = excludeStates,
                     Type = TradeTypes.Consume,
                     Start = DateTime.Now.AddYears(-10)
                 };
@@ -79,15 +81,36 @@ namespace Sharing.Agent.Delivery
         }
         private async void InitializeNewOnlineOrders()
         {
-            var results = await this.QueryOnineOrders(TradeStates.HavePay);
+            var results = await this.QueryOnineOrders(
+                new TradeStates[] { TradeStates.HavePay },
+                new TradeStates[] { TradeStates.Delivered });
             foreach (var order in results.OrderBy(o => o.Code))
             {
                 var component = new OnlineOrderComponent(order);
                 component.Click += Component_Click;
+                component.OnlineOrderCcompletedCompleted += Component_OnlineOrderCcompletedCompleted;
                 this.flp_NewOrder.Controls.Add(component);
             }
             this.lv_OrderDetals.Groups.Clear();
             this.lv_OrderDetals.Items.Clear();
+        }
+
+        private void Component_OnlineOrderCcompletedCompleted(object sender, OnlineOrder order)
+        {
+            this.Controls.Remove(sender as OnlineOrderComponent);
+            this.LoadOnlinOrder(this.lv_histories, order);
+        }
+
+        private async void InitializeHistoryOnlineOrders()
+        {
+            var results = await this.QueryOnineOrders(
+               new TradeStates[] { TradeStates.Delivered }, null);
+            this.lv_histories.Groups.Clear();
+            this.lv_histories.Items.Clear();
+            foreach (var order in results)
+            {
+                LoadOnlinOrder(lv_histories, order);
+            }
         }
 
         private void Component_Click(object sender, EventArgs e)
@@ -104,7 +127,7 @@ namespace Sharing.Agent.Delivery
 
         }
 
-        private void LoadOnlinOrder(ListView listView, OnlineOrder order, string action = "show")
+        public void LoadOnlinOrder(ListView listView, OnlineOrder order, string action = "show")
         {
             if (action == "show")
             {
@@ -141,7 +164,7 @@ namespace Sharing.Agent.Delivery
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
             var selected = this.flp_NewOrder.Controls.OfType<OnlineOrderComponent>().Where(o => o.Selected).ToArray();
-            
+
         }
     }
 }
