@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Sharing.Agent.Delivery
 {
@@ -33,6 +34,41 @@ namespace Sharing.Agent.Delivery
         public static string ToStringforTakeout(this OnlineOrder order)
         {
             return string.Empty;
+        }
+        public static IEnumerable<ListViewGroup> Where(this ListViewGroupCollection collection, Func<ListViewGroup, bool> func)
+        {
+            foreach (var group in collection)
+            {
+                var listViewGroup = group as ListViewGroup;
+                if (func(listViewGroup))
+                {
+                    yield return listViewGroup;
+                }
+            }
+        }
+        public static IEnumerable<ListViewItem> Select(this ListView.ListViewItemCollection collection, Func<ListViewItem, ListViewItem> func)
+        {
+            foreach (var item in collection)
+            {
+                yield return func(item as ListViewItem);
+            }
+        }
+        public static void Remove(this IEnumerable<ListViewGroup> target, ListView source)
+        {
+            var array = target.ToArray();
+            for (var i = 0; i < array.Length; i++)
+            {
+                source.Groups.Remove(array[i]);
+            }
+        }
+        public static void Remove(this IEnumerable<ListViewItem> target, ListView source)
+        {
+            var array = target.ToArray();
+            
+            for (int i = 0; i < array.Length; i++)
+            {
+                source.Items.Remove(array[i]);
+            }
         }
     }
 }

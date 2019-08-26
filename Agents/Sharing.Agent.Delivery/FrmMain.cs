@@ -27,9 +27,6 @@ namespace Sharing.Agent.Delivery
         private async void FrmMain_Load(object sender, EventArgs e)
         {
             this.InitializeNewOnlineOrders();
-            this.InitializeMarkingOrders();
-            this.InitializeCompletedOrders();
-
             ThreadPool.QueueUserWorkItem((state) =>
             {
                 var client = state as TencentCMQClient<OnlineOrder>;
@@ -83,83 +80,68 @@ namespace Sharing.Agent.Delivery
         private async void InitializeNewOnlineOrders()
         {
             var results = await this.QueryOnineOrders(TradeStates.HavePay);
-            foreach (var order in results.OrderByDescending(o => o.Code))
+            foreach (var order in results.OrderBy(o => o.Code))
             {
-                this.flp_NewOrder.Controls.Add(new OnlineOrderComponent(order));
+                var component = new OnlineOrderComponent(order);
+                component.Click += Component_Click;
+                this.flp_NewOrder.Controls.Add(component);
             }
+            this.lv_OrderDetals.Groups.Clear();
+            this.lv_OrderDetals.Items.Clear();
         }
-        private async void InitializeMarkingOrders()
+
+        private void Component_Click(object sender, EventArgs e)
         {
-            this.lv_marking.Items.Clear();
-            this.lv_marking.Groups.Clear();
-            this.lv_marking.ItemSelectionChanged += Lv_marking_ItemSelectionChanged;
-            this.lv_marking.Click += Lv_marking_Click;
-            var results = await this.QueryOnineOrders(TradeStates.HavePay);
-            foreach (var order in results.OrderByDescending(o => o.Code))
+            var component = sender as OnlineOrderComponent;
+            if (component.Selected)
             {
-                this.LoadOnlinOrder(lv_marking, order);
+                LoadOnlinOrder(this.lv_OrderDetals, component.OrderContext);
+            }
+            else
+            {
+                LoadOnlinOrder(this.lv_OrderDetals, component.OrderContext, "remove");
+            }
+
+        }
+
+        private void LoadOnlinOrder(ListView listView, OnlineOrder order, string action = "show")
+        {
+            if (action == "show")
+            {
+                var delivery = order.Delivery == DeliveryTypes.BySelf ? "堂食" : "外送";
+                var group = new ListViewGroup($"单号:{order.Code};配送方式:{delivery}");
+                group.Tag = order.Code;
+                listView.Groups.Add(group);
+                foreach (var item in order.Items)
+                {
+                    var listItem = new ListViewItem(item.Product);
+                    listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, item.Option));
+                    listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, item.Price.ToString("￥0.00元")));
+                    listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, item.Count.ToString()));
+                    listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, item.Money.ToString("￥0.00元")));
+                    listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, "制作中"));
+                    listItem.Group = group;
+                    listView.Items.Add(listItem);
+                }
+                listView.Groups.Add(group);
+            }
+            else
+            {
+                var groups = listView.Groups.Where(o => o.Tag.ToString().Equals(order.Code));
+                groups.SelectMany(o => o.Items.Select(t => t)).Remove(listView);
+                groups.Remove(listView);
             }
         }
 
-        private void Lv_marking_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 完成
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripButton2_Click(object sender, EventArgs e)
         {
-            //var selected= ((ListView)sender).SelectedItems;
-            //foreach(var item in selected)
-            //{
-            //    var selectedListViewItem = item as ListViewItem;                
-            //    var backColor = selectedListViewItem.Selected ? Color.AliceBlue : Color.White;
-            //    var forcColor = selectedListViewItem.Selected ? Color.White : Color.Black;
-            //    selectedListViewItem.BackColor = backColor;
-            //    selectedListViewItem.ForeColor = forcColor;
-            //    foreach (var itemInSameGroup in selectedListViewItem.Group.Items)
-            //    {
-            //        var viewItem = itemInSameGroup as ListViewItem;
-            //        if (!selectedListViewItem.Text.Equals(viewItem.Text))
-            //        {
-            //            viewItem.Selected = selectedListViewItem.Selected;
-            //            viewItem.BackColor = backColor;
-            //            viewItem.ForeColor = forcColor;
-            //        }
-            //    }            
-            //}            
-        }
-
-        private void Lv_marking_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-        {
-        
-        }
-
-        private async void InitializeCompletedOrders()
-        {
-            this.lv_completed.Items.Clear();
-            this.lv_completed.Groups.Clear();
-            var results = await this.QueryOnineOrders(TradeStates.Delivered);
-            foreach (var order in results.OrderByDescending(o => o.Code))
-            {
-                this.LoadOnlinOrder(lv_completed, order);
-            }
-        }
-        private void LoadOnlinOrder(ListView listView, OnlineOrder order)
-        {
-            var delivery = order.Delivery == DeliveryTypes.BySelf ? "堂食" : "外送";
-            var group = new ListViewGroup($"单号:{order.Code};配送方式:{delivery}");
-            group.Tag = order.Code;
-            listView.Groups.Add(group);
-            foreach (var item in order.Items)
-            {
-                var listItem = new ListViewItem(item.Product);
-                listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, item.Option));
-                listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, item.Price.ToString("￥0.00元")));
-                listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, item.Count.ToString()));
-                listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, item.Money.ToString("￥0.00元")));
-                listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, "制作中"));
-                listItem.Group = group;                
-                listView.Items.Add(listItem);
-                //group.Items.Add(listItem);
-                
-
-            }
-            listView.Groups.Add(group);
+            var selected = this.flp_NewOrder.Controls.OfType<OnlineOrderComponent>().Where(o => o.Selected).ToArray();
+            
         }
     }
 }

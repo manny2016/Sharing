@@ -7,10 +7,12 @@ using System.Drawing;
 
 namespace Sharing.Agent.Delivery.Components
 {
+    using System.Windows.Forms;
     public partial class OnlineOrderComponent : UserControl
     {
         public OnlineOrder OrderContext { get; private set; }
-        public bool Selected  { get; private set; }
+
+        public bool Selected { get; private set; }
         public OnlineOrderComponent(OnlineOrder context)
             : this()
         {
@@ -19,8 +21,7 @@ namespace Sharing.Agent.Delivery.Components
         public OnlineOrderComponent()
         {
             InitializeComponent();
-            this.Selected = false;            
-            this.Click += OnlineOrderComponent_Click;
+            this.Selected = false;
             this.panel1.Click += OnlineOrderComponent_Click;
             this.Load += OnlineOrderComponent_Load;
         }
@@ -29,13 +30,15 @@ namespace Sharing.Agent.Delivery.Components
         {
             this.Selected = !this.Selected;
             this.BackColor = this.Selected ? Color.Red : Color.Green;
-            this.BorderStyle = this.Selected ? BorderStyle.Fixed3D : BorderStyle.None;         
+            this.BorderStyle = this.Selected ? BorderStyle.Fixed3D : BorderStyle.None;
+            this.OnClick(e);
         }
 
         private void OnlineOrderComponent_Load(object sender, System.EventArgs e)
         {
             if (this.OrderContext != null)
             {
+                this.lab_Code.Text = this.OrderContext.Code;
                 this.lab_delivery.Text = this.OrderContext.Delivery == Core.DeliveryTypes.BySelf ? "店内消费" : "外送";
                 this.lab_name.Text = string.IsNullOrEmpty(this.OrderContext.Name) ? "" : $"{this.OrderContext.Name.Substring(0, 1)}**";
                 this.lab_phone.Text = string.IsNullOrEmpty(this.OrderContext.Mobile)
