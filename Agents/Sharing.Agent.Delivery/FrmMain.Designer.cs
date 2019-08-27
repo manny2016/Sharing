@@ -59,8 +59,6 @@
             this.columnHeader12 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader13 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader14 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.系统FToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -88,7 +86,8 @@
             this.columnHeader16 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader17 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader18 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.menuStrip1.SuspendLayout();
+            this.tsbtn_settings = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -161,22 +160,6 @@
             // 
             this.columnHeader14.Text = "状态";
             // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.系统FToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1143, 24);
-            this.menuStrip1.TabIndex = 1;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // 系统FToolStripMenuItem
-            // 
-            this.系统FToolStripMenuItem.Name = "系统FToolStripMenuItem";
-            this.系统FToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
-            this.系统FToolStripMenuItem.Text = "系统(&F)";
-            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -200,22 +183,24 @@
             this.toolStripSeparator1,
             this.toolStripButton1,
             this.toolStripSeparator2,
-            this.toolStripButton2});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStripButton2,
+            this.toolStripSeparator4,
+            this.tsbtn_settings});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1143, 70);
+            this.toolStrip1.Size = new System.Drawing.Size(1143, 71);
             this.toolStrip1.TabIndex = 5;
             this.toolStrip1.Text = "toolStrip1";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 70);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 71);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 70);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 71);
             // 
             // toolStripButton1
             // 
@@ -223,14 +208,14 @@
             this.toolStripButton1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(59, 67);
+            this.toolStripButton1.Size = new System.Drawing.Size(59, 68);
             this.toolStripButton1.Text = "重新打印";
             this.toolStripButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 70);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 71);
             // 
             // toolStripButton2
             // 
@@ -238,7 +223,7 @@
             this.toolStripButton2.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(61, 67);
+            this.toolStripButton2.Size = new System.Drawing.Size(61, 68);
             this.toolStripButton2.Text = "完成订单";
             this.toolStripButton2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
@@ -252,12 +237,12 @@
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 94);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 71);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1143, 441);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1143, 464);
             this.tableLayoutPanel1.TabIndex = 6;
             // 
             // groupBox1
@@ -267,7 +252,7 @@
             this.groupBox1.ForeColor = System.Drawing.Color.Black;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(650, 435);
+            this.groupBox1.Size = new System.Drawing.Size(650, 458);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "新的订单";
@@ -279,7 +264,7 @@
             this.flp_NewOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flp_NewOrder.Location = new System.Drawing.Point(3, 16);
             this.flp_NewOrder.Name = "flp_NewOrder";
-            this.flp_NewOrder.Size = new System.Drawing.Size(644, 416);
+            this.flp_NewOrder.Size = new System.Drawing.Size(644, 439);
             this.flp_NewOrder.TabIndex = 1;
             // 
             // panel1
@@ -289,7 +274,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(659, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(481, 435);
+            this.panel1.Size = new System.Drawing.Size(481, 458);
             this.panel1.TabIndex = 1;
             // 
             // groupBox3
@@ -300,7 +285,7 @@
             this.groupBox3.Controls.Add(this.lv_histories);
             this.groupBox3.Location = new System.Drawing.Point(1, 191);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(481, 241);
+            this.groupBox3.Size = new System.Drawing.Size(481, 264);
             this.groupBox3.TabIndex = 1;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "已完成订单";
@@ -325,7 +310,7 @@
             listViewItem2});
             this.lv_histories.Location = new System.Drawing.Point(3, 16);
             this.lv_histories.Name = "lv_histories";
-            this.lv_histories.Size = new System.Drawing.Size(475, 222);
+            this.lv_histories.Size = new System.Drawing.Size(475, 245);
             this.lv_histories.SmallImageList = this.imageList1;
             this.lv_histories.TabIndex = 1;
             this.lv_histories.UseCompatibleStateImageBehavior = false;
@@ -431,6 +416,22 @@
             this.columnHeader18.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.columnHeader18.Width = 80;
             // 
+            // tsbtn_settings
+            // 
+            this.tsbtn_settings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtn_settings.Image = ((System.Drawing.Image)(resources.GetObject("tsbtn_settings.Image")));
+            this.tsbtn_settings.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsbtn_settings.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtn_settings.Name = "tsbtn_settings";
+            this.tsbtn_settings.Size = new System.Drawing.Size(68, 68);
+            this.tsbtn_settings.Text = "toolStripButton3";
+            this.tsbtn_settings.Click += new System.EventHandler(this.tsbtn_settings_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 71);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -439,14 +440,10 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.menuStrip1);
-            this.MainMenuStrip = this.menuStrip1;
             this.Name = "FrmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "奶茶店接单系统";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
@@ -462,13 +459,11 @@
         }
 
         #endregion
-        private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.FlowLayoutPanel flp_NewOrder;
-        private System.Windows.Forms.ToolStripMenuItem 系统FToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -504,6 +499,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader22;
         private System.Windows.Forms.ColumnHeader columnHeader23;
         public System.Windows.Forms.ListView lv_histories;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripButton tsbtn_settings;
     }
 }
 

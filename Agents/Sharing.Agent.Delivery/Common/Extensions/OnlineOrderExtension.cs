@@ -1,13 +1,15 @@
-﻿using Sharing.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿
 
 namespace Sharing.Agent.Delivery
 {
+    using Sharing.Core.Models;
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Drawing.Printing;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Windows.Forms;
     public static class OnlineOrderExtension
     {
         public static string ToStringforPrintingDetails(this OnlineOrder order)
@@ -69,6 +71,36 @@ namespace Sharing.Agent.Delivery
             {
                 source.Items.Remove(array[i]);
             }
+        }
+
+        private static bool PrintBilling(this OnlineOrder order,string printer)
+        {
+            PrintDocument pd = new PrintDocument();
+            pd.PrinterSettings.PrinterName = printer;
+            pd.PrintPage += (sender, ev) =>
+            {
+                Font FontNormal = new Font("Verdana", 12);
+                Graphics g = ev.Graphics;
+                g.DrawString("Your string to print", FontNormal, Brushes.Black, 0, 0, new StringFormat());
+            };
+            pd.Print();
+            return true;
+        }
+        private static bool PrintOrderCode(this OnlineOrder order,string printer)
+        {
+            PrintDocument doc = new PrintDocument();
+            doc.PrintPage += (sender, ev) =>
+            {
+                Font FontNormal = new Font("Verdana", 12);
+                Graphics g = ev.Graphics;
+                g.DrawString("Your string to print", FontNormal, Brushes.Black, 0, 0, new StringFormat());
+            };
+            return true;
+        }
+        public async static void PrintAsync(this OnlineOrder order)
+        {
+            order.PrintBilling(Settings.Create().BillingPrinter);
+            order.PrintOrderCode(Settings.Create().OrderCodePrinter);          
         }
     }
 }

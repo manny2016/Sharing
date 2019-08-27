@@ -51,6 +51,10 @@ namespace Sharing.Agent.Delivery
             else
             {
                 this.flp_NewOrder.Controls.Add(new OnlineOrderComponent(model));
+                if (Settings.Create().Autoprint)
+                {
+                    model.PrintAsync();
+                }
             }
         }
         private async Task<OnlineOrder[]> QueryOnineOrders(TradeStates[] includeStates, TradeStates[] excludeStates)
@@ -165,6 +169,12 @@ namespace Sharing.Agent.Delivery
         {
             var selected = this.flp_NewOrder.Controls.OfType<OnlineOrderComponent>().Where(o => o.Selected).ToArray();
 
+        }
+
+        private void tsbtn_settings_Click(object sender, EventArgs e)
+        {
+            var settings = new FrmSettings();
+            settings.ShowDialog();
         }
     }
 }

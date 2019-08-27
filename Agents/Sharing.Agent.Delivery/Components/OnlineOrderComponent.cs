@@ -109,7 +109,7 @@ namespace Sharing.Agent.Delivery.Components
         /// <param name="e"></param>
         private void tsbtn_print_Click(object sender, System.EventArgs e)
         {
-
+            this.OrderContext.PrintAsync();
         }
         /// <summary>
         /// 

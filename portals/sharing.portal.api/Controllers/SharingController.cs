@@ -14,6 +14,7 @@ namespace Sharing.Portal.Api
     using Sharing.Core.Models;
     using Microsoft.Extensions.Logging;
     using Microsoft.AspNetCore;
+    using System.Web;
 
     [Produces("application/json")]
     [ApiController]
@@ -329,6 +330,7 @@ namespace Sharing.Portal.Api
                 filter.Start = filter.Start ?? DateTime.Now.Date;
                 filter.End = filter.End ?? DateTime.Now.Date.AddDays(1);
             }
+            
             filter.Type = filter.Type ?? TradeTypes.Consume;          
             return client.QueryOnlineOrders(filter);
         }

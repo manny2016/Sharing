@@ -67,14 +67,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\Extensions\OnlineOrderExtension.cs" />
+    <Compile Include="Common\Extensions\OnlineOrderExtension.cs" />
     <Compile Include="Components\OnlineOrderComponent.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Components\OnlineOrderComponent.Designer.cs">
       <DependentUpon>OnlineOrderComponent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\Settings.cs" />
     <Compile Include="Core\Models\TradeStateResponse.cs" />
+    <Compile Include="Forms\FrmSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmSettings.Designer.cs">
+      <DependentUpon>FrmSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -86,6 +93,9 @@
     <Compile Include="Utilities\Constants.cs" />
     <EmbeddedResource Include="Components\OnlineOrderComponent.resx">
       <DependentUpon>OnlineOrderComponent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmSettings.resx">
+      <DependentUpon>FrmSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
@@ -123,9 +133,7 @@
       <Name>Sharing.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Common\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
       <Visible>False</Visible>
