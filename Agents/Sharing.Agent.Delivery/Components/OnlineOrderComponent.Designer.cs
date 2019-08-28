@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OnlineOrderComponent));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lab_createdtime = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.lab_money = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.lab_state = new System.Windows.Forms.Label();
@@ -50,11 +52,9 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tbtn_marking = new System.Windows.Forms.ToolStripButton();
             this.tsbtn_done = new System.Windows.Forms.ToolStripButton();
+            this.tsbtn_print = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbtn_close = new System.Windows.Forms.ToolStripButton();
-            this.tsbtn_print = new System.Windows.Forms.ToolStripButton();
-            this.lab_createdtime = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -84,6 +84,27 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(281, 198);
             this.panel1.TabIndex = 1;
+            // 
+            // lab_createdtime
+            // 
+            this.lab_createdtime.AutoSize = true;
+            this.lab_createdtime.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lab_createdtime.ForeColor = System.Drawing.Color.Green;
+            this.lab_createdtime.Location = new System.Drawing.Point(63, 158);
+            this.lab_createdtime.Name = "lab_createdtime";
+            this.lab_createdtime.Size = new System.Drawing.Size(108, 19);
+            this.lab_createdtime.TabIndex = 18;
+            this.lab_createdtime.Text = "奶茶3姐妹等多件";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(20, 158);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(38, 19);
+            this.label9.TabIndex = 17;
+            this.label9.Text = "时间:";
             // 
             // lab_money
             // 
@@ -284,6 +305,16 @@
             this.tsbtn_done.Text = "完成";
             this.tsbtn_done.Click += new System.EventHandler(this.tsbtn_done_Click);
             // 
+            // tsbtn_print
+            // 
+            this.tsbtn_print.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtn_print.Image = ((System.Drawing.Image)(resources.GetObject("tsbtn_print.Image")));
+            this.tsbtn_print.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtn_print.Name = "tsbtn_print";
+            this.tsbtn_print.Size = new System.Drawing.Size(34, 28);
+            this.tsbtn_print.Text = "重新打印";
+            this.tsbtn_print.Click += new System.EventHandler(this.tsbtn_print_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -298,37 +329,6 @@
             this.tsbtn_close.Size = new System.Drawing.Size(34, 28);
             this.tsbtn_close.Text = "取消订单";
             this.tsbtn_close.Click += new System.EventHandler(this.toolStripButton2_Click);
-            // 
-            // tsbtn_print
-            // 
-            this.tsbtn_print.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbtn_print.Image = ((System.Drawing.Image)(resources.GetObject("tsbtn_print.Image")));
-            this.tsbtn_print.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtn_print.Name = "tsbtn_print";
-            this.tsbtn_print.Size = new System.Drawing.Size(34, 28);
-            this.tsbtn_print.Text = "重新打印";
-            this.tsbtn_print.Click += new System.EventHandler(this.tsbtn_print_Click);
-            // 
-            // lab_createdtime
-            // 
-            this.lab_createdtime.AutoSize = true;
-            this.lab_createdtime.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lab_createdtime.ForeColor = System.Drawing.Color.Green;
-            this.lab_createdtime.Location = new System.Drawing.Point(63, 158);
-            this.lab_createdtime.Name = "lab_createdtime";
-            this.lab_createdtime.Size = new System.Drawing.Size(108, 19);
-            this.lab_createdtime.TabIndex = 18;
-            this.lab_createdtime.Text = "奶茶3姐妹等多件";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(20, 158);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(38, 19);
-            this.label9.TabIndex = 17;
-            this.label9.Text = "时间:";
             // 
             // OnlineOrderComponent
             // 

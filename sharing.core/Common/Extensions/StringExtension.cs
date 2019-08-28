@@ -60,6 +60,7 @@ namespace Sharing.Core
             }
             if ((state & Core.TradeStates.Ready) == Core.TradeStates.Ready)
             {
+                
                 states.Add("制作完成");
             }
             if ((state & Core.TradeStates.Delivered) == Core.TradeStates.Delivered)

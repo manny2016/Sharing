@@ -68,12 +68,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Extensions\OnlineOrderExtension.cs" />
+    <Compile Include="Common\Extensions\StringExtension.cs" />
+    <Compile Include="Components\BillingComponent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Components\BillingComponent.Designer.cs">
+      <DependentUpon>BillingComponent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Components\OnlineOrderComponent.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Components\OnlineOrderComponent.Designer.cs">
       <DependentUpon>OnlineOrderComponent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Core\Models\PrintItem.cs" />
     <Compile Include="Utilities\Settings.cs" />
     <Compile Include="Core\Models\TradeStateResponse.cs" />
     <Compile Include="Forms\FrmSettings.cs">
@@ -91,6 +99,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Constants.cs" />
+    <EmbeddedResource Include="Components\BillingComponent.resx">
+      <DependentUpon>BillingComponent.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Components\OnlineOrderComponent.resx">
       <DependentUpon>OnlineOrderComponent.cs</DependentUpon>
     </EmbeddedResource>

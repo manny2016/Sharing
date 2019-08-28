@@ -26,6 +26,7 @@ namespace Sharing.Agent.Delivery
                                 API = Constants.API,
                                 BillingPrinter = string.Empty,
                                 OrderCodePrinter = string.Empty,
+                                ShopName = "柠檬工坊东坡里店",                                 
                                 Autoprint = true
                             };
                             settings.Save();
@@ -43,6 +44,8 @@ namespace Sharing.Agent.Delivery
         public string OrderCodePrinter { get; set; }
         public string API { get; set; }
         public bool Autoprint { get; set; }
+        public string ShopName { get; set; }
+        
         public void Save()
         {
             if (File.Exists(configurationFile))
