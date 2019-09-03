@@ -75,6 +75,12 @@
     <Compile Include="Components\BillingComponent.Designer.cs">
       <DependentUpon>BillingComponent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Components\MemoComponent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Components\MemoComponent.Designer.cs">
+      <DependentUpon>MemoComponent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Components\OnlineOrderComponent.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -101,6 +107,9 @@
     <Compile Include="Utilities\Constants.cs" />
     <EmbeddedResource Include="Components\BillingComponent.resx">
       <DependentUpon>BillingComponent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Components\MemoComponent.resx">
+      <DependentUpon>MemoComponent.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Components\OnlineOrderComponent.resx">
       <DependentUpon>OnlineOrderComponent.cs</DependentUpon>

@@ -92,20 +92,30 @@ namespace Sharing.Agent.Delivery
         }
         private static bool PrintOrderCode(this OnlineOrder order, string printer)
         {
-
-            PrintDocument doc = new PrintDocument();
-            doc.PrintPage += (sender, ev) =>
+            var index = 1;
+            var count = order.Items.Sum(o => o.Count);
+            foreach (var item in order.Items)
             {
-                Font FontNormal = new Font("Verdana", 12);
-                Graphics g = ev.Graphics;
-                g.DrawString("Your string to print", FontNormal, Brushes.Black, 0, 0, new StringFormat());
-            };
+                for (int i = 0; i < item.Count; i++)
+                {
+                    var memo = new MemoComponent(order.Code,item.Product,item.Option,index, count);
+                    PrintDocument doc = new PrintDocument();
+                    doc.PrintPage += (sender, ev) =>
+                    {
+                        foreach (var print in memo.GenernatePrintItems())
+                        {
+                            ev.Graphics.DrawString(print.Text, print.Font, Brushes.Black, new PointF(print.Point.X, print.Point.Y));
+                        }
+                    };
+                    index++;
+                }
+            }
             return true;
         }
         public async static void PrintAsync(this OnlineOrder order)
         {
             order.PrintBilling(Settings.Create().BillingPrinter);
-            //order.PrintOrderCode(Settings.Create().OrderCodePrinter);
+            order.PrintOrderCode(Settings.Create().OrderCodePrinter);
         }
     }
 }

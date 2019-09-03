@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sharing.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace Sharing.Agent.Delivery
         [STAThread]
         static void Main()
         {
+            var state = (TradeStates)12;
+            var result = (state & TradeStates.HavePay);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FrmMain());

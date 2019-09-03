@@ -5,6 +5,7 @@ namespace Sharing.Portal.Api
 {
     using Sharing.Core;
     using Sharing.Core.Models;
+    using System;
     using System.Linq;
     public static class JsonExtension
     {
@@ -31,7 +32,9 @@ namespace Sharing.Portal.Api
                 }).ToArray(),
                 Fare = context.Fare.DecimalValue(),
                 Delivery = context.Delivery,
-                State = state
+                State = state,
+                CreatedTime = DateTime.Now
+
             };
         }
         public static decimal? DecimalValue(this string text)

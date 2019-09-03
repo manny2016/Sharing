@@ -2,15 +2,19 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost:5001/Sharing.Portal.Api",
+      "sslPort": 0
+    },
     "iisExpress": {
-      "applicationUrl": "http://192.168.0.102:50923",
+      "applicationUrl": "http://localhost:50923",
       "sslPort": 44358
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
     "IIS Express": {
-      "commandName": "Project",
+      "commandName": "IISExpress",
       "workingDirectory": "D:\\Workspace\\repos\\Sharing\\Portals\\Sharing.Portal.Api",
       "launchBrowser": true,
       "launchUrl": "api/sharing/test",
@@ -19,7 +23,7 @@
       }
     },
     "Sharing.Core.Api": {
-      "commandName": "Project",
+      "commandName": "IIS",
       "launchBrowser": true,
       "launchUrl": "api/sharing/test",
       "environmentVariables": {

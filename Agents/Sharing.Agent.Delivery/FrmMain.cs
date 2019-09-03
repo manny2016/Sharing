@@ -68,7 +68,7 @@ namespace Sharing.Agent.Delivery
                     States = includeStates,
                     ExcludeStates = excludeStates,
                     Type = TradeTypes.Consume,
-                    Start = DateTime.Now.AddYears(-10)
+                    Start = DateTime.Now.Date.AddDays(-1)
                 };
                 http.Method = "POST";
                 http.ContentType = "application/json";
@@ -86,7 +86,7 @@ namespace Sharing.Agent.Delivery
         private async void InitializeNewOnlineOrders()
         {
             var results = await this.QueryOnineOrders(
-                new TradeStates[] { TradeStates.HavePay },
+                new TradeStates[] { TradeStates.AckPay },
                 new TradeStates[] { TradeStates.Delivered });
             foreach (var order in results.OrderBy(o => o.Code))
             {

@@ -20,13 +20,13 @@ namespace Sharing.Agent.Delivery.Components
     {
         public event OnlineOrderCcompletedEventHandler OnlineOrderCcompletedCompleted;
         public OnlineOrder OrderContext { get; private set; }
-        
-        
+
+
         public bool Selected { get; private set; }
         public OnlineOrderComponent(OnlineOrder context)
             : this()
         {
-            this.OrderContext = context;        
+            this.OrderContext = context;
         }
         public OnlineOrderComponent()
         {
@@ -60,6 +60,7 @@ namespace Sharing.Agent.Delivery.Components
                     return o.Money;
                 }).ToString("0.00元");
                 this.lab_state.Text = this.OrderContext.State.GenernateTradeStateString();
+                this.lab_createdtime.Text = this.OrderContext.CreatedTime?.ToString("yyyy-MM-dd HH:mm:ss");
 
             }
         }

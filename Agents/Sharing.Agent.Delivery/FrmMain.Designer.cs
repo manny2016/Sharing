@@ -67,6 +67,8 @@
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbtn_settings = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.flp_NewOrder = new System.Windows.Forms.FlowLayoutPanel();
@@ -86,8 +88,8 @@
             this.columnHeader16 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader17 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader18 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.tsbtn_settings = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -185,6 +187,8 @@
             this.toolStripSeparator2,
             this.toolStripButton2,
             this.toolStripSeparator4,
+            this.toolStripButton4,
+            this.toolStripSeparator5,
             this.tsbtn_settings});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
@@ -227,6 +231,22 @@
             this.toolStripButton2.Text = "完成订单";
             this.toolStripButton2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 71);
+            // 
+            // tsbtn_settings
+            // 
+            this.tsbtn_settings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtn_settings.Image = ((System.Drawing.Image)(resources.GetObject("tsbtn_settings.Image")));
+            this.tsbtn_settings.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsbtn_settings.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtn_settings.Name = "tsbtn_settings";
+            this.tsbtn_settings.Size = new System.Drawing.Size(68, 68);
+            this.tsbtn_settings.Text = "toolStripButton3";
+            this.tsbtn_settings.Click += new System.EventHandler(this.tsbtn_settings_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -416,21 +436,20 @@
             this.columnHeader18.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.columnHeader18.Width = 80;
             // 
-            // tsbtn_settings
+            // toolStripButton4
             // 
-            this.tsbtn_settings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbtn_settings.Image = ((System.Drawing.Image)(resources.GetObject("tsbtn_settings.Image")));
-            this.tsbtn_settings.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.tsbtn_settings.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtn_settings.Name = "tsbtn_settings";
-            this.tsbtn_settings.Size = new System.Drawing.Size(68, 68);
-            this.tsbtn_settings.Text = "toolStripButton3";
-            this.tsbtn_settings.Click += new System.EventHandler(this.tsbtn_settings_Click);
+            this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
+            this.toolStripButton4.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton4.Name = "toolStripButton4";
+            this.toolStripButton4.Size = new System.Drawing.Size(68, 68);
+            this.toolStripButton4.Text = "toolStripButton3";
             // 
-            // toolStripSeparator4
+            // toolStripSeparator5
             // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 71);
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 71);
             // 
             // FrmMain
             // 
@@ -501,6 +520,8 @@
         public System.Windows.Forms.ListView lv_histories;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripButton tsbtn_settings;
+        private System.Windows.Forms.ToolStripButton toolStripButton4;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
     }
 }
 

@@ -219,8 +219,8 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
                 Guard.ArgumentNotNull(trade, "trade");
                 if (trade.Money != notification.TotalFee)////P1 TODO: need change to sign verify.
                     throw new WeChatPayException("There is a error happend on transaction to verify.(pay money)");
-                if (trade.TradeState != TradeStates.Newly)
-                    throw new WeChatPayException("Only Waitting status pay order can be modify.");
+                if ((trade.TradeState & TradeStates.HavePay) != TradeStates.HavePay)
+                    throw new WeChatPayException("Only HavePay status pay order can be modify.");
                 var pyarmid = (ISharedPyramid)null;
                 string cardid = string.Empty;
                 string usercode = string.Empty;
@@ -245,7 +245,7 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
                         Id = context.Id,
                         MchId = context.MchId
                     }) ?? new SharedPyramid() { Id = context.Id, MchId = context.MchId };
-                }
+                }             
 
                 var executeSqlString = @"spUpgradeforTopupConfirm";
                 using (var database = SharingConfigurations.GenerateDatabase(true))
@@ -265,7 +265,7 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
                     parameters.Add("o_Code", null, System.Data.DbType.Int32, System.Data.ParameterDirection.Output);
                     database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure, true);
                     var details = parameters.Get<string>("o_Details");
-                    var code = parameters.Get<int>("o_Code");
+                    var code = parameters.Get<int?>("o_Code") ?? 0;
                     cmqclient.Push(new OnlineOrder[] { details.DeserializeToObject<OrderContext>().Convert(trade.TradeId, code, TradeStates.AckPay) });
 
                 }
@@ -480,7 +480,7 @@ FROM `sharing-uat`.`sharing_product` AS products WHERE products.`Id` = @id;";
                 parameters.Add("p_tradeid", tradeId, System.Data.DbType.String);
                 parameters.Add("p_state", (int)state, System.Data.DbType.Int32);
                 parameters.Add("o_state", null, System.Data.DbType.Int32, System.Data.ParameterDirection.Output);
-                 database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure, true);
+                database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure, true);
                 return parameters.Get<TradeStates>("o_state");
             }
         }

@@ -36,9 +36,6 @@ namespace Sharing.Agent.Delivery.Components
             }
 
             this.list_items.Top = lastPoint == null ? this.list_items.Top : lastPoint.Value.Y + 30;
-            this.lab_createdTime.Text = string.Format(this.lab_createdTime.Text, 
-                this.OnlineOrderContext.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss"));
-
             this.lab_code.Text = string.Format(this.lab_code.Text, this.OnlineOrderContext.Code);
 
             this.lab_DeliveryType.Text = string.Format(this.lab_DeliveryType.Text,
@@ -56,6 +53,23 @@ namespace Sharing.Agent.Delivery.Components
                 this.list_items.Items.Add($"\t{text}");
             }
             this.list_items.Height = this.list_items.Items.Count * this.list_items.ItemHeight + 10;
+
+            var yValueNextList = this.list_items.Location.Y + this.list_items.Height + 10;
+
+            this.lab_CopeWith.Text = string.Format(this.lab_CopeWith.Text, this.OnlineOrderContext.Total?.ToString("0.00"));
+            this.lab_CopeWith.Location = new Point(this.lab_CopeWith.Left, yValueNextList);
+
+            this.lab_disfromfriend.Text = string.Format(this.lab_disfromfriend.Text, "0.00");
+            this.lab_disfromfriend.Location = new Point(this.lab_disfromfriend.Left, yValueNextList);
+
+            this.lab_paid.Text = string.Format(this.lab_paid.Text, this.OnlineOrderContext.Total?.ToString("0.00"));
+            this.lab_paid.Location = new Point(this.lab_paid.Left, this.lab_disfromfriend.Top + 20);
+
+            this.lab_paytype.Text = string.Format(this.lab_paid.Text, "线上支付");
+            this.lab_paytype.Location = new Point(this.lab_paytype.Left, this.lab_disfromfriend.Top + 20);
+
+            this.lab_createdTime.Text = string.Format(this.lab_createdTime.Text, this.OnlineOrderContext.CreatedTime?.ToString("yyyy-MM-dd HH:mm:ss"));
+            this.lab_createdTime.Location = new Point(this.lab_createdTime.Location.X, this.lab_paid.Location.Y + this.lab_createdTime.Height + 10);
         }
 
         public IEnumerable<PrintItem> GenernatePrintItems()
@@ -115,7 +129,7 @@ namespace Sharing.Agent.Delivery.Components
         {
             var list = new List<Label>();
             lastPoint = null;
-            var location = new Point(20, 186);
+            var location = new Point(20, 155);
             var font = new Font("Microsoft YaHei", 9);
             var size = address.ToCharArray()[0].Measure(font);
             var maxWordsInSingleLine = (int)((this.Width - 20) / size.Width);
