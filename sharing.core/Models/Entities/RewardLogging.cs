@@ -9,20 +9,20 @@ namespace Sharing.Core.Entities
     /// </summary>
     public class RewardLogging
     {
-        public virtual long Id { get; set; }
+        public  long Id { get; set; }
 
-        public virtual long WxUserId { get; set; }
+        public  long WxUserId { get; set; }
 
-        public virtual int RewardMoney { get; set; }
+        public  int RewardMoney { get; set; }
 
-        public virtual long RelevantTradeId { get; set; }
+        public  long RelevantTradeId { get; set; }
 
-        public virtual int RewardIntegral { get; set; }
+        public  int RewardIntegral { get; set; }
 
-        public virtual RewardStates State { get; set; }
+        public  RewardStates State { get; set; }
 
-        public virtual long CreatedTime { get; set; }
+        public  long CreatedTime { get; set; }
 
-        public virtual long LastUpdatedTime { get; set; }
+        public  long LastUpdatedTime { get; set; }
     }
 }

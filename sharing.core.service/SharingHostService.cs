@@ -39,7 +39,7 @@ namespace Sharing.Core.Services
     FROM `sharing_merchant` AS merchant;
     ";
                       var result = new List<MerchantDetails>();
-                      using (var database = SharingConfigurations.GenerateDatabase(false))
+                      using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
                       {
                           result = database.SqlQuery<MerchantDetails>(queryString).ToList();
                       }
@@ -56,7 +56,7 @@ namespace Sharing.Core.Services
                 return this.MemoryCache.GetOrCreate<IList<ProductTreeNodeModel>>(cacheKey, (entity) =>
                 {
                     var result = new List<ProductTreeNodeModel>();
-                    using (var database = SharingConfigurations.GenerateDatabase(false))
+                    using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
                     {
                         var queryString = @"
 SET group_concat_max_len := @@max_allowed_packet;
@@ -85,7 +85,7 @@ WHERE  Enabled = 1
                             {
                                 CategoryId = category.Id,
                                 CategoryName = category.Name,
-                                MchId = category.MchId,
+                                MchId = category.MerchantId,
                                 Products = (category.JsonString ?? "[]").DeserializeToObject<ProductModel[]>()
                             };
                         }).ToList();

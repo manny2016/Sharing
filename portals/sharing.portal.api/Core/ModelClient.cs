@@ -91,7 +91,7 @@ FROM sharing_mcard AS mcard
 	INNER JOIN sharing_merchant AS merchant 
 		ON mcard.MerchantId=merchant.Id
 WHERE merchant.MCode=mcode";
-            using (var database = SharingConfigurations.GenerateDatabase(false))
+            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
             {
                 return database.SqlQuery<MCardModel>(queryString, new { mcode = mcode }).ToList();
             }
@@ -121,7 +121,7 @@ FROM `sharing_wxusercard` AS ucard
 		ON ucard.`WxUserId` = wxuser.WxUserId AND wxuser.AppId=@pAppid AND wxuser.OpenId=@pOpenId
 WHERE mcard.CardId =@pCardid  
 ";
-            using (var database = SharingConfigurations.GenerateDatabase(false))
+            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
             {
                 return database.SqlQuerySingleOrDefault<MCardDetails>(queryString, new
                 {
@@ -155,7 +155,7 @@ FROM `sharing_wxusercard` AS ucard
 		ON ucard.WxUserId = wxuser.WxUserId AND wxuser.AppId=@pAppId AND wxuser.OpenId=@pOpenId
 WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
 ";
-            using (var database = SharingConfigurations.GenerateDatabase(false))
+            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
             {
                 return database.SqlQuery<MCardDetails>(queryString, new
                 {
@@ -248,7 +248,7 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
                 }             
 
                 var executeSqlString = @"spUpgradeforTopupConfirm";
-                using (var database = SharingConfigurations.GenerateDatabase(true))
+                using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:true))
                 {
                     var parameters = new Dapper.DynamicParameters();
                     parameters.Add("p_Id", trade.Id, System.Data.DbType.Int64);
@@ -276,7 +276,7 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
         public int UpgradeSharedPyramid(SharingContext context)
         {
             var executeSqlString = @"spUpgradeSharedPyramid";
-            using (var database = SharingConfigurations.GenerateDatabase(true))
+            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:true))
             {
                 var parameters = new Dapper.DynamicParameters();
                 parameters.Add("pSharedByOpenId", context.SharedBy.OpenId, System.Data.DbType.String);
@@ -422,7 +422,7 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
 
 SELECT `Id`, `Name`,`Price`,`SalesVol`,`SortNo`,`ImageUrl`,CONVERT(BINARY CONVERT(Settings USING utf8) USING utf8) AS Settings    
 FROM `sharing-uat`.`sharing_product` AS products WHERE products.`Id` = @id;";
-            using (var database = SharingConfigurations.GenerateDatabase(false))
+            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
             {
                 var result = database.SqlQuerySingleOrDefault<ProductModel>(queryString, new { id = id });
                 return result;
@@ -460,7 +460,7 @@ FROM `sharing-uat`.`sharing_product` AS products WHERE products.`Id` = @id;";
         }
         public OnlineOrder[] QueryOnlineOrders(OnineOrderQueryFilter filter)
         {
-            using (var database = SharingConfigurations.GenerateDatabase(false))
+            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
             {
                 var queryString = string.Concat("SELECT TradeId,Code,TradeState,CreatedTime,Attach FROM sharing_trade ", filter.GenernateWhereCase());
                 var results = database.SqlQuery<TradeDetails>(queryString);
@@ -474,7 +474,7 @@ FROM `sharing-uat`.`sharing_product` AS products WHERE products.`Id` = @id;";
         public TradeStates? UpgradeTradeState(string tradeId, TradeStates state)
         {
             var executeSqlString = @"spUpgradeTradeState";
-            using (var database = SharingConfigurations.GenerateDatabase(true))
+            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
             {
                 var parameters = new Dapper.DynamicParameters();
                 parameters.Add("p_tradeid", tradeId, System.Data.DbType.String);

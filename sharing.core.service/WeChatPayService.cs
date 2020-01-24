@@ -53,7 +53,7 @@ namespace Sharing.Core.Services
             };
             context.Money = context.Money * 100;
             attach.Sign(context.Money);
-            using (var database = SharingConfigurations.GenerateDatabase(true))
+            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:true))
             {
                 return database.SqlQuerySingleOrDefaultTransaction<Trade>(queryString, new
                 {
@@ -76,7 +76,7 @@ namespace Sharing.Core.Services
         public Payment GetPayment(string appid)
         {
             var queryString = "SELECT `Payment` FROM `sharing_mwechatapp` WHERE AppId=@AppId;";
-            using (var database = SharingConfigurations.GenerateDatabase(false))
+            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
             {
                 var app = database.SqlQuerySingleOrDefault<MWeChatApp>(queryString, new { AppId = appid });
                 return app.Payment.DeserializeToObject<Payment>();
@@ -86,7 +86,7 @@ namespace Sharing.Core.Services
         public Trade GetTradeByTradeId(string tradeId)
         {
             var queryString = "SELECT * FROM `sharing_trade` WHERE `TradeId` =@tradeId";
-            using (var database = SharingConfigurations.GenerateDatabase(false))
+            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly: false) )
             {
                 return database.SqlQuerySingleOrDefault<Trade>(queryString, new { tradeId = tradeId });
             }
@@ -127,7 +127,7 @@ namespace Sharing.Core.Services
             //context.Money = context.Totalfee.ToString();
             attach.Sign(context.Totalfee ?? 0);
             
-            using (var database = SharingConfigurations.GenerateDatabase(true))
+            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly: true) )
             {
                 return database.SqlQuerySingleOrDefaultTransaction<Trade>(queryString, new
                 {

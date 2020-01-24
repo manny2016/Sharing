@@ -4,17 +4,17 @@ namespace Sharing.Core.Entities
 {
     public class MCard
     {
-        public virtual long Id { get; set; }
-        public virtual string CardId { get; set; }
-        public virtual long MerchantId { get; set; }
-        public virtual string BrandName { get; set; }
-        public virtual string Title { get; set; }
-        public virtual string Prerogative { get; set; }
-        public virtual int Quantity { get; set; }
-        public virtual int TotalQuantity { get; set; }
-        public virtual decimal Discount { get; set; }
-        public virtual string LogoUrl { get; set; }
-        public virtual string RawData { get; set; }
+        public  long Id { get; set; }
+        public  string CardId { get; set; }
+        public  long MerchantId { get; set; }
+        public  string BrandName { get; set; }
+        public  string Title { get; set; }
+        public  string Prerogative { get; set; }
+        public  int Quantity { get; set; }
+        public  int TotalQuantity { get; set; }
+        public  decimal Discount { get; set; }
+        public  string LogoUrl { get; set; }
+        public  string RawData { get; set; }
 
 
         public string GenerateMySqlInsertValuesString()

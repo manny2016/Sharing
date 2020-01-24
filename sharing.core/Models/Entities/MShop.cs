@@ -6,10 +6,10 @@ namespace Sharing.Core.Entities
 {
     public class MShop
     {
-        public virtual long Id { get; set; }
-        public virtual long MerchantId { get; set; }
-        public virtual long WxShopId { get; set; }
-        public virtual string ShopName { get; set; }
-        public virtual string Address { get; set; }
+        public  long Id { get; set; }
+        public  long MerchantId { get; set; }
+        public  long WxShopId { get; set; }
+        public  string ShopName { get; set; }
+        public  string Address { get; set; }
     }
 }

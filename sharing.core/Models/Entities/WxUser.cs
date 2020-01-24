@@ -4,19 +4,19 @@ namespace Sharing.Core.Entities
 {
     public class WxUser : IWxUserKey, ISharedContext
     {
-        public virtual long Id { get; set; }
-        public virtual long MchId { get; set; }
-        public virtual string UnionId { get; set; }
-        public virtual long? InvitedBy { get; set; }
-        public virtual string Mobile { get; set; }
-        public virtual AppTypes RegistrySource { get; set; }
-        public virtual string NickName { get; set; }
-        public virtual string Country { get; set; }
-        public virtual string Province { get; set; }
-        public virtual string City { get; set; }
-        public virtual string AvatarUrl { get; set; }
-        public virtual long CreatedTime { get; set; }
-        public virtual long LastActivityTime { get; set; }
+        public  long Id { get; set; }
+        public  long MchId { get; set; }
+        public  string UnionId { get; set; }
+        public  long? InvitedBy { get; set; }
+        public  string Mobile { get; set; }
+        public  AppTypes RegistrySource { get; set; }
+        public  string NickName { get; set; }
+        public  string Country { get; set; }
+        public  string Province { get; set; }
+        public  string City { get; set; }
+        public  string AvatarUrl { get; set; }
+        public  long CreatedTime { get; set; }
+        public  long LastActivityTime { get; set; }
 
         public string AppId { get; set; }
 

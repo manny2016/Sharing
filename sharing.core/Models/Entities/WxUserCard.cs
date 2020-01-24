@@ -3,26 +3,26 @@ namespace Sharing.Core.Entities
 {
     public class WxUserCard
     {
-        public virtual long WxUserId { get; set; }
+        public  long WxUserId { get; set; }
 
-        public virtual string AppId { get; set; }
+        public  string AppId { get; set; }
 
-        public virtual string OpenId { get; set; }
+        public  string OpenId { get; set; }
 
-        public virtual string CardId { get; set; }
+        public  string CardId { get; set; }
 
-        public virtual string UserCode { get; set; }
+        public  string UserCode { get; set; }
 
-        public virtual int Integral { get; set; }
+        public  int Integral { get; set; }
 
-        public virtual int Money { get; set; }
+        public  int Money { get; set; }
 
-        public virtual int RewardMoney { get; set; }
+        public  int RewardMoney { get; set; }
 
-        public virtual long LastTradeId { get; set; }
+        public  long LastTradeId { get; set; }
 
-        public virtual WxCardStates State { get; set; }
-        public virtual long CreatedTime { get; set; }
-        public virtual long LastActivityTime { get; set; }
+        public  WxCardStates State { get; set; }
+        public  long CreatedTime { get; set; }
+        public  long LastActivityTime { get; set; }
     }
 }

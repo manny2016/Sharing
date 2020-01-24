@@ -20,7 +20,7 @@ namespace Sharing.Core.Services
         }
         public Membership Register(RegisterWxUserContext context)
         {
-            using (var database = SharingConfigurations.GenerateDatabase(true))
+            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly: true) )
             {
 
                 var queryString = @"`spRegisterWeChatUser`";
@@ -60,7 +60,7 @@ namespace Sharing.Core.Services
             return this.cache.GetOrCreate<IList<ISharedContext>>(cacheKey, (entity) =>
             {
                 entity.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60);
-                using (var database = SharingConfigurations.GenerateDatabase(false))
+                using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
                 {
                     var queryString = @"SELECT `WxUserId` AS Id,`MchId`,`InvitedBy` FROM `sharing_sharingcontext` WHERE `MchId`=@MchId";
                     return database.SqlQuery<SharedContext>(queryString, new { MchId = mch.MchId })
@@ -80,7 +80,7 @@ namespace Sharing.Core.Services
         public void RegisterCardCoupon(RegisterCardCoupon registerCard)
         {
 
-            using (var database = SharingConfigurations.GenerateDatabase(true))
+            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:true))
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("p_AppId", registerCard.AppId);
