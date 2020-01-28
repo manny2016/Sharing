@@ -7,7 +7,7 @@ namespace Sharing.Core.Models
     public class SharedContext : ISharedContext
     {
         public long Id { get; set; }       
-        public long MchId { get; set; }
+        public long MerchantId { get; set; }
 
         public long? InvitedBy { get; set; }
     }

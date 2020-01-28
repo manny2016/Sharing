@@ -12,7 +12,7 @@ namespace Sharing.Core.Models
 
         public string OpenId { get; set; }
 
-        public long MchId { get; set; }
+        public long MerchantId { get; set; }
 
         
     }

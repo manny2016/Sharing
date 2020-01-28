@@ -25,19 +25,12 @@ namespace Sharing.Core.Services
                 return this.MemoryCache.GetOrCreate<IList<MerchantDetails>>(cacheKey, (entity) =>
                   {
                       var queryString = @"
-    SELECT  
-    merchant.Id,
-    merchant.MCode,
-    merchant.BrandName,
-    (
-	    SELECT CONCAT(
-        '[',
-		    GROUP_CONCAT(JSON_OBJECT('appid',wxapp.AppId,'OriginalId',wxapp.OriginalId,'secret',wxapp.Secret,'appType',wxapp.`AppType`)),
-        ']') FROM  
-        `sharing_mwechatapp` AS wxapp WHERE wxapp.MerchantId = merchant.Id
-    ) AS WxApps
-    FROM `sharing_merchant` AS merchant;
-    ";
+ SELECT [Id],[MCode],[BrandName],
+(
+	SELECT [AppId],[OriginalId],[Secret],[AppType] FROM [dbo].[MWeChatApp] (NOLOCK) [app] WHERE [app].[MerchantId] = [merchant].[Id]
+	FOR JSON PATH
+) AS WxApps
+FROM [dbo].[Merchant] (NOLOCK) [merchant]";
                       var result = new List<MerchantDetails>();
                       using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
                       {
@@ -59,25 +52,16 @@ namespace Sharing.Core.Services
                     using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
                     {
                         var queryString = @"
-SET group_concat_max_len := @@max_allowed_packet;
-SELECT Id,`Name`,`MchId`,
+SELECT 
+[categories].[Id],
+[categories].[Name],
+[categories].[MerchantId],
 (
-	SELECT CONCAT(
-    '[',
-		GROUP_CONCAT(JSON_OBJECT(
-        'id',products.`Id`,
-        'mchid',products.`MchId`,
-        'name',products.`Name`,
-        'price',products.`Price`,
-        'salesVol',products.`SalesVol`,
-        'sortNo',products.`SortNo`,
-        'imageUrl',products.`ImageUrl`
-       )),
-    ']') FROM  
-    `sharing_product` AS products WHERE  products.CategoryId = categories.Id AND Enabled = 1
+	SELECT [Id],[MerchantId],[Name],[Price],[SalesVol],[SortNo],[ImageUrl] FROM [Product] (NOLOCK) [products] 
+	WHERE [products].[CategoryId]= [categories].[Id] AND [products].[Enabled] = 1
+	FOR JSON PATH
 ) AS JsonString
-FROM `sharing_category` AS categories
-WHERE  Enabled = 1
+FROM [dbo].[Category] (NOLOCK) [categories] WHERE Enabled = 1
 ";
                         result = database.SqlQuery<Category>(queryString).Select((category) =>
                         {

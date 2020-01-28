@@ -11,7 +11,7 @@ namespace Sharing.Core
         /// 商户Id
         /// </summary>
         [JsonProperty("mchid")]
-        long MchId { get; }
+        long MerchantId { get; }
     }
     public interface ISharingUserId
     {

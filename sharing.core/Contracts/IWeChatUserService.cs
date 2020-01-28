@@ -21,7 +21,7 @@
 
         IList<ISharedContext> GetSharedContext(IMchId app);
 
-        long GetWxUserId(IWxUserKey key);
+     
         
     }
 }

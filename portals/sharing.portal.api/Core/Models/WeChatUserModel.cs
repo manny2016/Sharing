@@ -33,7 +33,7 @@ namespace Sharing.Portal.Api.Models
         public string AppId { get; set; }
 
         [JsonProperty("mchid")]
-        public long MchId { get; set; }
+        public long MerchantId { get; set; }
 
         [JsonProperty("id")]
         public long Id { get; set; }

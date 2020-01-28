@@ -12,6 +12,9 @@
         public static readonly long STICK_HOURLY = 60 * 60;
         public static long ToUnixStampDateTime(this DateTime dateTime)
         {
+			if(dateTime.Kind!= DateTimeKind.Utc ) {
+				dateTime = dateTime.ToUniversalTime();
+			}
             return ((dateTime.Ticks - UNIX_START_DATE.Ticks) / 10000000L) ;
             //return ((dateTime.Ticks - UNIX_START_DATE.Ticks) / 10000000L) + (3600 * 8);
         }

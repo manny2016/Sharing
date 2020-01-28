@@ -24,22 +24,23 @@ namespace Sharing.Core.Services
             
             var queryString = $@"
     INSERT INTO 
-    `sharing_trade`(MchId,WxUserId,Code,WxOrderId,TradeId,TradeType,TradeState,Money,RealMoney,CreatedTime,Attach, Strategy)
-    SELECT 
-    @pMchId,
-    (SELECT WxUserId FROM `sharing_wxuser_identity` WHERE AppId=@pAppId AND OpenId=@pOpenId LIMIT 1) AS WxUserId,
-    (SELECT COUNT(Id) + 1 FROM sharing_trade WHERE DATE(DATE_ADD('1970-01-01',INTERVAL CreatedTime SECOND)) = CURDATE()) AS `Code`,
+    [dbo].[Trade]([MerchantId],[WxUserId],[TradeCode],[WxOrderId],[TradeId],[TradeType],
+[TradeState],[Money],[RealMoney],[CreatedDateTime],[Attach], [Strategy])
+    VALUES( 
+    @pMerhantId,
+    (SELECT TOP 1 Id FROM [dbo].[WxUser] WHERE AppId=@pAppId AND OpenId=@pOpenId ) AS WxUserId,
+    (SELECT COUNT(Id) + 1 FROM [dbo].[Trade] WHERE CreatedDateTime / 86400 * 86400 = CONVERT(BIGINT,DATEDIFF(S,'1970-01-01',SYSDATETIME())) / 86400 * 86400) AS [TradeCode],
     @pWxOrderId AS WxOrderId,
     @pTradeId AS TradeId,
-    'Recharge' AS TradeType,
-    {(int)TradeStates.Newly} AS TradeState,
+    {(int)TradeTypes.Recharge} AS TradeType,
+    {(int)TradeStates.HavePay} AS TradeState,
     @pMoney AS Money,
     @pRealMoney AS RealMoney,
-    @pCreatedTime AS CreatedTime,
+    DATEDIFF(S,'1970-01-01',SYSUTCDATETIME()) AS CreatedDateTime,
     @pAttach AS Attach,
-    @pStrategy AS Strategy;
-    UPDATE `sharing_trade` SET TradeId=CONCAT(@prefix , LPAD(Id,10,'0')) WHERE WxOrderId = @pWxOrderId;
-    SELECT * FROM `sharing_trade` WHERE WxOrderId = @pWxOrderId LIMIT 1;
+    @pStrategy AS Strategy);
+    UPDATE [dbo].[Trade] SET TradeId=CONCAT(@prefix , [dbo].[funLpad](Id,10,'0')) WHERE WxOrderId = @pWxOrderId;
+    SELECT TOP 1 *  FROM [dbo].[Trade] WHERE WxOrderId = @pWxOrderId;
 ";
             //var pyramid = this.wxUserService.GetSharedContext(context as IWxUserKey)
             //    .BuildSharedPyramid(context as IWxUserKey, out long basicWxUserId);
@@ -57,17 +58,16 @@ namespace Sharing.Core.Services
             {
                 return database.SqlQuerySingleOrDefaultTransaction<Trade>(queryString, new
                 {
-                    pAppId = context.AppId,
-                    pMchId = context.MchId,
-                    pOpenId = context.OpenId,
-                    pWxOrderId = Guid.NewGuid().ToString().Replace("-", string.Empty),
-                    pTradeId = Guid.NewGuid().ToString().Replace("-", string.Empty),
-                    pMoney = context.Money,
-                    pRealMoney = context.Money + (context.Money * 0.2),
-                    pCreatedTime = DateTime.UtcNow.ToUnixStampDateTime(),
-                    pStrategy = "{}",
-                    pAttach = attach.SerializeToJson(),
-                    prefix = string.Format("T{0}", DateTime.UtcNow.ToString("yyyyMMdd"))
+                    @pAppId = context.AppId,
+					@pMerhantId = context.MerchantId,
+                    @pOpenId = context.OpenId,
+                    @pWxOrderId = Guid.NewGuid().ToString().Replace("-", string.Empty),
+                    @pTradeId = Guid.NewGuid().ToString().Replace("-", string.Empty),
+                    @pMoney = context.Money,
+                    @pRealMoney = context.Money + (context.Money * 0.2),                    
+                    @pStrategy = "{}",
+                    @pAttach = attach.SerializeToJson(),
+                    @prefix = string.Format("T{0}", DateTime.UtcNow.ToString("yyyyMMdd"))
                 });
             }
         }
@@ -75,7 +75,7 @@ namespace Sharing.Core.Services
 
         public Payment GetPayment(string appid)
         {
-            var queryString = "SELECT `Payment` FROM `sharing_mwechatapp` WHERE AppId=@AppId;";
+            var queryString = "SELECT [Payment] FROM [dbo].[MWeChatApp]  (NOLOCK) WHERE AppId=@AppId;";
             using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
             {
                 var app = database.SqlQuerySingleOrDefault<MWeChatApp>(queryString, new { AppId = appid });
@@ -85,7 +85,7 @@ namespace Sharing.Core.Services
 
         public Trade GetTradeByTradeId(string tradeId)
         {
-            var queryString = "SELECT * FROM `sharing_trade` WHERE `TradeId` =@tradeId";
+            var queryString = "SELECT * FROM [dbo].[Trade]  (NOLOCK) WHERE [TradeId] =@tradeId";
             using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly: false) )
             {
                 return database.SqlQuerySingleOrDefault<Trade>(queryString, new { tradeId = tradeId });
@@ -96,22 +96,22 @@ namespace Sharing.Core.Services
         {
             var queryString = $@"
     INSERT INTO 
-    `sharing_trade`(MchId,WxUserId,`Code`,WxOrderId,TradeId,TradeType,TradeState,Money,RealMoney,CreatedTime,Attach, Strategy)
-    SELECT 
+    [dbo].[Trade]([MerchantId],[WxUserId],[TradeCode],[WxOrderId],[TradeId],[TradeType],[TradeState],[Money],[RealMoney],[CreatedDateTime],[Attach], [Strategy])
+    SELECT  
     @pMchId,
-    (SELECT WxUserId FROM `sharing_wxuser_identity` WHERE AppId=@pAppId AND OpenId=@pOpenId LIMIT 1) AS WxUserId,
-    (SELECT COUNT(Id) + 1 FROM sharing_trade WHERE DATE(DATE_ADD('1970-01-01',INTERVAL CreatedTime SECOND)) = CURDATE()) AS `Code`,
+    (SELECT TOP 1 Id FROM [dbo].[WxUser] WHERE AppId=@pAppId AND OpenId=@pOpenId ) AS WxUserId,
+    (SELECT COUNT(Id) + 1 FROM [dbo].[Trade] WHERE CreatedDateTime / 86400 * 86400 = CONVERT(BIGINT,DATEDIFF(S,'1970-01-01',SYSDATETIME())) / 86400 * 86400) AS [Code],
     @pWxOrderId AS WxOrderId,
     @pTradeId AS TradeId,
-    'Consume' AS TradeType,
-    {(int)TradeStates.HavePay} AS TradeState,
+    {(int)TradeTypes.Consume} AS TradeType,
+    {(int)TradeStates.Newly} AS TradeState,
     @pMoney AS Money,
     @pRealMoney AS RealMoney,
-    @pCreatedTime AS CreatedTime,
+    DATEDIFF(S,'1970-01-01',SYSUTCDATETIME())  AS CreatedDateTime,
     @pAttach AS Attach,
     @pStrategy AS Strategy;
-    UPDATE `sharing_trade` SET TradeId=CONCAT(@prefix , LPAD(Id,10,'0')) WHERE WxOrderId = @pWxOrderId;
-    SELECT * FROM `sharing_trade` WHERE WxOrderId = @pWxOrderId LIMIT 1;
+    UPDATE [dbo].[Trade] SET TradeId=CONCAT(@prefix , [dbo].[funLpad](Id,10,'0')) WHERE WxOrderId = @pWxOrderId;
+    SELECT TOP 1 * FROM [dbo].[Trade] WHERE WxOrderId = @pWxOrderId ;
 ";
             //var pyramid = this.wxUserService.GetSharedContext(context as IWxUserKey)
             //    .BuildSharedPyramid(context as IWxUserKey, out long basicWxUserId);
@@ -131,17 +131,16 @@ namespace Sharing.Core.Services
             {
                 return database.SqlQuerySingleOrDefaultTransaction<Trade>(queryString, new
                 {
-                    pAppId = context.AppId,
-                    pOpenId = context.OpenId,
-                    pMchId = context.MchId,
-                    pWxOrderId = Guid.NewGuid().ToString().Replace("-", string.Empty),
-                    pTradeId = Guid.NewGuid().ToString().Replace("-", string.Empty),
-                    pMoney = context.Totalfee,
-                    pRealMoney = context.Totalfee,
-                    pCreatedTime = DateTime.UtcNow.ToUnixStampDateTime(),
-                    pStrategy = "{}",
-                    pAttach = context.SerializeToJson(),
-                    prefix = string.Format("T{0}", DateTime.UtcNow.ToString("yyyyMMdd"))
+                    @pAppId = context.AppId,
+                    @pOpenId = context.OpenId,
+                    @pMchId = context.MerchantId,
+                    @pWxOrderId = Guid.NewGuid().ToString().Replace("-", string.Empty),
+                    @pTradeId = Guid.NewGuid().ToString().Replace("-", string.Empty),
+                    @pMoney = context.Totalfee,
+                    @pRealMoney = context.Totalfee,                    
+                    @pStrategy = "{}",					
+					@pAttach = context.SerializeToJson(),
+                    @prefix = string.Format("T{0}", DateTime.UtcNow.ToString("yyyyMMdd"))
                 });
             }
         }

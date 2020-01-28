@@ -88,7 +88,7 @@ namespace Sharing.Agent.Delivery
             var results = await this.QueryOnineOrders(
                 new TradeStates[] { TradeStates.AckPay },
                 new TradeStates[] { TradeStates.Delivered });
-            foreach (var order in results.OrderBy(o => o.Code))
+            foreach (var order in results.OrderBy(o => o.TradeCode))
             {
                 var component = new OnlineOrderComponent(order);
                 component.Click += Component_Click;
@@ -136,8 +136,8 @@ namespace Sharing.Agent.Delivery
             if (action == "show")
             {
                 var delivery = order.Delivery == DeliveryTypes.BySelf ? "堂食" : "外送";
-                var group = new ListViewGroup($"单号:{order.Code};配送方式:{delivery}");
-                group.Tag = order.Code;
+                var group = new ListViewGroup($"单号:{order.TradeCode};配送方式:{delivery}");
+                group.Tag = order.TradeCode;
                 listView.Groups.Add(group);
                 foreach (var item in order.Items)
                 {
@@ -154,7 +154,7 @@ namespace Sharing.Agent.Delivery
             }
             else
             {
-                var groups = listView.Groups.Where(o => o.Tag.ToString().Equals(order.Code));
+                var groups = listView.Groups.Where(o => o.Tag.ToString().Equals(order.TradeCode));
                 groups.SelectMany(o => o.Items.Select(t => t)).Remove(listView);
                 groups.Remove(listView);
             }

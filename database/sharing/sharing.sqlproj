@@ -60,6 +60,9 @@
     <Folder Include="Scripts" />
     <Folder Include="dbo" />
     <Folder Include="dbo\Tables" />
+    <Folder Include="dbo\Types" />
+    <Folder Include="dbo\Produces" />
+    <Folder Include="dbo\Functions" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\Lemon.sql" />
@@ -74,5 +77,10 @@
     <Build Include="dbo\Tables\Trade.sql" />
     <Build Include="dbo\Tables\RewardLogging.sql" />
     <Build Include="dbo\Tables\WxUser.sql" />
+    <Build Include="dbo\Types\RegisterWeChatUserStructure.sql" />
+    <Build Include="dbo\Tables\SharedPyramid.sql" />
+    <Build Include="dbo\Produces\spRegisterWeChatUser.sql" />
+    <Build Include="dbo\Produces\spUpgradeSharedPyramid.sql" />
+    <Build Include="dbo\Functions\Function1.sql" />
   </ItemGroup>
 </Project>

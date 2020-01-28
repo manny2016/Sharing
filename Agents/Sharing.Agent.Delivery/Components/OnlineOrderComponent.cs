@@ -48,7 +48,7 @@ namespace Sharing.Agent.Delivery.Components
         {
             if (this.OrderContext != null)
             {
-                this.lab_Code.Text = this.OrderContext.Code;
+                this.lab_Code.Text = this.OrderContext.TradeCode;
                 this.lab_delivery.Text = this.OrderContext.Delivery == Sharing.Core.DeliveryTypes.BySelf ? "店内消费" : "外送";
                 this.lab_name.Text = string.IsNullOrEmpty(this.OrderContext.Name) ? "" : $"{this.OrderContext.Name.Substring(0, 1)}**";
                 this.lab_phone.Text = string.IsNullOrEmpty(this.OrderContext.Mobile)
@@ -84,7 +84,7 @@ namespace Sharing.Agent.Delivery.Components
         }
         private void UpgradeTradeState(TradeStates state)
         {
-            var url = string.Format(Constants.API, "UpgradeTradeState");
+            var url = string.Format(Sharing.Agent.Delivery.Constants.API, "UpgradeTradeState");
             var result = url.GetUriJsonContent<TradeStateResponse>((http) =>
             {
                 var data = new

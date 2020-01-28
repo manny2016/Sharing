@@ -14,7 +14,7 @@ namespace Sharing.Portal.Api
             return new OnlineOrder()
             {
                 TradeId = tradeid,
-                Code = code.ToString("000"),
+                TradeCode = code.ToString("000"),
                 Address = context.Address ?? string.Empty,
                 Mobile = context.Tel,
                 Name = context.Customer,

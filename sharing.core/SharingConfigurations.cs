@@ -2,6 +2,7 @@
 
 namespace Sharing.Core {
 	using Microsoft.Extensions.DependencyInjection;
+	using Microsoft.SqlServer.Server;
 	using Sharing.Core.Configuration;
 	using Sharing.Core.Models;
 	using System;
@@ -16,10 +17,13 @@ namespace Sharing.Core {
 
 		public static IDatabase GenerateDatabase(string database = DefaultDatabase, bool isWriteOnly = true,
 			System.Configuration.Configuration configuration = null) {
+			if ( configuration == null ) {
+				configuration = IoC.GetService<System.Configuration.Configuration>();
+			}
 			var section = DberverConfigurationSection.GetInstance(configuration);
 			if ( isWriteOnly ) {
 				return section.MasterDatabaseServer.GenerateDatabase(database);
-			} else {
+		} else {
 				var idx = 0;
 				if ( section.SlaveDatabaseServers.Count > 0 ) {
 					idx = DateTime.UtcNow.Second % section.SlaveDatabaseServers.Count;
@@ -28,6 +32,7 @@ namespace Sharing.Core {
 			}
 		}
 	}
+	
 	public static class BaiduConstant {
 		public const string AK = "xW5IbKeE3pXy8unP7hwmFdbAnFgPgNtc";
 		public const string SearchAPI = "http://api.map.baidu.com/place/v2/search";
@@ -47,5 +52,19 @@ namespace Sharing.Core {
 		public const string CloudAPI_CMQ_QUEUE_ENDPOINT = "https://cmq-queue-cd.api.qcloud.com";
 		public const int AllowSharedPyramidLevel = 2;
 	}
-
+	public static class Constants {
+		public static readonly SqlMetaData[] RegisterWeChatUserStructure = new SqlMetaData[] {
+			new SqlMetaData("UnionId", System.Data.SqlDbType.NVarChar,32),			
+			new SqlMetaData("AppId", System.Data.SqlDbType.NVarChar,32),
+			new SqlMetaData("OpenId", System.Data.SqlDbType.NVarChar,32),
+			new SqlMetaData("RegistrySource", System.Data.SqlDbType.Int),
+			new SqlMetaData("NickName", System.Data.SqlDbType.NVarChar,50),
+			new SqlMetaData("Country", System.Data.SqlDbType.NVarChar,50),
+			new SqlMetaData("Province", System.Data.SqlDbType.NVarChar,50),
+			new SqlMetaData("City", System.Data.SqlDbType.NVarChar,50),
+			new SqlMetaData("AvatarUrl", System.Data.SqlDbType.NVarChar,200),
+			new SqlMetaData("LastUpdatedBy", System.Data.SqlDbType.NVarChar,50),
+			new SqlMetaData("ScenarioId", System.Data.SqlDbType.UniqueIdentifier)
+		};
+	}
 }

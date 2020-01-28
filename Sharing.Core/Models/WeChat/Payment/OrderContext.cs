@@ -9,7 +9,7 @@ namespace Sharing.Core.Models
 
         [JsonProperty("appid")] public string AppId { get; set; }
 
-        public long MchId { get; set; }
+        public long MerchantId { get; set; }
 
         [JsonProperty("totalMoney")]
         public string Money { get; set; }

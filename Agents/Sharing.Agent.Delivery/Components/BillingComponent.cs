@@ -36,7 +36,7 @@ namespace Sharing.Agent.Delivery.Components
             }
 
             this.list_items.Top = lastPoint == null ? this.list_items.Top : lastPoint.Value.Y + 30;
-            this.lab_code.Text = string.Format(this.lab_code.Text, this.OnlineOrderContext.Code);
+            this.lab_code.Text = string.Format(this.lab_code.Text, this.OnlineOrderContext.TradeCode);
 
             this.lab_DeliveryType.Text = string.Format(this.lab_DeliveryType.Text,
                 this.OnlineOrderContext.Delivery == Sharing.Core.DeliveryTypes.BySelf ? "自提" : "外送");

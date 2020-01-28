@@ -8,6 +8,7 @@ namespace Sharing.Core
     public interface ISharingHostService:IMerchantService
     {        
         IList<MerchantDetails> MerchantDetails { get; }
+		IList<ProductTreeNodeModel> Products { get;}
 
-    }
+	}
 }

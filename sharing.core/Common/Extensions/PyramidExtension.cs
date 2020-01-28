@@ -27,7 +27,7 @@ namespace Sharing.Core
                 Id = basicSharedContext.Id,
                 Level = level,
                 Parent = null,
-                MchId = basic.MchId
+                MchId = basic.MerchantId
             };
             var lastInvitedBy = basicSharedContext.InvitedBy ?? 0;
             var lastPyramid = pyramid;
@@ -37,10 +37,10 @@ namespace Sharing.Core
                 var sharedContext = context.FirstOrDefault(o => o.Id.Equals(lastInvitedBy));
                 if (sharedContext == null )
                 {
-                    lastPyramid.Parent = new SharedPyramid() { Id = lastInvitedBy, Level = level, MchId = basic.MchId, Parent = null };
+                    lastPyramid.Parent = new SharedPyramid() { Id = lastInvitedBy, Level = level, MchId = basic.MerchantId, Parent = null };
                     break;
                 }
-                var parent = new SharedPyramid() { Id = sharedContext.Id, Level = level, MchId = basic.MchId, Parent = null };
+                var parent = new SharedPyramid() { Id = sharedContext.Id, Level = level, MchId = basic.MerchantId, Parent = null };
                 lastPyramid.Parent = parent;
                 lastInvitedBy = sharedContext.InvitedBy??0;
                 lastPyramid = parent;

@@ -24,7 +24,7 @@ namespace Sharing.Core.Models
         public string Mobile { get; set; }
 
         [JsonProperty("code")]
-        public string Code { get; set; }
+        public string TradeCode { get; set; }
 
         [JsonProperty("items")]
         public OnlineOrderItem[] Items { get; set; }

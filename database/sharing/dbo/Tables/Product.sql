@@ -9,6 +9,7 @@
 	[SortNo] INT,
 	[Enabled] BIT DEFAULT(1),
 	[Description] NVARCHAR(200),
+	[ImageUrl] NVARCHAR(2000),
 	[CreatedDateTime] BIGINT NULL, 
     [LastUpdatedTime] BIGINT NULL, 
     [CreatedBy] NVARCHAR(50) NULL, 

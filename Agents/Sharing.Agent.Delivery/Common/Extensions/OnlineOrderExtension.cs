@@ -98,7 +98,7 @@ namespace Sharing.Agent.Delivery
             {
                 for (int i = 0; i < item.Count; i++)
                 {
-                    var memo = new MemoComponent(order.Code,item.Product,item.Option,index, count);
+                    var memo = new MemoComponent(order.TradeCode,item.Product,item.Option,index, count);
                     PrintDocument doc = new PrintDocument();
                     doc.PrintPage += (sender, ev) =>
                     {

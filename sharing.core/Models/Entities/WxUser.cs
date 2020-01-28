@@ -5,7 +5,7 @@ namespace Sharing.Core.Entities
     public class WxUser : IWxUserKey, ISharedContext
     {
         public  long Id { get; set; }
-        public  long MchId { get; set; }
+        public  long MerchantId { get; set; }
         public  string UnionId { get; set; }
         public  long? InvitedBy { get; set; }
         public  string Mobile { get; set; }
