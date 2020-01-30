@@ -68,6 +68,7 @@ namespace Sharing.Portal.Api
             });
             app.UseHttpsRedirection();
             app.UseMvc();
+			
         }
     }
 }

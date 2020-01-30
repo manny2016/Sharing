@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "http://localhost:5001/Sharing.Portal.Api",
+      "applicationUrl": "http://localhost/",
       "sslPort": 0
     },
     "iisExpress": {
@@ -14,16 +14,18 @@
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
     "IIS Express": {
-      "commandName": "IISExpress",
+      "commandName": "IIS",
       "workingDirectory": "D:\\Workspace\\repos\\Sharing\\Portals\\Sharing.Portal.Api",
       "launchBrowser": true,
       "launchUrl": "api/sharing/test",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "use64Bit": true
     },
     "Sharing.Core.Api": {
-      "commandName": "IIS",
+      "commandName": "IISExpress",
+      "workingDirectory": "D:\\Workspace\\repos\\Sharing\\Portals\\Sharing.Portal.Api",
       "launchBrowser": true,
       "launchUrl": "api/sharing/test",
       "environmentVariables": {

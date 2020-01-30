@@ -8,7 +8,7 @@ namespace Sharing.Core {
 
 	public static class IoC {
 		private static IServiceCollection services;
-		private static ServiceProvider provider;
+		private static IServiceProvider provider;
 
 		public static void ConfigureServiceProvider(IServiceCollection collection = null
 			, Action<IServiceCollection> configure = null) {
@@ -35,6 +35,11 @@ namespace Sharing.Core {
 		public static IEnumerable<T> GetServices<T>() {
 			if ( provider == null ) throw new NullReferenceException("Need run ConfigureServiceProvider first");
 			return provider.GetServices<T>();
+		}
+		public static void SetServiceProvider(IServiceProvider serviceProvider) {
+			if ( provider == null ) {
+				provider =serviceProvider;
+			}
 		}
 	}
 }

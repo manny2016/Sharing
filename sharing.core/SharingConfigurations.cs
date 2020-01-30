@@ -1,12 +1,12 @@
 ﻿
 
 namespace Sharing.Core {
+	using Microsoft.Extensions.Configuration;
 	using Microsoft.Extensions.DependencyInjection;
 	using Microsoft.SqlServer.Server;
 	using Sharing.Core.Configuration;
-	using Sharing.Core.Models;
 	using System;
-	using System.Collections.Generic;
+	using System.Linq;
 
 	public static class SharingConfigurations {
 		static SharingConfigurations() {
@@ -16,23 +16,25 @@ namespace Sharing.Core {
 		public const string DefaultDatabase = "sharing-dev";
 
 		public static IDatabase GenerateDatabase(string database = DefaultDatabase, bool isWriteOnly = true,
-			System.Configuration.Configuration configuration = null) {
+			Microsoft.Extensions.Configuration.IConfiguration configuration = null) {
 			if ( configuration == null ) {
-				configuration = IoC.GetService<System.Configuration.Configuration>();
+				configuration = IoC.GetService<Microsoft.Extensions.Configuration.IConfiguration>();
 			}
-			var section = DberverConfigurationSection.GetInstance(configuration);
+
+			var section = configuration.GetSection(DbConfiguration.SectionName).Get<DbConfiguration>();
 			if ( isWriteOnly ) {
-				return section.MasterDatabaseServer.GenerateDatabase(database);
-		} else {
+				return section.Master.GenerateDatabase(section.Database);
+				
+			} else {
 				var idx = 0;
-				if ( section.SlaveDatabaseServers.Count > 0 ) {
-					idx = DateTime.UtcNow.Second % section.SlaveDatabaseServers.Count;
+				if ( section.Slaves.Length > 0 ) {
+					idx = DateTime.UtcNow.Second % section.Slaves.Length;
 				}
-				return section.SlaveDatabaseServers[idx].GenerateDatabase(database);
+				return section.Slaves[idx].GenerateDatabase(section.Database);
 			}
 		}
 	}
-	
+
 	public static class BaiduConstant {
 		public const string AK = "xW5IbKeE3pXy8unP7hwmFdbAnFgPgNtc";
 		public const string SearchAPI = "http://api.map.baidu.com/place/v2/search";
@@ -54,7 +56,7 @@ namespace Sharing.Core {
 	}
 	public static class Constants {
 		public static readonly SqlMetaData[] RegisterWeChatUserStructure = new SqlMetaData[] {
-			new SqlMetaData("UnionId", System.Data.SqlDbType.NVarChar,32),			
+			new SqlMetaData("UnionId", System.Data.SqlDbType.NVarChar,32),
 			new SqlMetaData("AppId", System.Data.SqlDbType.NVarChar,32),
 			new SqlMetaData("OpenId", System.Data.SqlDbType.NVarChar,32),
 			new SqlMetaData("RegistrySource", System.Data.SqlDbType.Int),

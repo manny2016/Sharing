@@ -29,18 +29,23 @@ namespace Sharing.Portal.Api
                 {
                     var evn = hostingContext.HostingEnvironment;
                     config.AddEnvironmentVariables();
-                    config
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                    .AddJsonFile("appsettings.Development.json",
-                      optional: true, reloadOnChange: true);
+#if DEBUG
+					config.AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
+#else
+					config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+#endif
+					
 
-                })
+				})
                 .ConfigureLogging((hostingContext, logging) =>
                 {
 
                 })
                 .ConfigureServices((collection) =>
                 {
+					IoC.ConfigureServiceProvider(collection,(configure)=>{
+
+					});
                     collection.AddWeChatApiService();
                     collection.AddRandomGenerator();
                     collection.AddSharingHostService();
@@ -60,6 +65,8 @@ namespace Sharing.Portal.Api
                         provider.GetService<ISharingHostService>(),
                         provider.GetService<IWeChatMsgHandler>()
                         )));
+					
+					
                 });
             builder.Build().Run();
 

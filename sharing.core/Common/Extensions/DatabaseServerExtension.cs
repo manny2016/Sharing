@@ -32,7 +32,7 @@ namespace Sharing.Core
                 MinPoolSize = 50,
                 /*
                  * https://docs.microsoft.com/en-us/azure/sql-database/sql-database-resource-limits#service-tiers-and-performance-levels
-                 *    eDTUs    50   100   125   200   250   300   400   500   800  1000  1200  1500  1600  2000  2500  3000  3500  4000
+                 * eDTUs    50   100   125   200   250   300   400   500   800  1000  1200  1500  1600  2000  2500  3000  3500  4000
                  * Basic:     100   200   n/a   400   n/a   600   800   n/a  1600   n/a  2400   n/a  3200   n/a   n/a   n/a   n/a   n/a
                  * Standard:  100   200   n/a   400   n/a   600   800   n/a  1600   n/a  2400   n/a  3200  4000  5000  6000   n/a   n/a
                  * Premium:   n/a   n/a   200   n/a   400   n/a   n/a   800   n/a  1600   n/a  2400   n/a  3200  4000  4800  5600  6400

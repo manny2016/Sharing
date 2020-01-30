@@ -227,10 +227,7 @@ namespace Sharing.Portal.Api
             //Logger.Info("this is a test");
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             this.Response.Body.Write(
-               (string.IsNullOrEmpty(environmentName) ? "environment is null" : environmentName).ToBytes());
-            //client.Test();
-            //client.QueryWxUsers();
-            //
+               (string.IsNullOrEmpty(environmentName) ? "environment is null" : environmentName).ToBytes());           
         }
 
         /// <summary>
