@@ -12,10 +12,10 @@
 	[AvatarUrl] NVARCHAR(200),
 	[AppId] NVARCHAR(32),
 	[OpenId] NVARCHAR(32),
-	[CreatedDateTime] BIGINT NULL, 
-    [LastUpdatedDateTime] BIGINT NULL, 
-    [CreatedBy] NVARCHAR(50) NULL, 
-    [LastUpdatedBy] NVARCHAR(50) NULL ,
+	[CreatedBy] NVARCHAR(50) NULL, 
+	[CreatedDateTime] BIGINT NULL,         
+	[LastUpdatedBy] NVARCHAR(50) NULL,
+	[LastUpdatedDateTime] BIGINT NULL, 
 	[ScenarioId] UNIQUEIDENTIFIER NULL
 	
 )

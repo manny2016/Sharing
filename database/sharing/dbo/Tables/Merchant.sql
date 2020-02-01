@@ -5,9 +5,9 @@
 	[BrandName] NVARCHAR(100) NOT NULL,
 	[LogoUrl] NVARCHAR(100) NULL,
 	[Address] NVARCHAR(100) NULL, 
-    [CreatedDateTime] BIGINT NULL, 
-    [LastUpdatedTime] BIGINT NULL, 
-    [CreatedBy] NVARCHAR(50) NULL, 
-    [LastUpdatedBy] NVARCHAR(50) NULL,
+	[CreatedBy] NVARCHAR(50) NULL, 
+	[CreatedDateTime] BIGINT NULL,         
+	[LastUpdatedBy] NVARCHAR(50) NULL,
+	[LastUpdatedDateTime] BIGINT NULL, 
 	[ScenarioId] UNIQUEIDENTIFIER NULL
 )

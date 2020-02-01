@@ -11,8 +11,8 @@ namespace Sharing.Core.Models
         [JsonProperty("options")]
         public SpecificationSettings[] Options { get; set; }
 
-        [JsonProperty("current")]
-        public int Default { get; set; }
+        [JsonProperty("selected")]
+        public int Selected { get; set; }
     }
     public class ProductSettings
     {
@@ -33,6 +33,11 @@ namespace Sharing.Core.Models
 
         [JsonProperty("price")]
         public int Price { get; set; }
+
+		[JsonProperty("isDefault")]
+		public bool IsDefault {
+			get;set;
+		}
         
         
     }

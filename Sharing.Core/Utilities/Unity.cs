@@ -8,9 +8,9 @@ namespace Sharing.Core {
 	public static class Unity {
 		public static SqlDataRecord Convert(RegisterWxUserContext model) {
 			if ( model == null ) { return null; }
-			var record = new SqlDataRecord(Constants.RegisterWeChatUserStructure);
-			for ( var i = 0; i < Constants.RegisterWeChatUserStructure.Length; i++ ) {
-				switch ( Constants.RegisterWeChatUserStructure[i].Name ) {
+			var record = new SqlDataRecord(DAOConstants.RegisterWeChatUserStructure);
+			for ( var i = 0; i < DAOConstants.RegisterWeChatUserStructure.Length; i++ ) {
+				switch ( DAOConstants.RegisterWeChatUserStructure[i].Name ) {
 					case "UnionId":
 						record.SetString(i, model.Info.UnionId);
 						break;

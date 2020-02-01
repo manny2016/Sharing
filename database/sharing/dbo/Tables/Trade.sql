@@ -13,9 +13,9 @@
 	[ConfirmTime] BIGINT NULL,
 	[Attach] NVARCHAR(MAX) NULL,
 	[Strategy] NVARCHAR(MAX) NULL,
-	[CreatedDateTime] BIGINT NULL, 
-    [LastUpdatedTime] BIGINT NULL, 
-    [CreatedBy] NVARCHAR(50) NULL, 
-    [LastUpdatedBy] NVARCHAR(50) NULL              ,
+	[CreatedBy] NVARCHAR(50) NULL, 
+	[CreatedDateTime] BIGINT NULL,         
+	[LastUpdatedBy] NVARCHAR(50) NULL,
+	[LastUpdatedDateTime] BIGINT NULL,             
 	[ScenarioId] UNIQUEIDENTIFIER NULL
 )

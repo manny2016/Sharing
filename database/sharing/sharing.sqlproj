@@ -14,7 +14,7 @@
     </RootPath>
     <RootNamespace>sharing</RootNamespace>
     <AssemblyName>sharing</AssemblyName>
-    <ModelCollation>1033, CI</ModelCollation>
+    <ModelCollation>2052,CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
@@ -23,6 +23,7 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <DefaultCollation>Chinese_PRC_CI_AS</DefaultCollation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -63,9 +64,10 @@
     <Folder Include="dbo\Types" />
     <Folder Include="dbo\Produces" />
     <Folder Include="dbo\Functions" />
+    <Folder Include="Scripts\Upgrade" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Scripts\Lemon.sql" />
+    <PostDeploy Include="Scripts\Lemon.sql" />
     <None Include="Sharing-Production.publish.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -82,5 +84,8 @@
     <Build Include="dbo\Produces\spRegisterWeChatUser.sql" />
     <Build Include="dbo\Produces\spUpgradeSharedPyramid.sql" />
     <Build Include="dbo\Functions\Function1.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sharing.publish.xml" />
   </ItemGroup>
 </Project>

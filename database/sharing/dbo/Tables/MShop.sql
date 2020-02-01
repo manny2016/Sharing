@@ -5,9 +5,9 @@
     [WxShopId]  BIGINT,
 	[ShopName] NVARCHAR(100),
 	[Address] NVARCHAR(200),
-	[CreatedDateTime] BIGINT NULL, 
-    [LastUpdatedTime] BIGINT NULL, 
-    [CreatedBy] NVARCHAR(50) NULL, 
-    [LastUpdatedBy] NVARCHAR(50) NULL,
+	[CreatedBy] NVARCHAR(50) NULL, 
+	[CreatedDateTime] BIGINT NULL,         
+	[LastUpdatedBy] NVARCHAR(50) NULL,
+	[LastUpdatedDateTime] BIGINT NULL, 
 	[ScenarioId] UNIQUEIDENTIFIER NULL
 )

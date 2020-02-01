@@ -18,8 +18,9 @@ namespace Sharing.Portal.Api
     using System.Xml;
     using System.Reflection;
     using Sharing.WeChat.Models;
+	using Sharing.Portal.Api.Filters;
 
-    public class Program
+	public class Program
     {
         public static IWebHostBuilder builder;
         public static void Main(string[] args)
@@ -54,7 +55,9 @@ namespace Sharing.Portal.Api
                     collection.AddMcardService();
                     collection.AddMemoryCache();
                     collection.AddWeChatMsgHandler();
-                    
+					collection.AddMvc((setup) => {
+						setup.Filters.Add(new ExceptionFilter());
+					});
                     var provider = collection.BuildServiceProvider();
                     collection.Add(new ServiceDescriptor(typeof(ModelClient), new ModelClient(
                         provider.GetService<IWeChatApi>(),
@@ -69,9 +72,6 @@ namespace Sharing.Portal.Api
 					
                 });
             builder.Build().Run();
-
-
-
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

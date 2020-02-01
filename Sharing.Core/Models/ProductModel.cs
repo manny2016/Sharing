@@ -10,8 +10,10 @@ namespace Sharing.Core.Models
         public long Id { get; set; }
 
         [JsonProperty("mchid")]
-        public long MchId { get; set; }
+        public long MerchantId { get; set; }
 
+		[JsonIgnore]
+		public long CategoryId { get;set;}
         [JsonProperty("name")]
         public string Name { get; set; }
 
@@ -56,6 +58,8 @@ namespace Sharing.Core.Models
         [JsonIgnore]
         public string Settings { get; set; }
 
+		[JsonProperty("enabled")]
+		public bool Enabled { get;set;}
     }
     public class ProductTreeNodeModel
     {

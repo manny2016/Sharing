@@ -6,9 +6,9 @@
 	[Secret] NVARCHAR(32) NOT NULL,
 	[OriginalId] NVARCHAR(32) NOT NULL CONSTRAINT [UK_WeChatApp_OriginalId] UNIQUE([OriginalId]) ,
 	[Payment] NVARCHAR(MAX),
-	[CreatedDateTime] BIGINT NULL, 
-    [LastUpdatedDateTime] BIGINT NULL,
 	[CreatedBy] NVARCHAR(50) NULL, 
-    [LastUpdatedBy] NVARCHAR(50) NULL,
+	[CreatedDateTime] BIGINT NULL,         
+	[LastUpdatedBy] NVARCHAR(50) NULL,
+	[LastUpdatedDateTime] BIGINT NULL, 
 	[ScenarioId] UNIQUEIDENTIFIER NULL
 )

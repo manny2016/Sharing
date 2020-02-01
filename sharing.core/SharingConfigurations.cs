@@ -54,7 +54,7 @@ namespace Sharing.Core {
 		public const string CloudAPI_CMQ_QUEUE_ENDPOINT = "https://cmq-queue-cd.api.qcloud.com";
 		public const int AllowSharedPyramidLevel = 2;
 	}
-	public static class Constants {
+	public static class DAOConstants {
 		public static readonly SqlMetaData[] RegisterWeChatUserStructure = new SqlMetaData[] {
 			new SqlMetaData("UnionId", System.Data.SqlDbType.NVarChar,32),
 			new SqlMetaData("AppId", System.Data.SqlDbType.NVarChar,32),

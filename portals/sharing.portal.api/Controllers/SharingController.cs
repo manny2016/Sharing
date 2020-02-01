@@ -224,6 +224,7 @@ namespace Sharing.Portal.Api
         [HttpPost]
         public void Test()
         {
+			throw new NullReferenceException("xx");
             //Logger.Info("this is a test");
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             this.Response.Body.Write(
