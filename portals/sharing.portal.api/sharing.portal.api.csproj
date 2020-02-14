@@ -15,9 +15,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Images\banners\banner-01.jpg" />
+    <None Remove="Images\banners\banner-02.jpg" />
+    <None Remove="Images\banners\banner-03.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\banners\banner-01.jpg" />
+    <Content Include="Images\banners\banner-02.jpg" />
+    <Content Include="Images\banners\banner-03.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Core\Models\ApiResponse\" />
     <Folder Include="Core\Services\" />
-    <Folder Include="Images\" />
   </ItemGroup>
 
   <ItemGroup>

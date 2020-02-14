@@ -57,7 +57,7 @@ SELECT
 [categories].[Name],
 [categories].[MerchantId],
 (
-	SELECT [Id],[MerchantId],[Name],[Price],[SalesVol],[SortNo],[ImageUrl] FROM [Product] (NOLOCK) [products] 
+	SELECT [Id],[MerchantId] AS [MchId],[Name],[Price],[SalesVol],[SortNo],[ImageUrl],[Settings] AS [options] FROM [Product] (NOLOCK) [products] 
 	WHERE [products].[CategoryId]= [categories].[Id] AND [products].[Enabled] = 1
 	FOR JSON PATH
 ) AS JsonString
@@ -65,13 +65,14 @@ FROM [dbo].[Category] (NOLOCK) [categories] WHERE Enabled = 1
 ";
                         result = database.SqlQuery<Category>(queryString).Select((category) =>
                         {
-                            return new ProductTreeNodeModel()
+							var model =  new ProductTreeNodeModel()
                             {
                                 CategoryId = category.Id,
                                 CategoryName = category.Name,
                                 MchId = category.MerchantId,
                                 Products = (category.JsonString ?? "[]").DeserializeToObject<ProductModel[]>()
                             };
+							return model;
                         }).ToList();
 
                     }

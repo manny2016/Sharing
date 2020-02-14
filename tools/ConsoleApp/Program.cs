@@ -23,6 +23,7 @@ namespace ConsoleApp {
 						 new SpecificationSettings(){
 							  Name = "标杯",
 							  Price = 0,
+							   IsDefault = true,
 						 },
 						 new SpecificationSettings(){
 							 Name = "大杯",
@@ -37,6 +38,7 @@ namespace ConsoleApp {
 						 new SpecificationSettings(){
 							  Name = "常温",
 							  Price = 0,
+							  IsDefault = true
 						 },
 						 new SpecificationSettings(){
 							  Name = "温热",
@@ -56,20 +58,7 @@ namespace ConsoleApp {
 						 }
 					 }
 				},
-				new Specification(){
-					 Selected =0,
-					 Name ="配送方式",
-					 Options = new SpecificationSettings[]{
-						 new SpecificationSettings(){
-							  Name = "自提",
-							  Price = 0,
-						 },
-						 new SpecificationSettings(){
-							  Name = "外送",
-							  Price = 5,
-						 }
-					 }
-				}
+
 			};
 			var ziyun = new Specification[] {
 				new Specification(){
@@ -79,6 +68,7 @@ namespace ConsoleApp {
 						 new SpecificationSettings(){
 							 Name = "大杯",
 							 Price =0,
+							 IsDefault  = true,
 						 }
 					 }
 				},
@@ -89,6 +79,7 @@ namespace ConsoleApp {
 						 new SpecificationSettings(){
 							  Name = "常温",
 							  Price = 0,
+							  IsDefault = true
 						 },
 						 new SpecificationSettings(){
 							  Name = "温热",
@@ -105,20 +96,6 @@ namespace ConsoleApp {
 						 new SpecificationSettings(){
 							 Name = "多冰",
 							 Price =0,
-						 }
-					 }
-				},
-				new Specification(){
-					 Selected =0,
-					 Name ="配送方式",
-					 Options = new SpecificationSettings[]{
-						 new SpecificationSettings(){
-							  Name = "自提",
-							  Price = 0,
-						 },
-						 new SpecificationSettings(){
-							  Name = "外送",
-							  Price = 5,
 						 }
 					 }
 				}
@@ -131,6 +108,7 @@ namespace ConsoleApp {
 						 new SpecificationSettings(){
 							 Name = "标杯",
 							 Price =0,
+							 IsDefault =true,
 						 }
 					 }
 				},
@@ -141,6 +119,7 @@ namespace ConsoleApp {
 						 new SpecificationSettings(){
 							  Name = "常温",
 							  Price = 0,
+							  IsDefault = true
 						 },
 						 new SpecificationSettings(){
 							  Name = "温热",
@@ -159,21 +138,8 @@ namespace ConsoleApp {
 							 Price =0,
 						 }
 					 }
-				},
-				new Specification(){
-					 Selected =0,
-					 Name ="配送方式",
-					 Options = new SpecificationSettings[]{
-						 new SpecificationSettings(){
-							  Name = "自提",
-							  Price = 0,
-						 },
-						 new SpecificationSettings(){
-							  Name = "外送",
-							  Price = 5,
-						 }
-					 }
 				}
+
 			};
 			var products = new ProductModel[] {
 				GenernateProductModel(1,"椰果奶茶",1,800,naicha),
@@ -247,7 +213,7 @@ VALUES([source].[Id] ,[source].[MerchantId] ,[source].[CategoryId] ,[source].[Na
 					(ctx.Enabled?1:0).ToString(),
 					"''",
 					$"'{ctx.ImageUrl}'",
-					$"'{ctx.Settings}'",
+					$"'{ctx.Options}'",
 					"'Initialization'",
 					"DATEDIFF(S,'1970-01-01',SYSUTCDATETIME())",
 					"'Initialization'",
@@ -265,7 +231,10 @@ VALUES([source].[Id] ,[source].[MerchantId] ,[source].[CategoryId] ,[source].[Na
 				Price = defaultPrice,
 				ImageUrl = string.Empty,
 				SalesVol = 0,
-				Settings = specifications.SerializeToJson(),
+				Options = (new {
+					banners = new string[] { },
+					specifications = specifications
+				}).SerializeToJson(),
 				SortNo = 1,
 				Enabled = true
 			};
