@@ -84,6 +84,7 @@
     <Build Include="dbo\Produces\spRegisterWeChatUser.sql" />
     <Build Include="dbo\Produces\spUpgradeSharedPyramid.sql" />
     <Build Include="dbo\Functions\Function1.sql" />
+    <Build Include="dbo\Produces\spPaymentConfirmforConsume.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sharing.publish.xml" />

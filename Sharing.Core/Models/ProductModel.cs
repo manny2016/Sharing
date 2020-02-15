@@ -2,7 +2,7 @@
 namespace Sharing.Core.Models {
 	using Newtonsoft.Json;
 	using Newtonsoft.Json.Linq;
-
+	using System.Linq;
 	public class ProductModel {
 		[JsonProperty("id")]
 		public long Id { get; set; }
@@ -50,8 +50,14 @@ namespace Sharing.Core.Models {
 			set {
 				this.options = value;
 				this.ProductSettings = (value ?? "{}").DeserializeToObject<ProductSettings>();
-
-
+				this.ProductSettings.Specifications?.ForEach((ctx) => {
+					for ( var index = 0; index < ctx.Options.Length; index++ ) {
+						if ( ctx.Options[index].IsDefault ) {
+							ctx.Selected = index;
+							break;
+						}
+					}
+				});
 			}
 		}
 

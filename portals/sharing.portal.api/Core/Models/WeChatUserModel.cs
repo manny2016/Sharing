@@ -23,7 +23,7 @@ namespace Sharing.Portal.Api.Models
         }
 
         [JsonProperty("rewardMoney")]
-        public string RewardMoney { get; set; }
+        public int RewardMoney { get; set; }
 
 
         [JsonProperty("mobile")]

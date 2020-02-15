@@ -155,7 +155,7 @@ new {
 							}
 					   },
 				MerchantId = 42,
-				Money = "100",
+				Money = 100,
 				OpenId = "0377f35bd3a34d90bc2dd5731126fc0b",
 				Remarks = "xx"
 

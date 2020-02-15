@@ -2,7 +2,8 @@
 
 namespace Sharing.Core.Models
 {
-    using Newtonsoft.Json;
+	using System.Collections.Generic;
+	using Newtonsoft.Json;
     public class Specification
     {
         [JsonProperty("name")]
@@ -11,7 +12,7 @@ namespace Sharing.Core.Models
         [JsonProperty("options")]
         public SpecificationSettings[] Options { get; set; }
 
-        [JsonProperty("selected")]
+        [JsonProperty("current")]
         public int Selected { get; set; }
     }
     public class ProductSettings
@@ -23,7 +24,7 @@ namespace Sharing.Core.Models
         /// 产品规格选项
         /// </summary>
         [JsonProperty("specifications")]
-        public Specification[] Specifications { get; set; }
+        public List<Specification> Specifications { get; set; }
     }
 
     public class SpecificationSettings

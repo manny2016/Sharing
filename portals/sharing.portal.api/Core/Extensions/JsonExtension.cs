@@ -18,7 +18,7 @@ namespace Sharing.Portal.Api
                 Address = context.Address ?? string.Empty,
                 Mobile = context.Tel,
                 Name = context.Customer,
-                Total = context.Money.DecimalValue(),
+                Total = context.Money,
                 Items = context.Details.Select(ctx =>
                 {
                     return new OnlineOrderItem()

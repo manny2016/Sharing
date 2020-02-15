@@ -9,23 +9,13 @@ namespace Sharing.Core.Models
 
         [JsonProperty("appid")] public string AppId { get; set; }
 
+		[JsonProperty("mchid")]
         public long MerchantId { get; set; }
 
         [JsonProperty("totalMoney")]
-        public string Money { get; set; }
+        public int Money { get; set; }
 
-        [JsonIgnore]
-        public int? Totalfee
-        {
-            get
-            {
-                if (int.TryParse(this.Money, out int result))
-                {
-                    return result * 100;
-                }
-                return null;
-            }
-        }
+       
         /// <summary>
         /// 派送费
         /// </summary>

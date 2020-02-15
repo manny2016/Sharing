@@ -125,7 +125,7 @@ namespace Sharing.Core.Services
             };
             
             //context.Money = context.Totalfee.ToString();
-            attach.Sign(context.Totalfee ?? 0);
+            attach.Sign(context.Money );
             
             using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly: true) )
             {
@@ -136,8 +136,8 @@ namespace Sharing.Core.Services
                     @pMchId = context.MerchantId,
                     @pWxOrderId = Guid.NewGuid().ToString().Replace("-", string.Empty),
                     @pTradeId = Guid.NewGuid().ToString().Replace("-", string.Empty),
-                    @pMoney = context.Totalfee,
-                    @pRealMoney = context.Totalfee,                    
+                    @pMoney = context.Money,
+                    @pRealMoney = context.Money,                    
                     @pStrategy = "{}",					
 					@pAttach = context.SerializeToJson(),
                     @prefix = string.Format("T{0}", DateTime.UtcNow.ToString("yyyyMMdd"))

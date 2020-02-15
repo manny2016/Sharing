@@ -379,7 +379,7 @@ namespace Sharing.Core
                 GoodsTag = "奶茶饮品",
                 TradeType = "JSAPI",
                 MchId = mchid,
-                Totalfee = context.Totalfee,
+                Totalfee = context.Money,
                 NotifyUrl = "https://www.yourc.club/api/sharing/PayNotify",
                 SpbillCreateIp = "118.24.139.228",
                 NonceStr = noceStr,

@@ -19,5 +19,10 @@ namespace Sharing.WeChat.Models
 
         [JsonProperty("paySign")]
         public string paySign { get; set; }
-    }
+
+		[JsonProperty("tradeId")]
+		public string TradeId { get;set;}
+		[JsonProperty("wxOrderId")]
+		public string WxOrderId { get;set;}
+	}
 }

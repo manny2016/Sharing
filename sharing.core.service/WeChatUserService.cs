@@ -31,8 +31,11 @@ namespace Sharing.Core.Services {
 					}
 				};
 				database.Execute(queryString, parameters, System.Data.CommandType.StoredProcedure);
-				queryString = 
-@"SELECT [user].[Id],[user].[AppId],[Mobile],[app].[MerchantId] FROM [dbo].[WxUser] (NOLOCK) [user]
+				queryString =
+@"SELECT [user].[Id],[user].[AppId],[user].[UnionId],[user].[OpenId],
+[Mobile],[app].[MerchantId],
+(SELECT SUM([RewardMoney])  FROM [dbo].[RewardLogging] (NOLOCK) [reward] WHERE [reward].[WxUserId]= [user].[Id] ) AS [RewardMoney]
+FROM [dbo].[WxUser] (NOLOCK) [user]
 LEFT JOIN [dbo].[MWeChatApp] (NOLOCK) [app]
 	ON [user].[AppId] = [app].[AppId]
 WHERE [user].[AppId] =@appid and [user].[OpenId]  =@openid";

@@ -14,6 +14,9 @@ namespace Sharing.Portal.Api {
 	using System.Text;
 	using Dapper;
 	using Sharing.Core.CMQ;
+	using System.Data;
+	using System.Data.SqlClient;
+
 	public class ModelClient {
 		private readonly IWeChatApi wxapi;
 		private readonly IWeChatUserService wxUserService;
@@ -56,11 +59,11 @@ namespace Sharing.Portal.Api {
 			return new WeChatUserModel() {
 				Mobile = membership.Mobile,
 				OpenId = membership.OpenId,
-				UnionId = info.UnionId,
-				Id = membership.Id ?? 0,
+				UnionId = membership.UnionId,
+				Id = membership.Id,
 				AppId = membership.AppId,
-				MerchantId = membership.MerchantId ?? 0,
-				RewardMoney = ((membership.RewardMoney ?? 0) / 100).ToString("0.00")
+				MerchantId = membership.MerchantId,
+				RewardMoney = membership.RewardMoney
 			};
 		}
 
@@ -176,7 +179,9 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
 				package = parameter.Package,
 				paySign = parameter.PaySign,
 				signType = WxPayData.SIGN_TYPE_HMAC_SHA256,
-				timeStamp = parameter.TimeStamp.ToString()
+				timeStamp = parameter.TimeStamp.ToString(),
+				TradeId = trade.TradeId,
+				WxOrderId = trade.WxOrderId
 			};
 		}
 		public PullWxPayData GenerateUnifiedorder(OrderContext context) {
@@ -190,7 +195,20 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
 					   attach.Paysign);
 			return GenernatePullWxPayData(trade, data, payment.MchId.ToString(), payment.PayKey);
 		}
+		public int HavePay(HavePayContext context) {
+			using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: true) ) {
+				var queryString = $@"UPDATE [dbo].[Trade] SET [TradeState] =[TradeState]^ @state ,
+[LastUpdatedBy]='API',
+[LastUpdatedDateTime] = DATEDIFF(S,'1970-01-01',SYSUTCDATETIME())
+WHERE [TradeId] =@tradeId";
+				return database.Execute(queryString, new {
+					@tradeId = context.TradeId,
+					@state = (int)context.State
+				});
+			}
+		}
 		public void TodoPayNotify(PayNotification notification) {
+			Logger.Info(notification.SerializeToJson());
 			Guard.ArgumentNotNull(notification, "notification");
 			if ( notification.ResultCode.Value.Equals("SUCCESS") ) {
 				var trade = this.weChatPayService.GetTradeByTradeId(notification.OutTradeNo.Value);
@@ -199,6 +217,9 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
 					throw new WeChatPayException("There is a error happend on transaction to verify.(pay money)");
 				if ( (trade.TradeState & TradeStates.HavePay) != TradeStates.HavePay )
 					throw new WeChatPayException("Only HavePay status pay order can be modify.");
+				if ( (trade.TradeState & TradeStates.AckPay) == TradeStates.AckPay ) {
+					throw new WeChatPayException("No need to confirm payment duplicated.");
+				}
 				var pyarmid = (ISharedPyramid)null;
 				string cardid = string.Empty;
 				string usercode = string.Empty;
@@ -218,30 +239,27 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
 						Id = context.Id,
 						MerchantId = context.MerchantId
 					}) ?? new SharedPyramid() { Id = context.Id, MchId = context.MerchantId };
+					var executeSqlString = @"[dbo].[spPaymentConfirmforConsume]";
+					using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: true) ) {
+						var parameters = new List<IDbDataParameter>() {
+						new SqlParameter("@id",trade.Id),
+						new SqlParameter("@mchid",trade.MerchantId),
+						new SqlParameter("@wxUserId",trade.WxUserId),
+						new SqlParameter("@rewardTo", (pyarmid?.Parent?.Id) ?? -1),
+						new SqlParameter("@rewardMoney",(pyarmid?.Parent?.Id)==null?0:trade.RealMoney*0.1),
+						new SqlParameter("@rewardIntegral",trade.RealMoney/10),
+						new SqlParameter("@confirmTime",DateTime.UtcNow.ToUnixStampDateTime()),
+						new SqlParameter("@state",(int)TradeStates.AckPay)
+					};
+
+						database.Execute(executeSqlString, parameters.ToArray(), System.Data.CommandType.StoredProcedure);
+
+						cmqclient.Push(new OnlineOrder[] {
+						trade.Attach.DeserializeToObject<OrderContext>().Convert(trade.TradeId, trade.TradeCode, TradeStates.AckPay)
+					});
+
+					}
 				}
-
-				var executeSqlString = @"spUpgradeforTopupConfirm";
-				using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: true) ) {
-					var parameters = new Dapper.DynamicParameters();
-					parameters.Add("p_Id", trade.Id, System.Data.DbType.Int64);
-					parameters.Add("p_CardId", cardid, System.Data.DbType.String);
-					parameters.Add("p_UserCode", usercode, System.Data.DbType.String);
-					parameters.Add("p_Money", trade.RealMoney, System.Data.DbType.Int32);//充值金额或消费金额 （赠送后的金额）                             
-					parameters.Add("p_confirmTime", DateTime.UtcNow.ToUnixStampDateTime(), System.Data.DbType.Int64);
-					parameters.Add("p_RewardTo", pyarmid.Parent == null ? (int?)null : (int?)pyarmid.Parent.Id, System.Data.DbType.Int64);
-					parameters.Add("p_WxUserId", pyarmid.Id, System.Data.DbType.Int64);
-					parameters.Add("p_RewardMoney", trade.Money * 0.1, System.Data.DbType.Int32);
-					parameters.Add("p_MchId", pyarmid.MchId, System.Data.DbType.Int64);
-					parameters.Add("p_state", (int)TradeStates.AckPay, System.Data.DbType.Int32);
-					parameters.Add("o_Details", null, System.Data.DbType.String, System.Data.ParameterDirection.Output);
-					parameters.Add("o_Code", null, System.Data.DbType.Int32, System.Data.ParameterDirection.Output);
-					database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure, true);
-					var details = parameters.Get<string>("o_Details");
-					var code = parameters.Get<int?>("o_Code") ?? 0;
-					cmqclient.Push(new OnlineOrder[] { details.DeserializeToObject<OrderContext>().Convert(trade.TradeId, code, TradeStates.AckPay) });
-
-				}
-
 			}
 		}
 
@@ -367,8 +385,8 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
 			return sharingHostService.GetProductTree(merchant.Id);
 		}
 		public ProductModel GetProductDetails(long id) {
-			return this.sharingHostService.Products.SelectMany(o=>o.Products)
-				.SingleOrDefault(o=>o.Id==id);
+			return this.sharingHostService.Products.SelectMany(o => o.Products)
+				.SingleOrDefault(o => o.Id == id);
 		}
 
 		public void Test() {
