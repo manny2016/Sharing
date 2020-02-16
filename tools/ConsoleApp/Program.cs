@@ -10,11 +10,14 @@ using Sharing.Core.Models;
 using Sharing.Core.Services;
 using Sharing.Core.CMQ;
 using System.Linq;
+using System.Collections.Generic;
+
 namespace ConsoleApp {
 	class Program {
 		static ServiceCollection collection = new ServiceCollection();
 		static void Main(string[] args) {
-
+			var x = typeof(Specification[]);
+			x  = typeof(List<Specification>);
 			var naicha = new Specification[] {
 				new Specification(){
 					 Selected =0,

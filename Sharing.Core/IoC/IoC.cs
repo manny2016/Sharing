@@ -16,9 +16,8 @@ namespace Sharing.Core {
 				collection = collection ?? new ServiceCollection();
 				services = collection;
 				//collection.Configure
-				if ( configure != null ) {
-					configure(collection);
-				}
+				configure?.Invoke(collection);
+				
 				collection.AddLogging((cfg) => {
 					cfg.AddConsole();
 					cfg.AddLog4Net();

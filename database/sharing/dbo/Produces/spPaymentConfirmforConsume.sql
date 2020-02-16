@@ -11,12 +11,26 @@ AS
 BEGIN TRY
 	BEGIN TRANSACTION	
 	--修改订单支付状态
+		DECLARE @details NVARCHAR(MAX);
+		SET @details = (SELECT  [Attach] FROM [dbo].[Trade] WHERE [Id]=@id);
 		UPDATE [dbo].[Trade] SET 
 			TradeState = TradeState ^ @state,
 			ConfirmTime =@confirmTime,
 			LastUpdatedBy = 'API',
 			LastUpdatedDateTime = DATEDIFF(S,'1970-01-01',SYSUTCDATETIME())
 		WHERE Id = @id;
+		MERGE INTO [dbo].[Product] AS [target]
+		USING(
+			SELECT [Id],[Number] FROM OPENJSON(
+			(SELECT  [Value] FROM OPENJSON(@details,'$.details')))
+			WITH(
+				[Id] BIGINT '$.id',
+				[Number] INT '$.number'
+			)
+		) AS  [source]([Id],[Number])
+		ON [target].[Id] = [source].[Id]
+		WHEN MATCHED THEN UPDATE SET [target].[SalesVol] = [target].[SalesVol] + [source].[Number];
+
 	--奖励积分
 	IF(@state = 8)
 	BEGIN

@@ -24,7 +24,7 @@ namespace Sharing.Core {
 			var section = configuration.GetSection(DbConfiguration.SectionName).Get<DbConfiguration>();
 			if ( isWriteOnly ) {
 				return section.Master.GenerateDatabase(section.Database);
-				
+
 			} else {
 				var idx = 0;
 				if ( section.Slaves.Length > 0 ) {
@@ -41,18 +41,18 @@ namespace Sharing.Core {
 	}
 
 
-	public static class WeChatConstant {
-		public const string WxBizMsgToken = "81FF58BA46784314860B59E0834562B5";
-		public const string EncodingAESKey = "mkxeUAVtj2aaopbOsfLm8wJQ7SLnHMV6U41lmCQs95c";
-		public const int SMSAppId = 1400108197;
-		public const string SMSAppKey = "1add466d18076fcbb47e0e3b28e55490";
+	public class WeChatConstant {
+		public string WxBizMsgToken { get; set; }
+		public string EncodingAESKey { get; set; }
+		public int SMSAppId { get; set; }
+		public string SMSAppKey { get; set; }
 
-		public const string CloudAPI_SecrectId = "AKIDRju17pcex48CFD9YoX2UkpiNn7lHwVnw";
-		public const string CloudAPI_SecretKey = "A9DVbFi05yQnJdVv8IMBpZDsMft1xy75";
-		public const string CloudAPI_APPID = "1256489221";
-		public const string CloudAPI_CMQ__TOPIC_ENDPOINT = "https://cmq-topic-cd.api.qcloud.com";
-		public const string CloudAPI_CMQ_QUEUE_ENDPOINT = "https://cmq-queue-cd.api.qcloud.com";
-		public const int AllowSharedPyramidLevel = 2;
+		public string CloudAPI_SecrectId { get; set; }
+		public string CloudAPI_SecretKey { get; set; }
+		public string CloudAPI_APPID { get; set; }
+		public string CloudAPI_CMQ__TOPIC_ENDPOINT { get; set; }
+		public string CloudAPI_CMQ_QUEUE_ENDPOINT { get; set; }
+		public int AllowSharedPyramidLevel { get; set; }
 	}
 	public static class DAOConstants {
 		public static readonly SqlMetaData[] RegisterWeChatUserStructure = new SqlMetaData[] {

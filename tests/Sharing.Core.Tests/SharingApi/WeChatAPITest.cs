@@ -30,7 +30,7 @@ namespace Sharing.Core.Tests {
 					http.ContentType = "application/json; encoding=utf-8";
 					var data = new {
 						path = $"pages/welcome/index",
-						scene = "sharedBy=2",
+						scene = "2",
 						width = 280
 					};
 					using ( var xx = http.GetRequestStream() ) {
