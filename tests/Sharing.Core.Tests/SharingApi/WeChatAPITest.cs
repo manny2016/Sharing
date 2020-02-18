@@ -53,7 +53,7 @@ namespace Sharing.Core.Tests {
 		}
 		[TestInitialize]
 		public void TestInitialize() {
-			IoC.ConfigureServiceProvider(null, (configure) => {
+			IoC.ConfigureService(null, (configure) => {
 				configure.AddMemoryCache();
 				configure.AddWeChatApiService();
 				configure.AddRandomGenerator();

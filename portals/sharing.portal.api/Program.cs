@@ -25,7 +25,7 @@ namespace Sharing.Portal.Api {
 			builder = CreateWebHostBuilder(args)
 				.ConfigureServices((collection) => {
 
-					IoC.ConfigureServiceProvider(collection, (configure) => {
+					IoC.ConfigureService(collection, (configure) => {
 
 					});
 					collection.AddWeChatApiService();
@@ -48,13 +48,18 @@ namespace Sharing.Portal.Api {
 						provider.GetService<IMCardService>(),
 						provider.GetService<ISharingHostService>(),
 						provider.GetService<IWeChatMsgHandler>()
-						)));
+					)));
+					
+					var configuration = IoC.GetService<Microsoft.Extensions.Configuration.IConfiguration>();
+					var wx = IoC.GetService<Microsoft.Extensions.Configuration.IConfiguration>()
+					.GetSection(WeChatConstant.SectionName)
+					.Get<WeChatConstant>();
 
-
+					collection.Add(new ServiceDescriptor(typeof(WeChatConstant), wx));
 				})
-				.ConfigureAppConfiguration((hostingContext, config) => {
-					  var evn = hostingContext.HostingEnvironment;
-					  config.AddEnvironmentVariables();
+				.ConfigureAppConfiguration((hostingContext, configurationBuilder) => {
+					var evn = hostingContext.HostingEnvironment;
+					configurationBuilder.AddEnvironmentVariables();
 				});
 
 			builder.Build().Run();

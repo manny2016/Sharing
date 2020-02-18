@@ -42,6 +42,7 @@ namespace Sharing.Core {
 
 
 	public class WeChatConstant {
+		public const string SectionName = "wx";
 		public string WxBizMsgToken { get; set; }
 		public string EncodingAESKey { get; set; }
 		public int SMSAppId { get; set; }

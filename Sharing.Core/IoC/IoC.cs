@@ -10,21 +10,20 @@ namespace Sharing.Core {
 		private static IServiceCollection services;
 		private static IServiceProvider provider;
 
-		public static void ConfigureServiceProvider(IServiceCollection collection = null
+		public static void ConfigureService(IServiceCollection collection = null
 			, Action<IServiceCollection> configure = null) {
 			if ( provider == null ) {
 				collection = collection ?? new ServiceCollection();
+
 				services = collection;
 				//collection.Configure
 				configure?.Invoke(collection);
-				
 				collection.AddLogging((cfg) => {
 					cfg.AddConsole();
 					cfg.AddLog4Net();
 				});
-				provider = collection.BuildServiceProvider();
-				
 			}
+			provider = collection.BuildServiceProvider();
 		}
 
 		public static T GetService<T>() {
@@ -35,10 +34,7 @@ namespace Sharing.Core {
 			if ( provider == null ) throw new NullReferenceException("Need run ConfigureServiceProvider first");
 			return provider.GetServices<T>();
 		}
-		public static void SetServiceProvider(IServiceProvider serviceProvider) {
-			if ( provider == null ) {
-				provider =serviceProvider;
-			}
-		}
+
+		
 	}
 }

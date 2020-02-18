@@ -93,14 +93,7 @@ namespace Sharing.Core {
 			worksheet.Column(column).Hidden = true;
 			worksheet.Cells[row, column].Value = mark.SerializeToJson();
 		}
-		private void WriteHeader(ExcelWorksheet worksheet, PropertyInfo[] properties, int row = 1) {
-			for ( int column = 1; column <= properties.Length; column++ ) {
-				var option = properties[column - 1].GetCustomAttributes(typeof(ExcelColumnAttribute)).SingleOrDefault() as ExcelColumnAttribute;
-				var headerText = option.HeaderText;
-				worksheet.Cells[row, column].Value = headerText;
-				worksheet.Column(column).Hidden = option.Hidden;
-			}
-		}
+		
 
 		private void WriteWorkSheet(ExcelWorksheet worksheet, object[] dataArray, PropertyInfo[] properties, int startRowIndex = 1) {
 			//Write Header
@@ -112,6 +105,8 @@ namespace Sharing.Core {
 				worksheet.Cells[startRowIndex, column].Value = headerText;
 				worksheet.Column(column).Hidden = option.Hidden;
 			}
+			worksheet.Column(properties.Length + 1).Hidden = true;// Write original data
+
 			//Write Data
 			if ( dataArray == null || dataArray.Length == 0 ) {
 				return;
@@ -124,7 +119,7 @@ namespace Sharing.Core {
 			for ( var column = 1; column <= properties.Length; column++ ) {
 				if ( properties[column - 1].GetType().Name == "String[]" ) {
 					var values = properties[column - 1].GetValue(data) as string[];
-					worksheet.Cells[row, column].Value = string.Join(",",values);
+					worksheet.Cells[row, column].Value = string.Join(",", values);
 
 				} else {
 					worksheet.Cells[row, column].Value = properties[column - 1].GetValue(data)?.ToString();
@@ -132,6 +127,7 @@ namespace Sharing.Core {
 
 			}
 			worksheet.Cells[row, properties.Length + 1].Value = data.SerializeToJson();
+
 		}
 	}
 }

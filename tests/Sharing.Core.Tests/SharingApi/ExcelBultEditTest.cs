@@ -11,6 +11,8 @@ using System.Linq;
 using System.IO;
 using Sharing.Core.Models.Excel;
 using Sharing.Core.Tests.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 
 namespace Sharing.Core.Tests.SharingApi {
 	[TestClass]
@@ -21,8 +23,9 @@ namespace Sharing.Core.Tests.SharingApi {
 			var array = new string[] { };
 			var name = array.GetType().Name;
 			var helper = IoC.GetService<IExcelBulkEditHelper>();
+			var model = new ExcelDataModel<CategroyExcelBulkRow, ProductExcelBulkRow, ProductOptionExcelBultEditRow>();
 			using ( var stream = new FileStream($"{DateTime.Now.ToUnixStampDateTime()}.xlsx", FileMode.Create) ) {
-				var model = new ExcelDataModel<CategroyExcelBulkRow, ProductExcelBulkRow, ProductOptionExcelBultEditRow>();
+				
 				using ( var database = SharingConfigurations.GenerateDatabase() ) {
 					model.Data1 = database.SqlQuery<CategroyExcelBulkRow>("SELECT * FROM [dbo].[Category] (NOLOCK)").ToArray();
 					model.Data2 = database.SqlQuery<ProductExcelBulkRow>("SELECT * FROM [dbo].[Product] (NOLOCK)").ToArray();
@@ -52,8 +55,8 @@ namespace Sharing.Core.Tests.SharingApi {
 		}
 		[TestInitialize]
 		public void TestInitialize() {
-			
-			IoC.ConfigureServiceProvider(null, (configure) => {
+
+			IoC.ConfigureService(null, (configure) => {
 				configure.AddLogging();
 				configure.AddWeChatApiService();
 				configure.AddRandomGenerator();
@@ -64,8 +67,8 @@ namespace Sharing.Core.Tests.SharingApi {
 				configure.AddMemoryCache();
 				configure.AddWeChatMsgHandler();
 				configure.AddExcelBulExittHelper();
-				configure.Add(new ServiceDescriptor(typeof(System.Configuration.Configuration),
-					ConfigurationManager.OpenExeConfiguration("Sharing.Core.Tests.dll")));
+				configure.ConfigureAppConfiguration();
+				
 
 			});
 

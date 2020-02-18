@@ -21,7 +21,7 @@ namespace Sharing.Core.Tests {
 		private readonly string openid = Guid.NewGuid().ToString().Replace("-", string.Empty);
 		[TestInitialize]
 		public void Initialize() {
-			IoC.ConfigureServiceProvider(null, (configure) => {
+			IoC.ConfigureService(null, (configure) => {
 				configure.AddLogging();
 				configure.AddWeChatApiService();
 				configure.AddRandomGenerator();
