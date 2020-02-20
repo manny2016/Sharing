@@ -12,5 +12,6 @@ namespace Sharing.Core.Models {
 		public Guid? ScenarioId { get; set; }
 		public long MerchantId { get; set; }
 		public string LastUpdateBy { get; set; }
+		public string SharedBy { get; set; }
 	}
 }

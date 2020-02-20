@@ -6,7 +6,7 @@ namespace Sharing.Core.Models.Excel {
 	using System.Text;
 
 	public abstract class ExcelDataModel {
-		public Dictionary<string, KeyValuePair<string, string>> DropDownValueOptions { get; set; }
+		public Dictionary<string, Dictionary<string, string>> DropDownValueOptions { get; set; }
 		public ExcelDataMark DataMark { get; set; }
 		public List<string> Messages { get; set; } = new List<string>();
 	}

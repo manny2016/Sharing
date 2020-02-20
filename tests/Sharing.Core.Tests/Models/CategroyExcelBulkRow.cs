@@ -5,16 +5,16 @@ namespace Sharing.Core.Tests.Models {
 	[ExcelSheet(SheetName = "产品分类")]
 	public class CategroyExcelBulkRow : ExcelBulkEditRow {
 
-		[ExcelColumn(HeaderText = "编号", ReadOnly = true)]
+		[ExcelColumn(HeaderText = "编号", ReadOnly = true, SortId = 1)]
 		public long Id { get; set; }
 
-		[ExcelColumn(HeaderText = "商户编号")]
+		[ExcelColumn(HeaderText = "商户编号", SortId = 2)]
 		public long MerchantId { get; set; }
 
-		[ExcelColumn(HeaderText = "分类名称")]
+		[ExcelColumn(HeaderText = "分类名称", SortId = 3)]
 		public string Name { get; set; }
 
-		[ExcelColumn(HeaderText = "备注")]
+		[ExcelColumn(HeaderText = "备注", SortId = 4)]
 		public string Description { get; set; }
 
 
@@ -26,32 +26,38 @@ namespace Sharing.Core.Tests.Models {
 		[ExcelColumn(HeaderText = "商品编号", ReadOnly = true)]
 		public long Id { get; set; }
 
-		[ExcelColumn(ExcelEditInputType = ExcelEditInputTypes.DropDownList, HeaderText = "商户编号")]
+		[ExcelColumn(ExcelEditInputType = ExcelEditInputTypes.DropDownList, HeaderText = "商户编号", SortId = 2)]
 		public long MerchantId { get; set; }
 
-		[ExcelColumn(ExcelEditInputType = ExcelEditInputTypes.DropDownList, HeaderText = "商品类别")]
+		[ExcelColumn(ExcelEditInputType = ExcelEditInputTypes.DropDownList, HeaderText = "商品类别", SortId = 3)]
 		public long CategoryId { get; set; }
 
-		[ExcelColumn(HeaderText = "商品名称")]
+		[ExcelColumn(HeaderText = "商品名称", SortId = 4)]
 		public string Name { get; set; }
 
-		[ExcelColumn(HeaderText = "单价")]
+		[ExcelColumn(HeaderText = "单价", SortId = 5)]
 		public int Price { get; set; }
 
-		[ExcelColumn(HeaderText = "销量")]
+		[ExcelColumn(HeaderText = "销量", SortId = 6)]
 		public int SalesVol { get; set; }
 
-		[ExcelColumn(HeaderText = "排序号")]
+		[ExcelColumn(HeaderText = "排序号", SortId = 7)]
 		public int SortNo { get; set; }
 
-		[ExcelColumn(ExcelEditInputType = ExcelEditInputTypes.DropDownList, HeaderText = "是否启用")]
+		[ExcelColumn(ExcelEditInputType = ExcelEditInputTypes.DropDownList, HeaderText = "是否启用", SortId = 7)]
 		public bool Enabled { get; set; }
 
-		[ExcelColumn(HeaderText = "封面图片")]
+		[ExcelColumn(HeaderText = "封面图片", SortId = 8)]
 		public string ImageUrl { get; set; }
 
-		[ExcelColumn(HeaderText = "备注")]
+		[ExcelColumn(HeaderText = "备注",SortId =15)]
 		public string Description { get; set; }
+
+		[ExcelColumn(HeaderText = "产品封面图片", SortId = 9)]
+		public string Banners { get; set; }
+
+		[ExcelColumn(HeaderText = "可选参数", SortId = 10)]
+		public string Options { get; set; }
 
 		public string Settings { get; set; }
 

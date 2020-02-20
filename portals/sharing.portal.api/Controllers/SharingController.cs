@@ -14,6 +14,7 @@ namespace Sharing.Portal.Api {
 	using Microsoft.Extensions.Logging;
 	using Microsoft.AspNetCore;
 	using System.Web;
+	using System.IO;
 
 	[Produces("application/json")]
 	[ApiController]
@@ -36,6 +37,7 @@ namespace Sharing.Portal.Api {
 			Logger.Info(context.SerializeToJson());
 			return client.Register(context);
 		}
+		[Obsolete]
 		/// <summary>
 		/// 更新用户分享信息关联关系信息
 		/// </summary>
@@ -319,6 +321,28 @@ namespace Sharing.Portal.Api {
 			return new {
 				state = client.UpgradeTradeState(context.TradeId, context.TradeState)
 			};
+		}
+		[Route("api/sharing/GenernateSharedMomentsPoster")]
+		[HttpPost]
+		public APIResult<string> GenernateSharedMomentsPoster(WxUserKey sharedBy) {
+			var fileName = $"{sharedBy.MerchantId}-{sharedBy.Id}-poster.png";
+			var sharedQRCode = Path.Combine(Environment.CurrentDirectory, $@"images\moments\{fileName}");
+			var info = new FileInfo(sharedQRCode);
+			if ( !info.Directory.Exists ) {
+				Directory.CreateDirectory(info.Directory.FullName);
+			}
+			if ( !System.IO.File.Exists(sharedQRCode) ) {
+				using ( var stream = new FileStream(sharedQRCode, FileMode.CreateNew, FileAccess.Write) ) {
+					client.GenernateSharedPoster(stream, sharedBy);
+					stream.Flush();
+				}
+			}
+			return new APIResult<string>() {
+				Data = $"images/moments/{fileName}",
+				Sucess = true,
+				Message = string.Empty
+			};
+
 		}
 	}
 }

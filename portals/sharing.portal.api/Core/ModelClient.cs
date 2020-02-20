@@ -16,6 +16,7 @@ namespace Sharing.Portal.Api {
 	using Sharing.Core.CMQ;
 	using System.Data;
 	using System.Data.SqlClient;
+	using System.IO;
 
 	public class ModelClient {
 		private readonly IWeChatApi wxapi;
@@ -51,10 +52,11 @@ namespace Sharing.Portal.Api {
 
 			var membership = wxUserService.Register(new Core.Models.RegisterWxUserContext() {
 				AppType = AppTypes.Miniprogram,
-				Info = info,
+				Info = info,				
 				WxApp = new WxApp() {
 					AppId = context.AppId
-				}
+				},
+				SharedBy = context.SharedBy
 			});
 			return new WeChatUserModel() {
 				Mobile = membership.Mobile,
@@ -434,6 +436,13 @@ WHERE [TradeId] =@tradeId";
 				database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure, true);
 				return parameters.Get<TradeStates>("o_state");
 			}
+		}
+		public void GenernateSharedPoster(Stream stream, IWxUserKey wxUserKey) {
+			var wxapp = this.sharingHostService.MerchantDetails.SelectMany(x => x.Apps)
+				.Where(x => x.AppId == wxUserKey.AppId)
+				.SingleOrDefault();
+
+			this.wxapi.GenernateSharedMomentsPoster(stream, wxapp, wxUserKey);
 		}
 	}
 }

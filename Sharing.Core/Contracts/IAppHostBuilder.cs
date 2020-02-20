@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Sharing.Core.Models;
 
 namespace Sharing.Core {
 	public interface IAppHostBuilder {
@@ -27,7 +29,7 @@ namespace Sharing.Core {
 		//     on the Microsoft.AspNetCore.Hosting.WebHostBuilderContext are uninitialized at
 		//     this stage. The Microsoft.Extensions.Configuration.IConfigurationBuilder is pre-populated
 		//     with the settings of the Microsoft.AspNetCore.Hosting.IWebHostBuilder.
-		//IAppHostBuilder ConfigureAppConfiguration(Action<WebHostBuilderContext, IConfigurationBuilder> configureDelegate);
+		IAppHostBuilder ConfigureAppConfiguration(Action<AppHostBuilderContext, IConfigurationBuilder> configureDelegate);
 		//
 		// Summary:
 		//     Adds a delegate for configuring additional services for the host or web application.

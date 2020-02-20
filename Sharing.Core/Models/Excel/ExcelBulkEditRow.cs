@@ -11,5 +11,6 @@ namespace Sharing.Core.Models.Excel {
 		public string SheetName { get; set; }
 
 		public bool Changed { get; set; }
+
 	}
 }

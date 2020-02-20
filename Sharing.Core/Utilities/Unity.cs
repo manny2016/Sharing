@@ -72,6 +72,13 @@ namespace Sharing.Core {
 							record.SetGuid(i, model.ScenarioId.Value);
 						}
 						break;
+					case "SharedBy":
+						if(string.IsNullOrEmpty(model.SharedBy) ) {
+							record.SetDBNull(i);
+						} else {
+							record.SetString(i,model.SharedBy);
+						}
+						break;
 				}
 			}
 			return record;

@@ -13,7 +13,5 @@ namespace Sharing.Core.Models
         public string OpenId { get; set; }
 
         public long MerchantId { get; set; }
-
-        
     }
 }

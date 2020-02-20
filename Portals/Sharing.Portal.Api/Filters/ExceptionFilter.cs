@@ -17,7 +17,7 @@ namespace Sharing.Portal.Api.Filters {
 				Message = $"'{context.Exception.GetType().Name}':{context.Exception.Message}",
 				StatusCodes = 500,
 			};
-			Logger.Error(context);
+			Logger.Error(context.Exception);
 			context.HttpContext.Response.WriteAsync(result.SerializeToJson());
 		}
 	}

@@ -24,7 +24,6 @@ namespace Sharing.Portal.Api {
 		public static void Main(string[] args) {
 			builder = CreateWebHostBuilder(args)
 				.ConfigureServices((collection) => {
-
 					IoC.ConfigureService(collection, (configure) => {
 
 					});

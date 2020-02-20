@@ -10,5 +10,6 @@
 	[City]				NVARCHAR(50),	
 	[AvatarUrl]			NVARCHAR(200),
 	[LastUpdatedBy]		NVARCHAR(50),
+	[SharedBy]			NVARCHAR(32),
 	[ScenarioId]		UNIQUEIDENTIFIER
 )

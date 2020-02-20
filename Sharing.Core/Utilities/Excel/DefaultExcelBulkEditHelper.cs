@@ -11,17 +11,25 @@ namespace Sharing.Core {
 	using System.Reflection;
 
 	public class DefaultExcelBulkEditHelper : IExcelBulkEditHelper {
+
 		public void Dispose() {
 
 		}
-
-
-
-
 		public ExcelDataModel<T> Read<T>(Stream stream,
 			Dictionary<string, Dictionary<string, string>> provider = null,
 			bool onlyReturnChanged = false) where T : ExcelBulkEditRow {
-			throw new NotImplementedException();
+			using ( var package = new ExcelPackage(stream) ) {
+				var attribute = typeof(T).GetWorksheetAttrbiute();
+				var worksheet = package.Workbook.Worksheets[attribute.SheetName];
+				if ( worksheet == null ) {
+					throw new InvalidOperationException($"The Excel file does not include workseet '{attribute.SheetName}'");
+				}
+				return new ExcelDataModel<T>() {
+					DropDownValueOptions = provider ?? new Dictionary<string, Dictionary<string, string>>(),
+					DataMark = this.ReadDataMark(worksheet, attribute.DataMarkRow, attribute.DataMarkColumn),
+					Data = this.Read<T>(worksheet, 2)
+				};
+			}
 		}
 		public ExcelDataModel<T1, T2> Read<T1, T2>(Stream stream,
 			Dictionary<string, Dictionary<string, string>> provider = null,
@@ -30,7 +38,19 @@ namespace Sharing.Core {
 			where T2 : ExcelBulkEditRow {
 			throw new NotImplementedException();
 		}
-
+		private T[] Read<T>(ExcelWorksheet worksheet, int dataStartRow) where T : ExcelBulkEditRow {
+			var properities = typeof(T).GetPropertyInfosWithExcelColumnOption();
+			var results = new List<T>();
+			for ( var row = dataStartRow; row <= worksheet.Dimension.Rows + dataStartRow; row++ ) {
+				var data = Activator.CreateInstance(typeof(T));
+				for ( var column = 1; column <= properities.Length; column++ ) {
+					var value = worksheet.Cells[row, column].Value;
+					properities[column - 1].ParseValue(data, value);
+				}
+				results.Add(data as T);
+			}
+			return results.ToArray();
+		}
 		public ExcelDataModel<T1, T2, T3> Read<T1, T2, T3>(
 			Stream stream,
 			Dictionary<string, Dictionary<string, string>> provider = null,
@@ -40,6 +60,7 @@ namespace Sharing.Core {
 			where T3 : ExcelBulkEditRow {
 			throw new NotImplementedException();
 		}
+
 		public void Write<T>(Stream stream, ExcelDataModel<T> model)
 			where T : ExcelBulkEditRow {
 			Guard.ArgumentNotNull(model, "model");
@@ -52,24 +73,19 @@ namespace Sharing.Core {
 		}
 		private void Write(ExcelPackage package, Type type, ExcelDataMark dataMark, object[] dataArray) {
 
-			var excelSheetAttribute = type.GetCustomAttributes(typeof(ExcelSheetAttribute), false)
-				.SingleOrDefault() as ExcelSheetAttribute;
-			var sheetName = excelSheetAttribute == null ? type.Name : excelSheetAttribute.SheetName;
-			var worksheet = package.Workbook.Worksheets.Add(sheetName);
-			this.WriteDataMark(worksheet, dataMark, excelSheetAttribute.Row, excelSheetAttribute.Column);
-
-			var properties = type.GetProperties()
-				.Where(x => x.GetCustomAttributes(typeof(ExcelColumnAttribute), true).SingleOrDefault() != null)
-				.ToArray();
-
+			var attribute = type.GetWorksheetAttrbiute();
+			var worksheet = package.Workbook.Worksheets.Add(attribute.SheetName);
+			this.WriteDataMark(worksheet, dataMark, attribute.DataMarkRow, attribute.DataMarkColumn);
+			var properties = type.GetPropertyInfosWithExcelColumnOption();
 			WriteWorkSheet(worksheet, dataArray, properties);
 		}
 		public void Write<T1, T2>(Stream stream, ExcelDataModel<T1, T2> model)
 			where T1 : ExcelBulkEditRow
 			where T2 : ExcelBulkEditRow {
+
 			using ( var package = new ExcelPackage(stream) ) {
 				Write(package, typeof(T1), model.DataMark, model.Data1.Select(o => o as object).ToArray());
-				Write(package, typeof(T2), model.DataMark, model.Data1.Select(o => o as object).ToArray());
+				Write(package, typeof(T2), model.DataMark, model.Data2.Select(o => o as object).ToArray());
 				package.SaveAs(stream);
 			}
 		}
@@ -88,12 +104,13 @@ namespace Sharing.Core {
 		private ExcelDataMark ReadDataMark(ExcelWorksheet worksheet, int row, int column) {
 			return worksheet.Cells[row, column].Value.ToString()
 				.DeserializeToObject<ExcelDataMark>();
+			
 		}
 		private void WriteDataMark(ExcelWorksheet worksheet, ExcelDataMark mark, int row, int column) {
 			worksheet.Column(column).Hidden = true;
 			worksheet.Cells[row, column].Value = mark.SerializeToJson();
 		}
-		
+
 
 		private void WriteWorkSheet(ExcelWorksheet worksheet, object[] dataArray, PropertyInfo[] properties, int startRowIndex = 1) {
 			//Write Header
@@ -122,9 +139,9 @@ namespace Sharing.Core {
 					worksheet.Cells[row, column].Value = string.Join(",", values);
 
 				} else {
+					var v = properties[column - 1].GetValue(data)?.ToString();
 					worksheet.Cells[row, column].Value = properties[column - 1].GetValue(data)?.ToString();
 				}
-
 			}
 			worksheet.Cells[row, properties.Length + 1].Value = data.SerializeToJson();
 

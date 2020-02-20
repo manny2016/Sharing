@@ -67,7 +67,8 @@ namespace Sharing.Core {
 			new SqlMetaData("City", System.Data.SqlDbType.NVarChar,50),
 			new SqlMetaData("AvatarUrl", System.Data.SqlDbType.NVarChar,200),
 			new SqlMetaData("LastUpdatedBy", System.Data.SqlDbType.NVarChar,50),
-			new SqlMetaData("ScenarioId", System.Data.SqlDbType.UniqueIdentifier)
+			new SqlMetaData("SharedBy", System.Data.SqlDbType.NVarChar,32),
+			new SqlMetaData("ScenarioId", System.Data.SqlDbType.UniqueIdentifier)			
 		};
 	}
 }
