@@ -15,16 +15,19 @@ namespace Sharing.Portal.Api {
 	using Microsoft.AspNetCore;
 	using System.Web;
 	using System.IO;
+	using Sharing.Core.CMQ;
+	using Microsoft.Extensions.Configuration;
 
 	[Produces("application/json")]
 	[ApiController]
 	public class SharingController : ControllerBase {
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(SharingController));
 		private readonly ModelClient client;
-
+		private readonly IConfiguration configuration;
 		public SharingController(
-			ModelClient client) {
+			ModelClient client,IConfiguration  configuration) {
 			this.client = client;
+			this.configuration = configuration;
 		}
 		/// <summary>
 		/// 注册微信用户，提供给小程序的用户注册 API
@@ -141,7 +144,7 @@ namespace Sharing.Portal.Api {
 				this.HttpContext.Response.Body.Write(echostr.ToBytes());
 			} else {
 				var encryptMsg = body.DeserializeFromXml<WeChatEncryptMsg>();
-				this.client.ProccessWeChatMsg(new WxMsgToken(msg_signature, timestamp, nonce, body, encryptMsg.ToUserName));
+				this.client.ProccessWeChatMsg(new WxMsgToken(msg_signature, timestamp, nonce, body, encryptMsg.ToUserName,configuration));
 
 			}
 		}
@@ -177,7 +180,7 @@ namespace Sharing.Portal.Api {
 			Guard.ArgumentNotNull(context.TradeId, "content.TradeId");
 			return new APIResult<string>() {
 				Data = context.TradeId,
-				Sucess = client.HavePay(context) > 0,
+				Success = client.HavePay(context) > 0,
 				Message = "Updated trade state."
 			};
 		}
@@ -218,6 +221,11 @@ namespace Sharing.Portal.Api {
 		[HttpPost]
 		public void Test() {
 			Logger.Info("Call test");
+
+
+
+
+			//TencentCMQClient<OnlineOrder> cmqclient = TencentCMQClientFactory.Create<OnlineOrder>("lemon");
 			//Logger.Info("this is a test");
 			var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 			this.Response.Body.Write(
@@ -339,7 +347,7 @@ namespace Sharing.Portal.Api {
 			}
 			return new APIResult<string>() {
 				Data = $"images/moments/{fileName}",
-				Sucess = true,
+				Success = true,
 				Message = string.Empty
 			};
 

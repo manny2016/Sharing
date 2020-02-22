@@ -1,4 +1,7 @@
-﻿using Sharing.Core;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Sharing.Core;
+using Sharing.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +17,16 @@ namespace Sharing.Agent.Delivery
         /// </summary>
         [STAThread]
         static void Main()
-        {
-            var state = (TradeStates)12;
-            var result = (state & TradeStates.HavePay);
-            Application.EnableVisualStyles();
+        {			
+			Application.ThreadException += Application_ThreadException;
+			Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FrmMain());
         }
-    }
+
+		private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e){
+			
+			MessageBox.Show("错误提示",e.Exception.Message);
+		}
+	}
 }

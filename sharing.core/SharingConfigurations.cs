@@ -8,32 +8,18 @@ namespace Sharing.Core {
 	using System;
 	using System.Linq;
 
-	public static class SharingConfigurations {
-		static SharingConfigurations() {
+	//public static class SharingConfigurations {
+	//	static SharingConfigurations() {
 
-		}
+	//	}
 
-		public const string DefaultDatabase = "sharing-dev";
-
-		public static IDatabase GenerateDatabase(string database = DefaultDatabase, bool isWriteOnly = true,
-			Microsoft.Extensions.Configuration.IConfiguration configuration = null) {
-			if ( configuration == null ) {
-				configuration = IoC.GetService<Microsoft.Extensions.Configuration.IConfiguration>();
-			}
-
-			var section = configuration.GetSection(DbConfiguration.SectionName).Get<DbConfiguration>();
-			if ( isWriteOnly ) {
-				return section.Master.GenerateDatabase(section.Database);
-
-			} else {
-				var idx = 0;
-				if ( section.Slaves.Length > 0 ) {
-					idx = DateTime.UtcNow.Second % section.Slaves.Length;
-				}
-				return section.Slaves[idx].GenerateDatabase(section.Database);
-			}
-		}
-	}
+	//	public const string DefaultDatabase = "sharing-dev";
+	//	public static IConfiguration Configuration { get; private set; }
+		
+	//	public static void Configure(IConfiguration configuration) {
+	//		Configuration = configuration;
+	//	}
+	//}
 
 	public static class BaiduConstant {
 		public const string AK = "xW5IbKeE3pXy8unP7hwmFdbAnFgPgNtc";
@@ -68,7 +54,7 @@ namespace Sharing.Core {
 			new SqlMetaData("AvatarUrl", System.Data.SqlDbType.NVarChar,200),
 			new SqlMetaData("LastUpdatedBy", System.Data.SqlDbType.NVarChar,50),
 			new SqlMetaData("SharedBy", System.Data.SqlDbType.NVarChar,32),
-			new SqlMetaData("ScenarioId", System.Data.SqlDbType.UniqueIdentifier)			
+			new SqlMetaData("ScenarioId", System.Data.SqlDbType.UniqueIdentifier)
 		};
 	}
 }

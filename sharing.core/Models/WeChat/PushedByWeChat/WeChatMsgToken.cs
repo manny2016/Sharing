@@ -1,5 +1,6 @@
 ﻿
 
+using Microsoft.Extensions.Configuration;
 using Sharing.Core;
 
 namespace Sharing.WeChat.Models {
@@ -9,13 +10,14 @@ namespace Sharing.WeChat.Models {
 			string timestamp,
 			string nonce,
 			string reqmsg,
-			string[] appids) {
+			string[] appids,
+			IConfiguration configuration) {
 			this.Signature = signature;
 			this.TimeStamp = timestamp;
 			this.Nonce = nonce;
 			this.ReqMsg = reqmsg;
-			this.BizMsgToken = IoC.GetService<WeChatConstant>().WxBizMsgToken; //WeChatConstant.WxBizMsgToken;
-			this.EncodingAESKey = IoC.GetService<WeChatConstant>().EncodingAESKey;// WeChatConstant.EncodingAESKey;
+			this.BizMsgToken = configuration.GetWeChatConstant().WxBizMsgToken; //WeChatConstant.WxBizMsgToken;
+			this.EncodingAESKey = configuration.GetWeChatConstant().EncodingAESKey;// WeChatConstant.EncodingAESKey;
 			this.AppIds = appids;
 		}
 

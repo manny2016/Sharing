@@ -17,6 +17,7 @@ namespace Sharing.Portal.Api {
 	using System.Data;
 	using System.Data.SqlClient;
 	using System.IO;
+	using Microsoft.Extensions.Configuration;
 
 	public class ModelClient {
 		private readonly IWeChatApi wxapi;
@@ -27,7 +28,9 @@ namespace Sharing.Portal.Api {
 		private readonly IMCardService mCardService;
 		private readonly IWeChatMsgHandler handler;
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(ModelClient));
-		private static readonly TencentCMQClient<OnlineOrder> cmqclient = TencentCMQClientFactory.Create<OnlineOrder>("lemon");
+		private readonly TencentCMQClient<OnlineOrder> cmqclient;
+		private readonly IDatabaseFactory databaseFactory;
+		private readonly IConfiguration configuration;
 		public ModelClient(
 			IWeChatApi api,
 			IWeChatUserService wxUserService,
@@ -35,7 +38,10 @@ namespace Sharing.Portal.Api {
 			IWeChatPayService payService,
 			IMCardService mCardService,
 			ISharingHostService hostService,
-			IWeChatMsgHandler weChatMsgHandler) {
+			IWeChatMsgHandler weChatMsgHandler,
+			TencentCMQClientFactory factory,
+			IDatabaseFactory databaseFactory,
+			IConfiguration configuraton) {
 			this.wxapi = api;
 			this.sharingHostService = hostService;
 			this.wxUserService = wxUserService;
@@ -43,6 +49,9 @@ namespace Sharing.Portal.Api {
 			this.weChatPayService = payService;
 			this.mCardService = mCardService;
 			this.handler = weChatMsgHandler;
+			this.cmqclient = factory.Create<OnlineOrder>("lemon");
+			this.databaseFactory = databaseFactory;
+			this.configuration = configuration;
 		}
 		public WeChatUserModel Register(RegisterWeChatUserContext context) {
 			var info = (WeChatUserInfo)null;
@@ -52,7 +61,7 @@ namespace Sharing.Portal.Api {
 
 			var membership = wxUserService.Register(new Core.Models.RegisterWxUserContext() {
 				AppType = AppTypes.Miniprogram,
-				Info = info,				
+				Info = info,
 				WxApp = new WxApp() {
 					AppId = context.AppId
 				},
@@ -71,6 +80,10 @@ namespace Sharing.Portal.Api {
 
 
 		public SessionWxResponse GetSession(JSCodeApiToken token) {
+			var app = this.sharingHostService.MerchantDetails
+					.SelectMany(x => x.Apps)
+					.SingleOrDefault(x => x.AppId == token.AppId);
+			token.Secret = app.Secret;
 			return this.wxapi.GetSession(token);
 
 		}
@@ -87,7 +100,7 @@ FROM sharing_mcard AS mcard
 	INNER JOIN sharing_merchant AS merchant 
 		ON mcard.MerchantId=merchant.Id
 WHERE merchant.MCode=mcode";
-			using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: false) ) {
+			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: false) ) {
 				return database.SqlQuery<MCardModel>(queryString, new { mcode = mcode }).ToList();
 			}
 		}
@@ -115,7 +128,7 @@ FROM `sharing_wxusercard` AS ucard
 		ON ucard.`WxUserId` = wxuser.WxUserId AND wxuser.AppId=@pAppid AND wxuser.OpenId=@pOpenId
 WHERE mcard.CardId =@pCardid  
 ";
-			using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: false) ) {
+			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: false) ) {
 				return database.SqlQuerySingleOrDefault<MCardDetails>(queryString, new {
 					pAppid = appid,
 					pOpenId = openid,
@@ -146,7 +159,7 @@ FROM `sharing_wxusercard` AS ucard
 		ON ucard.WxUserId = wxuser.WxUserId AND wxuser.AppId=@pAppId AND wxuser.OpenId=@pOpenId
 WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
 ";
-			using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: false) ) {
+			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: false) ) {
 				return database.SqlQuery<MCardDetails>(queryString, new {
 					pAppId = appid,
 					pOpenId = openid
@@ -198,7 +211,7 @@ WHERE wxuser.AppId =@pAppId  AND ucard.UserCode IS NOT NULL;
 			return GenernatePullWxPayData(trade, data, payment.MchId.ToString(), payment.PayKey);
 		}
 		public int HavePay(HavePayContext context) {
-			using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: true) ) {
+			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: true) ) {
 				var queryString = $@"UPDATE [dbo].[Trade] SET [TradeState] =[TradeState]^ @state ,
 [LastUpdatedBy]='API',
 [LastUpdatedDateTime] = DATEDIFF(S,'1970-01-01',SYSUTCDATETIME())
@@ -242,7 +255,7 @@ WHERE [TradeId] =@tradeId";
 						MerchantId = context.MerchantId
 					}) ?? new SharedPyramid() { Id = context.Id, MchId = context.MerchantId };
 					var executeSqlString = @"[dbo].[spPaymentConfirmforConsume]";
-					using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: true) ) {
+					using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: true) ) {
 						var parameters = new List<IDbDataParameter>() {
 						new SqlParameter("@id",trade.Id),
 						new SqlParameter("@mchid",trade.MerchantId),
@@ -267,7 +280,7 @@ WHERE [TradeId] =@tradeId";
 
 		public int UpgradeSharedPyramid(SharingContext context) {
 			var executeSqlString = @"spUpgradeSharedPyramid";
-			using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: true) ) {
+			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: true) ) {
 				var parameters = new Dapper.DynamicParameters();
 				parameters.Add("@sharedByOpenId", context.SharedBy.OpenId, System.Data.DbType.String);
 				parameters.Add("@currentOpenId", context.Current.OpenId, System.Data.DbType.String);
@@ -277,7 +290,7 @@ WHERE [TradeId] =@tradeId";
 		}
 		public ISharedPyramid GetSharedPyramid(IWxUserKey basic) {
 			return this.wxUserService.GetSharedContext(basic)
-				.BuildSharedPyramid(basic as IWxUserKey, out long basicWxUserId);
+				.BuildSharedPyramid(basic as IWxUserKey, configuration, out long basicWxUserId);
 		}
 
 		public CardExtModel PrepareCardSign(ApplyMCardContext context) {
@@ -417,8 +430,8 @@ WHERE [TradeId] =@tradeId";
 			}).ToList();
 		}
 		public OnlineOrder[] QueryOnlineOrders(OnineOrderQueryFilter filter) {
-			using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: false) ) {
-				var queryString = string.Concat("SELECT TradeId,TradeCode ,TradeState,CreatedTime,Attach FROM [dbo].[Trade]", filter.GenernateWhereCase());
+			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: false) ) {
+				var queryString = string.Concat("SELECT TradeId,TradeCode ,TradeState,CreatedDateTime,Attach FROM [dbo].[Trade]", filter.GenernateWhereCase());
 				var results = database.SqlQuery<TradeDetails>(queryString);
 				if ( results == null || results.Count().Equals(0) ) return new OnlineOrder[] { };
 				return results.Select((ctx) => {
@@ -428,7 +441,7 @@ WHERE [TradeId] =@tradeId";
 		}
 		public TradeStates? UpgradeTradeState(string tradeId, TradeStates state) {
 			var executeSqlString = @"spUpgradeTradeState";
-			using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: false) ) {
+			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: false) ) {
 				var parameters = new Dapper.DynamicParameters();
 				parameters.Add("p_tradeid", tradeId, System.Data.DbType.String);
 				parameters.Add("p_state", (int)state, System.Data.DbType.Int32);

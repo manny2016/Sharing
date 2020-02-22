@@ -68,7 +68,7 @@ namespace Sharing.Agent.Delivery.Components
             this.lab_paytype.Text = string.Format(this.lab_paid.Text, "线上支付");
             this.lab_paytype.Location = new Point(this.lab_paytype.Left, this.lab_disfromfriend.Top + 20);
 
-            this.lab_createdTime.Text = string.Format(this.lab_createdTime.Text, this.OnlineOrderContext.CreatedTime?.ToString("yyyy-MM-dd HH:mm:ss"));
+            this.lab_createdTime.Text = string.Format(this.lab_createdTime.Text, this.OnlineOrderContext.CreatedDateTime?.ToString("yyyy-MM-dd HH:mm:ss"));
             this.lab_createdTime.Location = new Point(this.lab_createdTime.Location.X, this.lab_paid.Location.Y + this.lab_createdTime.Height + 10);
         }
 
@@ -146,5 +146,9 @@ namespace Sharing.Agent.Delivery.Components
             }
             return list;
         }
-    }
+
+		private void lab_id_Click(object sender, System.EventArgs e) {
+
+		}
+	}
 }

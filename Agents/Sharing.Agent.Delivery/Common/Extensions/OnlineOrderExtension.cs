@@ -115,7 +115,7 @@ namespace Sharing.Agent.Delivery
         public async static void PrintAsync(this OnlineOrder order)
         {
             order.PrintBilling(Settings.Create().BillingPrinter);
-            order.PrintOrderCode(Settings.Create().OrderCodePrinter);
+            //order.PrintOrderCode(Settings.Create().OrderCodePrinter);
         }
     }
 }

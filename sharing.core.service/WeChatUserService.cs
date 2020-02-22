@@ -15,11 +15,13 @@ namespace Sharing.Core.Services {
 
 	public class WeChatUserService : IWeChatUserService {
 		private readonly IMemoryCache cache;
-		public WeChatUserService(IMemoryCache cache) {
+		private readonly IDatabaseFactory databaseFactory;
+		public WeChatUserService(IMemoryCache cache,IDatabaseFactory databaseFactory) {
 			this.cache = cache;
+			this.databaseFactory = databaseFactory;
 		}
 		public Membership Register(RegisterWxUserContext context) {
-			using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: true) ) {
+			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: true) ) {
 
 				var queryString = @"[dbo].[spRegisterWeChatUser]";
 				var parameters = new IDbDataParameter[] {
@@ -52,7 +54,7 @@ WHERE [user].[AppId] =@appid and [user].[OpenId]  =@openid";
 			var cacheKey = string.Format("pyramid_{0}", mch.MerchantId);
 			return this.cache.GetOrCreate<IList<ISharedContext>>(cacheKey, (entity) => {
 				entity.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60);
-				using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: false) ) {
+				using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: false) ) {
 					var queryString = @"
 SELECT [WxUserId] AS Id,[MerchantId],[InvitedBy] FROM [dbo].[SharedPyramid] (NOLOCK) 
 WHERE [MerchantId]=@merchantId";
@@ -67,7 +69,7 @@ WHERE [MerchantId]=@merchantId";
 
 		public void RegisterCardCoupon(RegisterCardCoupon registerCard) {
 
-			using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: true) ) {
+			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: true) ) {
 				var parameters = new DynamicParameters();
 				parameters.Add("p_AppId", registerCard.AppId);
 				parameters.Add("p_OpenId", registerCard.OpenId);

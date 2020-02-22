@@ -21,8 +21,8 @@ namespace Sharing.Core.Entities
 
         public  RewardStates State { get; set; }
 
-        public  long CreatedTime { get; set; }
+        public  long CreatedDateTime { get; set; }
 
-        public  long LastUpdatedTime { get; set; }
+        public  long LastUpdatedDateTime { get; set; }
     }
 }

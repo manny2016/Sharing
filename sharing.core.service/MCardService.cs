@@ -17,8 +17,10 @@ namespace Sharing.Core.Services {
 		//    .CreateServiceCollection()
 		//    .BuildServiceProvider();
 		private readonly IWeChatApi api;
-		public MCardService(IWeChatApi api) {
+		private readonly IDatabaseFactory databaseFactory;
+		public MCardService(IWeChatApi api,IDatabaseFactory databaseFactory) {
 			this.api = api;
+			this.databaseFactory = databaseFactory;
 		}
 		public void Synchronous() {
 			var cards = new ConcurrentDictionary<string, MCard>();
@@ -62,14 +64,14 @@ DROP TABLE `tmcards`;";
 		public int WriteIntoDatabase(IList<MCard> cards) {
 			if ( cards == null || cards.Count == 0 ) return 0;
 
-			using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: true) ) {
+			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: true) ) {
 				return database.Execute(string.Format(SqlSyncMCard,
 					string.Join(",", cards.Select(o => o.GenerateMySqlInsertValuesString()))));
 			}
 		}
 
 		private IList<MWeChatApp> GetWeChatOfficials() {
-			using ( var database = SharingConfigurations.GenerateDatabase(isWriteOnly: false) ) {
+			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: false) ) {
 				var result = database.SqlQuery<MWeChatApp>("SELECT * FROM `sharing_mwechatapp` WHERE AppType=@appType",
 					new { appType = AppTypes.Official.ToString() }
 					)

@@ -12,9 +12,10 @@ namespace Sharing.Core.Services
     {
         //private readonly IMerchantService MerchantService;
         private readonly IMemoryCache MemoryCache;
-        public SharingHostService(IMemoryCache memoryCache)
+		private readonly IDatabaseFactory databaseFactory;
+        public SharingHostService(IMemoryCache memoryCache,IDatabaseFactory databaseFactory)
         {
-
+			this.databaseFactory = databaseFactory;
             this.MemoryCache = memoryCache;
         }
         public IList<MerchantDetails> MerchantDetails
@@ -32,7 +33,7 @@ namespace Sharing.Core.Services
 ) AS WxApps
 FROM [dbo].[Merchant] (NOLOCK) [merchant]";
                       var result = new List<MerchantDetails>();
-                      using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
+                      using (var database = this.databaseFactory.GenerateDatabase(isWriteOnly:false))
                       {
                           result = database.SqlQuery<MerchantDetails>(queryString).ToList();
                       }
@@ -49,7 +50,7 @@ FROM [dbo].[Merchant] (NOLOCK) [merchant]";
                 return this.MemoryCache.GetOrCreate<IList<ProductTreeNodeModel>>(cacheKey, (entity) =>
                 {
                     var result = new List<ProductTreeNodeModel>();
-                    using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
+                    using (var database = this.databaseFactory.GenerateDatabase(isWriteOnly:false))
                     {
                         var queryString = @"
 SELECT 

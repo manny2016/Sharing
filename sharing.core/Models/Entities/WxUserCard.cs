@@ -22,7 +22,7 @@ namespace Sharing.Core.Entities
         public  long LastTradeId { get; set; }
 
         public  WxCardStates State { get; set; }
-        public  long CreatedTime { get; set; }
+        public  long CreatedDateTime { get; set; }
         public  long LastActivityTime { get; set; }
     }
 }

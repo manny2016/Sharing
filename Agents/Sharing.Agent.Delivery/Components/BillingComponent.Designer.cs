@@ -28,88 +28,89 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lab_title = new System.Windows.Forms.Label();
-            this.lab_subtitle = new System.Windows.Forms.Label();
-            this.lab_code = new System.Windows.Forms.Label();
-            this.lab_DeliveryType = new System.Windows.Forms.Label();
-            this.lab_createdTime = new System.Windows.Forms.Label();
-            this.lab_id = new System.Windows.Forms.Label();
-            this.list_items = new System.Windows.Forms.ListBox();
-            this.lab_CopeWith = new System.Windows.Forms.Label();
-            this.lab_disfromfriend = new System.Windows.Forms.Label();
-            this.lab_paid = new System.Windows.Forms.Label();
-            this.lab_paytype = new System.Windows.Forms.Label();
-            this.SuspendLayout();
-            // 
-            // lab_title
-            // 
-            this.lab_title.AutoSize = true;
-            this.lab_title.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lab_title.Location = new System.Drawing.Point(75, 22);
-            this.lab_title.Name = "lab_title";
-            this.lab_title.Size = new System.Drawing.Size(138, 22);
-            this.lab_title.TabIndex = 0;
-            this.lab_title.Text = "柠檬工坊东坡里店";
-            this.lab_title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lab_subtitle
-            // 
-            this.lab_subtitle.AutoSize = true;
-            this.lab_subtitle.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lab_subtitle.Location = new System.Drawing.Point(115, 57);
-            this.lab_subtitle.Name = "lab_subtitle";
-            this.lab_subtitle.Size = new System.Drawing.Size(48, 19);
-            this.lab_subtitle.TabIndex = 2;
-            this.lab_subtitle.Text = "结帐单";
-            this.lab_subtitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lab_code
-            // 
-            this.lab_code.AutoSize = true;
-            this.lab_code.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lab_code.Location = new System.Drawing.Point(20, 101);
-            this.lab_code.Name = "lab_code";
-            this.lab_code.Size = new System.Drawing.Size(66, 17);
-            this.lab_code.TabIndex = 3;
-            this.lab_code.Text = "POS号: {0}";
-            // 
-            // lab_DeliveryType
-            // 
-            this.lab_DeliveryType.AutoSize = true;
-            this.lab_DeliveryType.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lab_DeliveryType.Location = new System.Drawing.Point(152, 101);
-            this.lab_DeliveryType.Name = "lab_DeliveryType";
-            this.lab_DeliveryType.Size = new System.Drawing.Size(78, 17);
-            this.lab_DeliveryType.TabIndex = 3;
-            this.lab_DeliveryType.Text = "配送方式: {0}";
-            // 
-            // lab_createdTime
-            // 
-            this.lab_createdTime.AutoSize = true;
-            this.lab_createdTime.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lab_createdTime.Location = new System.Drawing.Point(19, 388);
-            this.lab_createdTime.Name = "lab_createdTime";
-            this.lab_createdTime.Size = new System.Drawing.Size(54, 17);
-            this.lab_createdTime.TabIndex = 3;
-            this.lab_createdTime.Text = "时间: {0}";
-            // 
-            // lab_id
-            // 
-            this.lab_id.AutoSize = true;
-            this.lab_id.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lab_id.Location = new System.Drawing.Point(20, 127);
-            this.lab_id.Name = "lab_id";
-            this.lab_id.Size = new System.Drawing.Size(82, 17);
-            this.lab_id.TabIndex = 3;
-            this.lab_id.Text = "账  单  号: {0}";
-            // 
-            // list_items
-            // 
-            this.list_items.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.list_items.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.list_items.FormattingEnabled = true;
-            this.list_items.ItemHeight = 17;
-            this.list_items.Items.AddRange(new object[] {
+			this.lab_title = new System.Windows.Forms.Label();
+			this.lab_subtitle = new System.Windows.Forms.Label();
+			this.lab_code = new System.Windows.Forms.Label();
+			this.lab_DeliveryType = new System.Windows.Forms.Label();
+			this.lab_createdTime = new System.Windows.Forms.Label();
+			this.lab_id = new System.Windows.Forms.Label();
+			this.list_items = new System.Windows.Forms.ListBox();
+			this.lab_CopeWith = new System.Windows.Forms.Label();
+			this.lab_disfromfriend = new System.Windows.Forms.Label();
+			this.lab_paid = new System.Windows.Forms.Label();
+			this.lab_paytype = new System.Windows.Forms.Label();
+			this.SuspendLayout();
+			// 
+			// lab_title
+			// 
+			this.lab_title.AutoSize = true;
+			this.lab_title.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lab_title.Location = new System.Drawing.Point(32, 24);
+			this.lab_title.Name = "lab_title";
+			this.lab_title.Size = new System.Drawing.Size(138, 22);
+			this.lab_title.TabIndex = 0;
+			this.lab_title.Text = "柠檬工坊东坡里店";
+			this.lab_title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lab_subtitle
+			// 
+			this.lab_subtitle.AutoSize = true;
+			this.lab_subtitle.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lab_subtitle.Location = new System.Drawing.Point(72, 59);
+			this.lab_subtitle.Name = "lab_subtitle";
+			this.lab_subtitle.Size = new System.Drawing.Size(48, 19);
+			this.lab_subtitle.TabIndex = 2;
+			this.lab_subtitle.Text = "结帐单";
+			this.lab_subtitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lab_code
+			// 
+			this.lab_code.AutoSize = true;
+			this.lab_code.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lab_code.Location = new System.Drawing.Point(10, 101);
+			this.lab_code.Name = "lab_code";
+			this.lab_code.Size = new System.Drawing.Size(77, 17);
+			this.lab_code.TabIndex = 3;
+			this.lab_code.Text = "POS机器: 01";
+			// 
+			// lab_DeliveryType
+			// 
+			this.lab_DeliveryType.AutoSize = true;
+			this.lab_DeliveryType.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lab_DeliveryType.Location = new System.Drawing.Point(131, 101);
+			this.lab_DeliveryType.Name = "lab_DeliveryType";
+			this.lab_DeliveryType.Size = new System.Drawing.Size(54, 17);
+			this.lab_DeliveryType.TabIndex = 3;
+			this.lab_DeliveryType.Text = "配送: {0}";
+			// 
+			// lab_createdTime
+			// 
+			this.lab_createdTime.AutoSize = true;
+			this.lab_createdTime.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lab_createdTime.Location = new System.Drawing.Point(13, 388);
+			this.lab_createdTime.Name = "lab_createdTime";
+			this.lab_createdTime.Size = new System.Drawing.Size(54, 17);
+			this.lab_createdTime.TabIndex = 3;
+			this.lab_createdTime.Text = "时间: {0}";
+			// 
+			// lab_id
+			// 
+			this.lab_id.AutoSize = true;
+			this.lab_id.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lab_id.Location = new System.Drawing.Point(10, 127);
+			this.lab_id.Name = "lab_id";
+			this.lab_id.Size = new System.Drawing.Size(54, 17);
+			this.lab_id.TabIndex = 3;
+			this.lab_id.Text = "编号: {0}";
+			this.lab_id.Click += new System.EventHandler(this.lab_id_Click);
+			// 
+			// list_items
+			// 
+			this.list_items.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.list_items.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.list_items.FormattingEnabled = true;
+			this.list_items.ItemHeight = 17;
+			this.list_items.Items.AddRange(new object[] {
             "单间                   dd",
             "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
             "dsfs",
@@ -120,72 +121,72 @@
             "sdf",
             "sdf",
             "sdfsdf"});
-            this.list_items.Location = new System.Drawing.Point(23, 215);
-            this.list_items.MultiColumn = true;
-            this.list_items.Name = "list_items";
-            this.list_items.Size = new System.Drawing.Size(257, 102);
-            this.list_items.TabIndex = 4;
-            // 
-            // lab_CopeWith
-            // 
-            this.lab_CopeWith.AutoSize = true;
-            this.lab_CopeWith.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lab_CopeWith.Location = new System.Drawing.Point(19, 337);
-            this.lab_CopeWith.Name = "lab_CopeWith";
-            this.lab_CopeWith.Size = new System.Drawing.Size(77, 17);
-            this.lab_CopeWith.TabIndex = 5;
-            this.lab_CopeWith.Text = "应付: ¥{0} 元";
-            // 
-            // lab_disfromfriend
-            // 
-            this.lab_disfromfriend.AutoSize = true;
-            this.lab_disfromfriend.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lab_disfromfriend.Location = new System.Drawing.Point(145, 337);
-            this.lab_disfromfriend.Name = "lab_disfromfriend";
-            this.lab_disfromfriend.Size = new System.Drawing.Size(100, 17);
-            this.lab_disfromfriend.TabIndex = 5;
-            this.lab_disfromfriend.Text = "友荐惠: : ¥ {0} 元";
-            // 
-            // lab_paid
-            // 
-            this.lab_paid.AutoSize = true;
-            this.lab_paid.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lab_paid.Location = new System.Drawing.Point(18, 361);
-            this.lab_paid.Name = "lab_paid";
-            this.lab_paid.Size = new System.Drawing.Size(81, 17);
-            this.lab_paid.TabIndex = 5;
-            this.lab_paid.Text = "实付: ¥ {0} 元";
-            // 
-            // lab_paytype
-            // 
-            this.lab_paytype.AutoSize = true;
-            this.lab_paytype.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lab_paytype.Location = new System.Drawing.Point(145, 362);
-            this.lab_paytype.Name = "lab_paytype";
-            this.lab_paytype.Size = new System.Drawing.Size(78, 17);
-            this.lab_paytype.TabIndex = 3;
-            this.lab_paytype.Text = "支付方式: {0}";
-            // 
-            // BillingComponent
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.lab_paid);
-            this.Controls.Add(this.lab_disfromfriend);
-            this.Controls.Add(this.lab_CopeWith);
-            this.Controls.Add(this.list_items);
-            this.Controls.Add(this.lab_DeliveryType);
-            this.Controls.Add(this.lab_id);
-            this.Controls.Add(this.lab_paytype);
-            this.Controls.Add(this.lab_createdTime);
-            this.Controls.Add(this.lab_code);
-            this.Controls.Add(this.lab_subtitle);
-            this.Controls.Add(this.lab_title);
-            this.Name = "BillingComponent";
-            this.Size = new System.Drawing.Size(296, 435);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+			this.list_items.Location = new System.Drawing.Point(13, 210);
+			this.list_items.MultiColumn = true;
+			this.list_items.Name = "list_items";
+			this.list_items.Size = new System.Drawing.Size(243, 102);
+			this.list_items.TabIndex = 4;
+			// 
+			// lab_CopeWith
+			// 
+			this.lab_CopeWith.AutoSize = true;
+			this.lab_CopeWith.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lab_CopeWith.Location = new System.Drawing.Point(13, 337);
+			this.lab_CopeWith.Name = "lab_CopeWith";
+			this.lab_CopeWith.Size = new System.Drawing.Size(77, 17);
+			this.lab_CopeWith.TabIndex = 5;
+			this.lab_CopeWith.Text = "应付: ¥{0} 元";
+			// 
+			// lab_disfromfriend
+			// 
+			this.lab_disfromfriend.AutoSize = true;
+			this.lab_disfromfriend.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lab_disfromfriend.Location = new System.Drawing.Point(139, 337);
+			this.lab_disfromfriend.Name = "lab_disfromfriend";
+			this.lab_disfromfriend.Size = new System.Drawing.Size(100, 17);
+			this.lab_disfromfriend.TabIndex = 5;
+			this.lab_disfromfriend.Text = "友荐惠: : ¥ {0} 元";
+			// 
+			// lab_paid
+			// 
+			this.lab_paid.AutoSize = true;
+			this.lab_paid.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lab_paid.Location = new System.Drawing.Point(12, 361);
+			this.lab_paid.Name = "lab_paid";
+			this.lab_paid.Size = new System.Drawing.Size(81, 17);
+			this.lab_paid.TabIndex = 5;
+			this.lab_paid.Text = "实付: ¥ {0} 元";
+			// 
+			// lab_paytype
+			// 
+			this.lab_paytype.AutoSize = true;
+			this.lab_paytype.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lab_paytype.Location = new System.Drawing.Point(139, 362);
+			this.lab_paytype.Name = "lab_paytype";
+			this.lab_paytype.Size = new System.Drawing.Size(78, 17);
+			this.lab_paytype.TabIndex = 3;
+			this.lab_paytype.Text = "支付方式: {0}";
+			// 
+			// BillingComponent
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.White;
+			this.Controls.Add(this.lab_paid);
+			this.Controls.Add(this.lab_disfromfriend);
+			this.Controls.Add(this.lab_CopeWith);
+			this.Controls.Add(this.list_items);
+			this.Controls.Add(this.lab_DeliveryType);
+			this.Controls.Add(this.lab_id);
+			this.Controls.Add(this.lab_paytype);
+			this.Controls.Add(this.lab_createdTime);
+			this.Controls.Add(this.lab_code);
+			this.Controls.Add(this.lab_subtitle);
+			this.Controls.Add(this.lab_title);
+			this.Name = "BillingComponent";
+			this.Size = new System.Drawing.Size(274, 435);
+			this.ResumeLayout(false);
+			this.PerformLayout();
 
         }
 

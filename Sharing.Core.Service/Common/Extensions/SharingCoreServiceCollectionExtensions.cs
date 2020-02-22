@@ -7,8 +7,9 @@ namespace Sharing.Core.Services {
 	using Microsoft.Extensions.Configuration;
 	using System.Collections.Generic;
 	using Microsoft.Extensions.Configuration.Json;
+	using Sharing.Core.CMQ;
 
-	public static class SharingCoreServiceServiceCollectionExtensions {
+	public static class SharingCoreServiceCollectionExtensions {
 		public static IServiceCollection AddWeChatUserService(this IServiceCollection collection) {
 			collection.Add(new ServiceDescriptor(typeof(IWeChatUserService), typeof(WeChatUserService), ServiceLifetime.Transient));
 			return collection;
@@ -47,6 +48,15 @@ namespace Sharing.Core.Services {
 			});
 			collection.Add(new ServiceDescriptor(typeof(IConfiguration), configurationRoot));
 			builder.Build();
+			return collection;
+		}
+
+		public static IServiceCollection AddTencentCMQ(this IServiceCollection collection) {
+			collection.Add(new ServiceDescriptor(typeof(TencentCMQClientFactory), typeof(TencentCMQClientFactory), ServiceLifetime.Singleton));
+			return collection;
+		}
+		public static IServiceCollection AddDatabaseFactory(this IServiceCollection collection) {
+			collection.Add(new ServiceDescriptor(typeof(IDatabaseFactory), typeof(DatabaseFactory), ServiceLifetime.Singleton));
 			return collection;
 		}
 	}

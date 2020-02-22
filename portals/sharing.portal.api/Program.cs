@@ -18,15 +18,14 @@ namespace Sharing.Portal.Api {
 	using System.Reflection;
 	using Sharing.WeChat.Models;
 	using Sharing.Portal.Api.Filters;
+	using Sharing.Core.CMQ;
 
 	public class Program {
 		public static IWebHostBuilder builder;
 		public static void Main(string[] args) {
 			builder = CreateWebHostBuilder(args)
 				.ConfigureServices((collection) => {
-					IoC.ConfigureService(collection, (configure) => {
 
-					});
 					collection.AddWeChatApiService();
 					collection.AddRandomGenerator();
 					collection.AddSharingHostService();
@@ -38,23 +37,14 @@ namespace Sharing.Portal.Api {
 					collection.AddMvc((setup) => {
 						setup.Filters.Add(new ExceptionFilter());
 					});
-					var provider = collection.BuildServiceProvider();
-					collection.Add(new ServiceDescriptor(typeof(ModelClient), new ModelClient(
-						provider.GetService<IWeChatApi>(),
-						provider.GetService<IWeChatUserService>(),
-						provider.GetService<IRandomGenerator>(),
-						provider.GetService<IWeChatPayService>(),
-						provider.GetService<IMCardService>(),
-						provider.GetService<ISharingHostService>(),
-						provider.GetService<IWeChatMsgHandler>()
-					)));
+					collection.AddLogging((cfg) => {
+						cfg.AddConsole();
+						cfg.AddLog4Net();
+					});
+					collection.AddTencentCMQ();
+					collection.AddDatabaseFactory();					
+					collection.AddScoped<ModelClient>();
 					
-					var configuration = IoC.GetService<Microsoft.Extensions.Configuration.IConfiguration>();
-					var wx = IoC.GetService<Microsoft.Extensions.Configuration.IConfiguration>()
-					.GetSection(WeChatConstant.SectionName)
-					.Get<WeChatConstant>();
-
-					collection.Add(new ServiceDescriptor(typeof(WeChatConstant), wx));
 				})
 				.ConfigureAppConfiguration((hostingContext, configurationBuilder) => {
 					var evn = hostingContext.HostingEnvironment;

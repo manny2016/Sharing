@@ -33,7 +33,7 @@ namespace Sharing.Portal.Api
                 Fare = context.Fare.DecimalValue(),
                 Delivery = context.Delivery,
                 State = state,
-                CreatedTime = DateTime.Now
+                CreatedDateTime = DateTime.Now
 
             };
         }

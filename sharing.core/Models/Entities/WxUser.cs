@@ -15,7 +15,7 @@ namespace Sharing.Core.Entities
         public  string Province { get; set; }
         public  string City { get; set; }
         public  string AvatarUrl { get; set; }
-        public  long CreatedTime { get; set; }
+        public  long CreatedDateTime { get; set; }
         public  long LastActivityTime { get; set; }
 
         public string AppId { get; set; }

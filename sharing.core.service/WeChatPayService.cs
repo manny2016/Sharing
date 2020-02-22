@@ -13,10 +13,14 @@ namespace Sharing.Core.Services
     {
         private readonly IWeChatUserService wxUserService;
         private readonly IRandomGenerator generator;
-        public WeChatPayService(IWeChatUserService wxUserService, IRandomGenerator generator)
+		private readonly IDatabaseFactory databaseFactory;
+        public WeChatPayService(IWeChatUserService wxUserService, 
+			IRandomGenerator generator,
+			IDatabaseFactory databaseFactory)
         {
             this.wxUserService = wxUserService;
             this.generator = generator;
+			this.databaseFactory = databaseFactory;
         }
 
         public Trade PrepareUnifiedorder(TopupContext context, out WxPayAttach attach)
@@ -54,7 +58,7 @@ namespace Sharing.Core.Services
             };
             context.Money = context.Money * 100;
             attach.Sign(context.Money);
-            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:true))
+            using (var database = this.databaseFactory.GenerateDatabase(isWriteOnly:true))
             {
                 return database.SqlQuerySingleOrDefaultTransaction<Trade>(queryString, new
                 {
@@ -76,7 +80,7 @@ namespace Sharing.Core.Services
         public Payment GetPayment(string appid)
         {
             var queryString = "SELECT [Payment] FROM [dbo].[MWeChatApp]  (NOLOCK) WHERE AppId=@AppId;";
-            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly:false))
+            using (var database = this.databaseFactory.GenerateDatabase(isWriteOnly:false))
             {
                 var app = database.SqlQuerySingleOrDefault<MWeChatApp>(queryString, new { AppId = appid });
                 return app.Payment.DeserializeToObject<Payment>();
@@ -86,7 +90,7 @@ namespace Sharing.Core.Services
         public Trade GetTradeByTradeId(string tradeId)
         {
             var queryString = "SELECT * FROM [dbo].[Trade]  (NOLOCK) WHERE [TradeId] =@tradeId";
-            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly: false) )
+            using (var database = this.databaseFactory.GenerateDatabase(isWriteOnly: false) )
             {
                 return database.SqlQuerySingleOrDefault<Trade>(queryString, new { tradeId = tradeId });
             }
@@ -127,7 +131,7 @@ namespace Sharing.Core.Services
             //context.Money = context.Totalfee.ToString();
             attach.Sign(context.Money );
             
-            using (var database = SharingConfigurations.GenerateDatabase(isWriteOnly: true) )
+            using (var database = this.databaseFactory.GenerateDatabase(isWriteOnly: true) )
             {
                 return database.SqlQuerySingleOrDefaultTransaction<Trade>(queryString, new
                 {

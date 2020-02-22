@@ -53,7 +53,7 @@ namespace Sharing.Core.Models
         /// 订单创建时间
         /// </summary>
         [JsonProperty("createdTime")]
-        public DateTime? CreatedTime { get; set; }
+        public DateTime? CreatedDateTime { get; set; }
     }
     public class OnlineOrderItem
     {

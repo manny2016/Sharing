@@ -1,5 +1,6 @@
 ﻿
 namespace Sharing.Core {
+	using Microsoft.Extensions.Configuration;
 	using Sharing.Core.Models;
 	using System.Collections.Generic;
 	using System.Linq;
@@ -9,9 +10,10 @@ namespace Sharing.Core {
 		public static ISharedPyramid BuildSharedPyramid(
 			this IList<ISharedContext> context,
 			IWxUserKey basic,
+			IConfiguration configuration,
 			out long basicWxUserId) {
 
-			var levelLimit = IoC.GetService<WeChatConstant>().AllowSharedPyramidLevel;
+			var levelLimit = configuration.GetWeChatConstant().AllowSharedPyramidLevel;
 
 			basicWxUserId = 0;
 			var basicSharedContext = context.FirstOrDefault(o => o.Id.Equals(basic.Id));
@@ -48,8 +50,9 @@ namespace Sharing.Core {
 
 		public static ISharedPyramid BuildSharedPyramid(
 			this IList<ISharedContext> context,
-			IWxUserKey basic) {
-			return BuildSharedPyramid(context, basic, out long basicWxUserId);
+			IWxUserKey basic,
+			IConfiguration configuration) {
+			return BuildSharedPyramid(context, basic, configuration, out long basicWxUserId);
 		}
 	}
 }

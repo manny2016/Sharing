@@ -359,8 +359,8 @@ namespace Sharing.Core.Services {
 				http.Method = "POST";
 				http.ContentType = "application/json; encoding=utf-8";
 				var data = new {
-					path = $"pages/welcome/index?sharedBy={sharedBy.OpenId}",
-					scene = sharedBy.Id,
+					path = $"pages/welcome/index",
+					scene = sharedBy.OpenId,
 					width = 280
 				};
 				using ( var xx = http.GetRequestStream() ) {

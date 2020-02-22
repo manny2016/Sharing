@@ -31,8 +31,8 @@ namespace Sharing.Core.CMQ {
 			int pollingWaitSeconds = 10,
 			string currentVersion = "SDK_C#_1.0") {
 			this.Endpoint = endpoint;
-			this.SecretId = IoC.GetService<WeChatConstant>().CloudAPI_SecrectId;
-			this.SecretKey = IoC.GetService<WeChatConstant>().CloudAPI_SecretKey;
+			this.SecretId = endpoint.SecretId;
+			this.SecretKey = endpoint.SecretKey;
 			this.SignMethod = signMethod;
 			this.Path = path;
 			this.PollingWaitSeconds = pollingWaitSeconds;

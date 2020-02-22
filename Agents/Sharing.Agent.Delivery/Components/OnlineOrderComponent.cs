@@ -60,7 +60,7 @@ namespace Sharing.Agent.Delivery.Components
                     return o.Money;
                 }).ToString("0.00元");
                 this.lab_state.Text = this.OrderContext.State.GenernateTradeStateString();
-                this.lab_createdtime.Text = this.OrderContext.CreatedTime?.ToString("yyyy-MM-dd HH:mm:ss");
+                this.lab_createdtime.Text = this.OrderContext.CreatedDateTime?.ToString("yyyy-MM-dd HH:mm:ss");
 
             }
         }

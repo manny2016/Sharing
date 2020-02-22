@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace Sharing.Core.CMQ {
 	public class TencentCMQClientFactory {
-		public static TencentCMQClient<TModel> Create<TModel>(string prefix)
+		private readonly IConfiguration configuration;
+		public TencentCMQClientFactory(IConfiguration configuration) {
+			this.configuration = configuration;
+		}
+		public  TencentCMQClient<TModel> Create<TModel>( string prefix)
 			where TModel : ICMQMessageHandle {
-
+			var constant = this.configuration.GetWeChatConstant();
 			return new TencentCMQClient<TModel>(new ClientMeta
 			(
 				new EndpointMeta(
-					IoC.GetService<WeChatConstant>().CloudAPI_CMQ__TOPIC_ENDPOINT,
-					IoC.GetService<WeChatConstant>().CloudAPI_CMQ_QUEUE_ENDPOINT),
+					constant.CloudAPI_CMQ__TOPIC_ENDPOINT,
+					constant.CloudAPI_CMQ_QUEUE_ENDPOINT,
+					constant.CloudAPI_SecrectId,
+					constant.CloudAPI_SecretKey),
 				prefix
 			));
 		}

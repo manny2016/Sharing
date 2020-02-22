@@ -31,7 +31,7 @@ namespace Sharing.Core.Models
         public override string GenernateWhereCase()
         {
             var subcase = new List<string>();
-            subcase.Add($" WHERE MchId= {this.MchId}");
+            subcase.Add($" WHERE [MerchantId]= {this.MchId}");
             if (this.Keys != null && this.Keys.Length > 0)
             {
                 var keyscase = string.Join(",", this.Keys.Select((key) =>
@@ -42,15 +42,15 @@ namespace Sharing.Core.Models
             }
             if (this.Start != null)
             {
-                subcase.Add($"CreatedTime>={this.Start.Value.ToUnixStampDateTime()}");
+                subcase.Add($"CreatedDateTime>={this.Start.Value.ToUnixStampDateTime()}");
             }
             if (this.End != null)
             {
-                subcase.Add($"CreatedTime<{this.End.Value.ToUnixStampDateTime()}");
+                subcase.Add($"CreatedDateTime<{this.End.Value.ToUnixStampDateTime()}");
             }
             if (this.Type != null)
             {
-                subcase.Add($"TradeType='{this.Type.ToString()}'");
+                subcase.Add($"TradeType={(int)this.Type}");
             }
             if (this.States != null && this.States.Length > 0)
             {
