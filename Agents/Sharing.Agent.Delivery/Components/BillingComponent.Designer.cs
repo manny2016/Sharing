@@ -45,7 +45,7 @@
 			// 
 			this.lab_title.AutoSize = true;
 			this.lab_title.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lab_title.Location = new System.Drawing.Point(32, 24);
+			this.lab_title.Location = new System.Drawing.Point(41, 24);
 			this.lab_title.Name = "lab_title";
 			this.lab_title.Size = new System.Drawing.Size(138, 22);
 			this.lab_title.TabIndex = 0;
@@ -56,7 +56,7 @@
 			// 
 			this.lab_subtitle.AutoSize = true;
 			this.lab_subtitle.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lab_subtitle.Location = new System.Drawing.Point(72, 59);
+			this.lab_subtitle.Location = new System.Drawing.Point(81, 59);
 			this.lab_subtitle.Name = "lab_subtitle";
 			this.lab_subtitle.Size = new System.Drawing.Size(48, 19);
 			this.lab_subtitle.TabIndex = 2;
@@ -67,7 +67,7 @@
 			// 
 			this.lab_code.AutoSize = true;
 			this.lab_code.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lab_code.Location = new System.Drawing.Point(10, 101);
+			this.lab_code.Location = new System.Drawing.Point(19, 101);
 			this.lab_code.Name = "lab_code";
 			this.lab_code.Size = new System.Drawing.Size(77, 17);
 			this.lab_code.TabIndex = 3;
@@ -77,7 +77,7 @@
 			// 
 			this.lab_DeliveryType.AutoSize = true;
 			this.lab_DeliveryType.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lab_DeliveryType.Location = new System.Drawing.Point(131, 101);
+			this.lab_DeliveryType.Location = new System.Drawing.Point(140, 101);
 			this.lab_DeliveryType.Name = "lab_DeliveryType";
 			this.lab_DeliveryType.Size = new System.Drawing.Size(54, 17);
 			this.lab_DeliveryType.TabIndex = 3;
@@ -87,7 +87,7 @@
 			// 
 			this.lab_createdTime.AutoSize = true;
 			this.lab_createdTime.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lab_createdTime.Location = new System.Drawing.Point(13, 388);
+			this.lab_createdTime.Location = new System.Drawing.Point(22, 388);
 			this.lab_createdTime.Name = "lab_createdTime";
 			this.lab_createdTime.Size = new System.Drawing.Size(54, 17);
 			this.lab_createdTime.TabIndex = 3;
@@ -97,7 +97,7 @@
 			// 
 			this.lab_id.AutoSize = true;
 			this.lab_id.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lab_id.Location = new System.Drawing.Point(10, 127);
+			this.lab_id.Location = new System.Drawing.Point(19, 127);
 			this.lab_id.Name = "lab_id";
 			this.lab_id.Size = new System.Drawing.Size(54, 17);
 			this.lab_id.TabIndex = 3;
@@ -121,7 +121,7 @@
             "sdf",
             "sdf",
             "sdfsdf"});
-			this.list_items.Location = new System.Drawing.Point(13, 210);
+			this.list_items.Location = new System.Drawing.Point(22, 210);
 			this.list_items.MultiColumn = true;
 			this.list_items.Name = "list_items";
 			this.list_items.Size = new System.Drawing.Size(243, 102);
@@ -131,7 +131,7 @@
 			// 
 			this.lab_CopeWith.AutoSize = true;
 			this.lab_CopeWith.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lab_CopeWith.Location = new System.Drawing.Point(13, 337);
+			this.lab_CopeWith.Location = new System.Drawing.Point(22, 337);
 			this.lab_CopeWith.Name = "lab_CopeWith";
 			this.lab_CopeWith.Size = new System.Drawing.Size(77, 17);
 			this.lab_CopeWith.TabIndex = 5;
@@ -141,7 +141,7 @@
 			// 
 			this.lab_disfromfriend.AutoSize = true;
 			this.lab_disfromfriend.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lab_disfromfriend.Location = new System.Drawing.Point(139, 337);
+			this.lab_disfromfriend.Location = new System.Drawing.Point(148, 337);
 			this.lab_disfromfriend.Name = "lab_disfromfriend";
 			this.lab_disfromfriend.Size = new System.Drawing.Size(100, 17);
 			this.lab_disfromfriend.TabIndex = 5;
@@ -151,7 +151,7 @@
 			// 
 			this.lab_paid.AutoSize = true;
 			this.lab_paid.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lab_paid.Location = new System.Drawing.Point(12, 361);
+			this.lab_paid.Location = new System.Drawing.Point(21, 361);
 			this.lab_paid.Name = "lab_paid";
 			this.lab_paid.Size = new System.Drawing.Size(81, 17);
 			this.lab_paid.TabIndex = 5;
@@ -161,7 +161,7 @@
 			// 
 			this.lab_paytype.AutoSize = true;
 			this.lab_paytype.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lab_paytype.Location = new System.Drawing.Point(139, 362);
+			this.lab_paytype.Location = new System.Drawing.Point(148, 362);
 			this.lab_paytype.Name = "lab_paytype";
 			this.lab_paytype.Size = new System.Drawing.Size(78, 17);
 			this.lab_paytype.TabIndex = 3;
@@ -184,7 +184,7 @@
 			this.Controls.Add(this.lab_subtitle);
 			this.Controls.Add(this.lab_title);
 			this.Name = "BillingComponent";
-			this.Size = new System.Drawing.Size(274, 435);
+			this.Size = new System.Drawing.Size(286, 435);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

@@ -9,7 +9,7 @@ namespace Sharing.Core.CMQ {
 		public TencentCMQClientFactory(IConfiguration configuration) {
 			this.configuration = configuration;
 		}
-		public  TencentCMQClient<TModel> Create<TModel>( string prefix)
+		public TencentCMQClient<TModel> Create<TModel>(string prefix)
 			where TModel : ICMQMessageHandle {
 			var constant = this.configuration.GetWeChatConstant();
 			return new TencentCMQClient<TModel>(new ClientMeta
@@ -21,6 +21,20 @@ namespace Sharing.Core.CMQ {
 					constant.CloudAPI_SecretKey),
 				prefix
 			));
+		}
+		private static TencentCMQClientFactory instance = null;
+		private static object lockObj = new object();
+		public static TencentCMQClientFactory CreateInstance(IConfiguration configuration) {
+			lock ( lockObj ) {
+				if ( instance == null ) {
+					lock ( lockObj ) {
+						if ( instance == null ) {
+							instance = new TencentCMQClientFactory(configuration);
+						}
+					}
+				}
+			}
+			return instance;
 		}
 	}
 }

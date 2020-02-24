@@ -322,14 +322,46 @@ namespace Sharing.Core.Services {
 			return new RedpackResponse();
 		}
 
-		public IEnumerable<WeChatUserInfo> QueryAllWxUsers(IWxApp official) {
-			var list = $"https://api.weixin.qq.com/cgi-bin/user/get?access_token={this.GetToken(official.AppId, official.Secret)}"
+		public QueryWxUserDetailsResponse QueryAllWxUsers(QueryWxUserInfoRequest context) {
+			var url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token={0}{1}";
+			var list = string.Format(url,
+				this.GetToken(context.WxApp.AppId, context.WxApp.Secret),
+				string.IsNullOrEmpty(context.NextOpenId) ? string.Empty : $"&next_openid={context.NextOpenId}")
 				.GetUriJsonContent<QueryWxUserListResponse>();
-			foreach ( var openid in list.Data.OpenIds ) {
-				var data = $"https://api.weixin.qq.com/cgi-bin/user/info?access_token={this.GetToken(official.AppId, official.Secret)}&openid={openid}&lang=zh_CN"
-					  .GetUriJsonContent<WeChatUserInfo>();
-				yield return data;
+			if ( list.Data == null || list.Data.OpenIds == null || list.Data.OpenIds.Length == 0 ) {
+				return new QueryWxUserDetailsResponse() {
+					NextOpenId = null,
+					WeChatUserInfos = new WeChatUserInfo[] { }
+				};
 			}
+			var infos = new List<WeChatUserInfo>();
+			foreach ( var package in list.Data.OpenIds.Split<string>(100) ) {
+				var result = $"https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token={this.GetToken(context.WxApp.AppId, context.WxApp.Secret)}"
+					  .GetUriJsonContent<JObject>((http) => {
+						  http.Method = "POST";
+						  var data = new {
+							  user_list = package.Select((x) => {
+								  return new {
+									  openid = x,
+									  lang = "zh_CN"
+								  };
+							  })
+						  };
+						  using ( var stream = http.GetRequestStream() ) {
+							  var body = data.SerializeToJson();
+							  var buffers = UTF8Encoding.UTF8.GetBytes(body);
+							  stream.Write(buffers, 0, buffers.Length);
+							  stream.Flush();
+						  }
+						  return http;
+					  });
+				var lt = result.TryGetValues<WeChatUserInfo>("$.user_info_list").ToArray();
+				infos.AddRange(lt);
+			}
+			return new QueryWxUserDetailsResponse() {
+				NextOpenId = list.NextOpenId,
+				WeChatUserInfos = infos.ToArray()
+			};
 		}
 
 		public NormalWxResponse SendWeChatMessage(IWxApp official, string openid, string text) {

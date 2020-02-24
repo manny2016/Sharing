@@ -12,6 +12,9 @@ namespace Sharing.WeChat.Models
         
         [JsonProperty("data")]
         public WxUserListData Data { get; set; }
+
+		[JsonProperty("next_openid")]
+		public string NextOpenId { get;set;}
     }
     public class WxUserListData
     {

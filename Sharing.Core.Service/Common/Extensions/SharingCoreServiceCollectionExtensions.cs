@@ -38,6 +38,16 @@ namespace Sharing.Core.Services {
 		public static IServiceCollection ConfigureAppConfiguration(this IServiceCollection collection) {
 
 			var builder = new ConfigurationBuilder();
+#if DEBUG
+			var configurationRoot = new ConfigurationRoot(new List<IConfigurationProvider>() {
+				new  JsonConfigurationProvider(new JsonConfigurationSource(){
+					 Optional = true,
+					 FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(System.Environment.CurrentDirectory),
+					 Path ="appsettings.Development.json",
+					 ReloadOnChange  =true
+				})
+			});
+#else
 			var configurationRoot = new ConfigurationRoot(new List<IConfigurationProvider>() {
 				new  JsonConfigurationProvider(new JsonConfigurationSource(){
 					 Optional = true,
@@ -46,6 +56,8 @@ namespace Sharing.Core.Services {
 					 ReloadOnChange  =true
 				})
 			});
+#endif
+
 			collection.Add(new ServiceDescriptor(typeof(IConfiguration), configurationRoot));
 			builder.Build();
 			return collection;

@@ -4,7 +4,8 @@ namespace Sharing.Agent.Delivery.Models
     using Sharing.Core;
     public class TradeStateResponse
     {
-        [Newtonsoft.Json.JsonProperty("state")]
-        public TradeStates State { get; set; }
-    }
+		public bool Success { get; set; }
+		public TradeStates Data { get; set; }
+		public string Message { get; set; }
+	}
 }

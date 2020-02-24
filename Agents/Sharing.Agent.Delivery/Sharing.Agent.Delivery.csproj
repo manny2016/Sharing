@@ -154,7 +154,15 @@
     <Compile Include="Components\OnlineOrderComponent.Designer.cs">
       <DependentUpon>OnlineOrderComponent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Core\AppHost.cs" />
     <Compile Include="Core\Models\PrintItem.cs" />
+    <Compile Include="Contracts\IAppHostBuilder.cs" />
+    <Compile Include="FrmRedpack.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmRedpack.Designer.cs">
+      <DependentUpon>FrmRedpack.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\Settings.cs" />
     <Compile Include="Core\Models\TradeStateResponse.cs" />
     <Compile Include="Forms\FrmSettings.cs">
@@ -186,6 +194,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmRedpack.resx">
+      <DependentUpon>FrmRedpack.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -30,6 +30,14 @@
         {
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
+			System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
+            "xxx",
+            "ddd",
+            "10.00",
+            "1",
+            "10.00"}, -1);
+			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 			System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
 			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "xxx",
@@ -38,14 +46,6 @@
             "1",
             "10.00"}, -1);
 			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-			System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
-			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
-            "xxx",
-            "ddd",
-            "10.00",
-            "1",
-            "10.00"}, -1);
-			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -174,9 +174,10 @@
 			// 
 			// toolStripStatusLabel1
 			// 
+			this.toolStripStatusLabel1.IsLink = true;
 			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-			this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
-			this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(36, 17);
+			this.toolStripStatusLabel1.Text = "时间:";
 			// 
 			// toolStrip1
 			// 
@@ -247,6 +248,7 @@
 			this.toolStripButton4.Name = "toolStripButton4";
 			this.toolStripButton4.Size = new System.Drawing.Size(68, 68);
 			this.toolStripButton4.Text = "toolStripButton3";
+			this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
 			// 
 			// toolStripSeparator5
 			// 
@@ -337,14 +339,14 @@
 			this.lv_histories.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lv_histories.FullRowSelect = true;
 			this.lv_histories.GridLines = true;
-			listViewGroup1.Header = "ListViewGroup";
-			listViewGroup1.Name = "listViewGroup1";
+			listViewGroup3.Header = "ListViewGroup";
+			listViewGroup3.Name = "listViewGroup1";
 			this.lv_histories.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1});
+            listViewGroup3});
 			this.lv_histories.HideSelection = false;
 			this.lv_histories.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2});
+            listViewItem5,
+            listViewItem6});
 			this.lv_histories.Location = new System.Drawing.Point(3, 16);
 			this.lv_histories.Name = "lv_histories";
 			this.lv_histories.Size = new System.Drawing.Size(475, 245);
@@ -410,14 +412,14 @@
 			this.lv_OrderDetals.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lv_OrderDetals.FullRowSelect = true;
 			this.lv_OrderDetals.GridLines = true;
-			listViewGroup2.Header = "ListViewGroup";
-			listViewGroup2.Name = "listViewGroup1";
+			listViewGroup1.Header = "ListViewGroup";
+			listViewGroup1.Name = "listViewGroup1";
 			this.lv_OrderDetals.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup2});
+            listViewGroup1});
 			this.lv_OrderDetals.HideSelection = false;
 			this.lv_OrderDetals.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem3,
-            listViewItem4});
+            listViewItem1,
+            listViewItem2});
 			this.lv_OrderDetals.Location = new System.Drawing.Point(3, 16);
 			this.lv_OrderDetals.Name = "lv_OrderDetals";
 			this.lv_OrderDetals.Size = new System.Drawing.Size(475, 162);
@@ -462,6 +464,7 @@
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.statusStrip1);
+			this.IsMdiContainer = true;
 			this.Name = "FrmMain";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "奶茶店接单系统";

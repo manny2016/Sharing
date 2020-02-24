@@ -27,14 +27,14 @@ namespace Sharing.Agent.Delivery {
 			this.InitializeNewOnlineOrders();
 			this.InitializeHistoryOnlineOrders();
 
-			//ThreadPool.QueueUserWorkItem((state) => {
-			//	var client = state as TencentCMQClient<OnlineOrder>;
-			//	client.Initialize();
-			//	client.Monitor((model) => {
-			//		OnlineOrderComingCallback(model);
-			//		client.DeleteMessage(model);
-			//	});
-			//}, TencentCMQClientFactory.Create<OnlineOrder>("lemon"));
+			ThreadPool.QueueUserWorkItem((state) => {
+				var client = state as TencentCMQClient<OnlineOrder>;
+				client.Initialize();
+				client.Monitor((model) => {
+					OnlineOrderComingCallback(model);
+					client.DeleteMessage(model);
+				});
+			}, TencentCMQClientFactory.CreateInstance(AppHost.GetConfiguration()).Create<OnlineOrder>("lemon"));
 
 		}
 		private void OnlineOrderComingCallback(OnlineOrder model) {
@@ -78,17 +78,22 @@ namespace Sharing.Agent.Delivery {
 			foreach ( var order in results.OrderBy(o => o.TradeCode) ) {
 				var component = new OnlineOrderComponent(order);
 				component.Click += Component_Click;
-				component.OnlineOrderCcompletedCompleted += Component_OnlineOrderCcompletedCompleted;
+				component.OnlineOrderChanged += Component_OnlineOrderChanged;
 				this.flp_NewOrder.Controls.Add(component);
 			}
 			this.lv_OrderDetals.Groups.Clear();
 			this.lv_OrderDetals.Items.Clear();
 		}
 
-		private void Component_OnlineOrderCcompletedCompleted(object sender, OnlineOrder order) {
-			this.Controls.Remove(sender as OnlineOrderComponent);
-			this.LoadOnlinOrder(this.lv_histories, order);
+		private void Component_OnlineOrderChanged(object sender, OnlineOrder order) {
+			if ( (order.State & TradeStates.Delivered) == TradeStates.Delivered ) {
+				this.Controls.Remove(sender as OnlineOrderComponent);
+				this.LoadOnlinOrder(this.lv_histories, order);
+			}
+
 		}
+
+
 
 		private async void InitializeHistoryOnlineOrders() {
 			var results = await this.QueryOnineOrders(
@@ -120,9 +125,9 @@ namespace Sharing.Agent.Delivery {
 				foreach ( var item in order.Items ) {
 					var listItem = new ListViewItem(item.Product);
 					listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, item.Option));
-					listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, item.Price.ToString("￥0.00元")));
+					listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, (item.Price / 100).ToString("￥0.00元")));
 					listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, item.Count.ToString()));
-					listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, item.Money.ToString("￥0.00元")));
+					listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, (item.Money / 100).ToString("￥0.00元")));
 					listItem.SubItems.Add(new ListViewItem.ListViewSubItem(listItem, "制作中"));
 					listItem.Group = group;
 					listView.Items.Add(listItem);
@@ -152,6 +157,12 @@ namespace Sharing.Agent.Delivery {
 
 		private void toolStripButton1_Click(object sender, EventArgs e) {
 
+		}
+
+		private void toolStripButton4_Click(object sender, EventArgs e) {
+			//鼓励金发放预览
+			var frmRedpack = new FrmRedpack();
+			frmRedpack.ShowDialog(this);
 		}
 	}
 }

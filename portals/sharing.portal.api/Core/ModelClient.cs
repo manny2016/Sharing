@@ -41,7 +41,7 @@ namespace Sharing.Portal.Api {
 			IWeChatMsgHandler weChatMsgHandler,
 			TencentCMQClientFactory factory,
 			IDatabaseFactory databaseFactory,
-			IConfiguration configuraton) {
+			IConfiguration configuration) {
 			this.wxapi = api;
 			this.sharingHostService = hostService;
 			this.wxUserService = wxUserService;
@@ -230,11 +230,11 @@ WHERE [TradeId] =@tradeId";
 				Guard.ArgumentNotNull(trade, "trade");
 				if ( trade.Money != notification.TotalFee )////P1 TODO: need change to sign verify.
 					throw new WeChatPayException("There is a error happend on transaction to verify.(pay money)");
-				if ( (trade.TradeState & TradeStates.HavePay) != TradeStates.HavePay )
-					throw new WeChatPayException("Only HavePay status pay order can be modify.");
-				if ( (trade.TradeState & TradeStates.AckPay) == TradeStates.AckPay ) {
-					throw new WeChatPayException("No need to confirm payment duplicated.");
-				}
+				//if ( (trade.TradeState & TradeStates.HavePay) != TradeStates.HavePay )
+				//	throw new WeChatPayException("Only HavePay status pay order can be modify.");
+				//if ( (trade.TradeState & TradeStates.AckPay) == TradeStates.AckPay ) {
+				//	throw new WeChatPayException("No need to confirm payment duplicated.");
+				//}
 				var pyarmid = (ISharedPyramid)null;
 				string cardid = string.Empty;
 				string usercode = string.Empty;
@@ -264,7 +264,8 @@ WHERE [TradeId] =@tradeId";
 						new SqlParameter("@rewardMoney",(pyarmid?.Parent?.Id)==null?0:trade.RealMoney*0.1),
 						new SqlParameter("@rewardIntegral",trade.RealMoney/10),
 						new SqlParameter("@confirmTime",DateTime.UtcNow.ToUnixStampDateTime()),
-						new SqlParameter("@state",(int)TradeStates.AckPay)
+						new SqlParameter("@state",(int)TradeStates.AckPay),
+						new SqlParameter("@_rewardMoneyLimit",0.1)
 					};
 
 						database.Execute(executeSqlString, parameters.ToArray(), System.Data.CommandType.StoredProcedure);
@@ -423,19 +424,19 @@ WHERE [TradeId] =@tradeId";
 			 client_ip: "49.76.219.137", act_name: "推广赚佣金", remark: "来自柠檬工坊东坡里店的推广佣金"));
 		}
 		public void QueryWxUsers() {
-			wxapi.QueryAllWxUsers(new WxApp() {
-				AppId = "wx20da9548445a2ca7",
-				Secret = "6be5c3202dfd0d074851615588596e6c",
-				OriginalId = "gh_085392ac0d21"
-			}).ToList();
+			//wxapi.QueryAllWxUsers(new WxApp() {
+			//	AppId = "wx20da9548445a2ca7",
+			//	Secret = "6be5c3202dfd0d074851615588596e6c",
+			//	OriginalId = "gh_085392ac0d21"
+			//}).ToList();
 		}
 		public OnlineOrder[] QueryOnlineOrders(OnineOrderQueryFilter filter) {
 			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: false) ) {
-				var queryString = string.Concat("SELECT TradeId,TradeCode ,TradeState,CreatedDateTime,Attach FROM [dbo].[Trade]", filter.GenernateWhereCase());
+				var queryString = string.Concat("SELECT TradeId,TradeCode,TradeState,CreatedDateTime,Attach FROM [dbo].[Trade]", filter.GenernateWhereCase());
 				var results = database.SqlQuery<TradeDetails>(queryString);
 				if ( results == null || results.Count().Equals(0) ) return new OnlineOrder[] { };
 				return results.Select((ctx) => {
-					return ctx.Attach.DeserializeToObject<OrderContext>().Convert(ctx.TradeId, ctx.Code, ctx.TradeState);
+					return ctx.Attach.DeserializeToObject<OrderContext>().Convert(ctx.TradeId, ctx.TradeCode, ctx.TradeState);
 				}).ToArray();
 			}
 		}
@@ -443,11 +444,11 @@ WHERE [TradeId] =@tradeId";
 			var executeSqlString = @"spUpgradeTradeState";
 			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: false) ) {
 				var parameters = new Dapper.DynamicParameters();
-				parameters.Add("p_tradeid", tradeId, System.Data.DbType.String);
-				parameters.Add("p_state", (int)state, System.Data.DbType.Int32);
-				parameters.Add("o_state", null, System.Data.DbType.Int32, System.Data.ParameterDirection.Output);
+				parameters.Add("@tradeId", tradeId, System.Data.DbType.String);
+				parameters.Add("@tradeState", (int)state, System.Data.DbType.Int32);
+				parameters.Add("@o_state", null, System.Data.DbType.Int32, System.Data.ParameterDirection.Output);
 				database.Execute(executeSqlString, parameters, System.Data.CommandType.StoredProcedure, true);
-				return parameters.Get<TradeStates>("o_state");
+				return parameters.Get<TradeStates>("@o_state");
 			}
 		}
 		public void GenernateSharedPoster(Stream stream, IWxUserKey wxUserKey) {
@@ -456,6 +457,21 @@ WHERE [TradeId] =@tradeId";
 				.SingleOrDefault();
 
 			this.wxapi.GenernateSharedMomentsPoster(stream, wxapp, wxUserKey);
+		}
+		public IList<MerchantDetails> GetMerchantDetails() {
+			return sharingHostService.MerchantDetails;
+		}
+		public QueryWxUserDetailsResponse QueryWechatUserByAppId(string appid, string screct, string nextOpenId) {
+			return this.wxapi.QueryAllWxUsers(new QueryWxUserInfoRequest() {
+				NextOpenId = nextOpenId,
+				WxApp = new WxApp() {
+					AppId = appid,
+					Secret = screct
+				}
+			});
+		}
+		public void RewordOnSharing(string appid,string openid) {
+			this.sharingHostService.RewardOnSharing(appid,openid);
 		}
 	}
 }

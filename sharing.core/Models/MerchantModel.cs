@@ -11,7 +11,7 @@ namespace Sharing.Core.Models
         public string MCode { get; set; }
 
         public string BrandName { get; set; }
-
+		[Newtonsoft.Json.JsonIgnore]
         public IWxApp[] Apps
         {
             get

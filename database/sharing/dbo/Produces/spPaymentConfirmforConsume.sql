@@ -6,7 +6,8 @@
 	@rewardMoney INT,
 	@rewardIntegral INT,
 	@confirmTime BIGINT,
-	@state INT
+	@state INT,
+	@_rewardMoneyLimit FLOAT
 AS
 BEGIN TRY
 	BEGIN TRANSACTION	
@@ -33,20 +34,23 @@ BEGIN TRY
 
 	--奖励积分
 	IF(@state = 8)
-	BEGIN
+	BEGIN		
 		INSERT INTO [dbo].[RewardLogging]
-		([MerchantId],[WxUserId],[RelevantTradeId],[RewardIntegral],[State],[CreatedBy],[CreatedDateTime])
-		VALUES(@mchid,@wxUserId,@id,@rewardIntegral,1,'API',DATEDIFF(S,'1970-01-01',SYSUTCDATETIME()));
+		([MerchantId],[WxUserId],[RelevantTradeId],[RewardIntegral],[State],[CreatedBy],[CreatedDateTime],[Description])
+		VALUES(@mchid,@wxUserId,@id,@rewardIntegral,1,'API',DATEDIFF(S,'1970-01-01',SYSUTCDATETIME()),'积分奖励.');
 	END
 	
 	IF (@rewardTo <> -1 AND @state = 8 )
 	BEGIN
 		--派发鼓励奖
 		INSERT INTO [dbo].[RewardLogging]
-		([MerchantId],[WxUserId],[RelevantTradeId],[RewardMoney],[State],[CreatedBy],[CreatedDateTime])
-		VALUES(@mchid,@rewardTo,@id,@rewardMoney,1,'API',DATEDIFF(S,'1970-01-01',SYSUTCDATETIME()));
+		([MerchantId],[WxUserId],[RelevantTradeId],[RewardMoney],[State],[CreatedBy],[CreatedDateTime],[Description])
+		VALUES(@mchid,@rewardTo,@id,@rewardMoney,1,'API',DATEDIFF(S,'1970-01-01',SYSUTCDATETIME()),'积分奖励,推荐佣金.');
 	END; 
-	
+	DECLARE @_appid NVARCHAR(32);
+	DECLARE @_openid NVARCHAR(32);
+	SELECT TOP 1 @_appid = [AppId], @_openid = [OpenId] FROM [dbo].[WxUserIdentity] (NOLOCK) WHERE [WxUserId] =@wxUserId;
+	EXECUTE [dbo].[spRewardOnSharing] @appid =@_appid,@openid = @_openid, @rewardMoneyLimit =@_rewardMoneyLimit;
 	COMMIT TRANSACTION;
 END TRY
 BEGIN CATCH

@@ -85,6 +85,9 @@
     <Build Include="dbo\Produces\spUpgradeSharedPyramid.sql" />
     <Build Include="dbo\Functions\Function1.sql" />
     <Build Include="dbo\Produces\spPaymentConfirmforConsume.sql" />
+    <Build Include="dbo\Produces\spUpgradeTradeState.sql" />
+    <Build Include="dbo\Tables\WxUserIdentity.sql" />
+    <Build Include="dbo\Produces\spRewardOnSharing.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sharing.publish.xml" />

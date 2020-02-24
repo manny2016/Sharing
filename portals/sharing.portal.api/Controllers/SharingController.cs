@@ -6,17 +6,17 @@ namespace Sharing.Portal.Api {
 	using Sharing.Portal.Api;
 	using Sharing.Portal.Api.Models;
 	using Sharing.Core;
-	using Microsoft.Extensions.DependencyInjection;
+
 	using System;
 	using Sharing.WeChat.Models;
 	using System.Collections.Generic;
 	using Sharing.Core.Models;
-	using Microsoft.Extensions.Logging;
-	using Microsoft.AspNetCore;
-	using System.Web;
+
 	using System.IO;
-	using Sharing.Core.CMQ;
+
 	using Microsoft.Extensions.Configuration;
+	using System.Linq;
+	using Sharing.Core.Entities;
 
 	[Produces("application/json")]
 	[ApiController]
@@ -25,7 +25,7 @@ namespace Sharing.Portal.Api {
 		private readonly ModelClient client;
 		private readonly IConfiguration configuration;
 		public SharingController(
-			ModelClient client,IConfiguration  configuration) {
+			ModelClient client, IConfiguration configuration) {
 			this.client = client;
 			this.configuration = configuration;
 		}
@@ -144,7 +144,7 @@ namespace Sharing.Portal.Api {
 				this.HttpContext.Response.Body.Write(echostr.ToBytes());
 			} else {
 				var encryptMsg = body.DeserializeFromXml<WeChatEncryptMsg>();
-				this.client.ProccessWeChatMsg(new WxMsgToken(msg_signature, timestamp, nonce, body, encryptMsg.ToUserName,configuration));
+				this.client.ProccessWeChatMsg(new WxMsgToken(msg_signature, timestamp, nonce, body, encryptMsg.ToUserName, configuration));
 
 			}
 		}
@@ -195,7 +195,7 @@ namespace Sharing.Portal.Api {
 		public void PayNotify() {
 			try {
 				var body = this.Request.Body.ReadAsStringAsync();
-				Logger.DebugFormat("Obtain WeChat pay notification:\r\n{0}", body);
+				Logger.InfoFormat("Obtain WeChat pay notification:\r\n{0}", body);
 				var notify = body.DeserializeFromXml<PayNotification>();
 				client.TodoPayNotify(notify);
 				var str = @"
@@ -325,9 +325,13 @@ namespace Sharing.Portal.Api {
 
 		[Route("api/sharing/UpgradeTradeState")]
 		[HttpPost]
-		public dynamic UpgradeTradeState(TradeStateContext context) {
-			return new {
-				state = client.UpgradeTradeState(context.TradeId, context.TradeState)
+		public APIResult<TradeStates> UpgradeTradeState(TradeStateContext context) {
+			if ( context.TradeState == TradeStates.AckPay ) {
+				throw new InvalidOperationException("You can't update trade state to 'AckPay' in here.");
+			}
+			return new APIResult<TradeStates>() {
+				Data = client.UpgradeTradeState(context.TradeId, context.TradeState) ?? TradeStates.Canceled,
+				Success = true
 			};
 		}
 		[Route("api/sharing/GenernateSharedMomentsPoster")]
@@ -344,6 +348,7 @@ namespace Sharing.Portal.Api {
 					client.GenernateSharedPoster(stream, sharedBy);
 					stream.Flush();
 				}
+				client.RewordOnSharing(sharedBy.AppId,sharedBy.OpenId);
 			}
 			return new APIResult<string>() {
 				Data = $"images/moments/{fileName}",
@@ -351,6 +356,23 @@ namespace Sharing.Portal.Api {
 				Message = string.Empty
 			};
 
+		}
+		[Route("api/sharing/QueryMerchantDetails")]
+		[HttpGet]
+		public APIResults<MerchantDetails> QueryMerchantDetails() {
+			return new APIResults<MerchantDetails>() {
+				Data = client.GetMerchantDetails().ToArray(),
+				Success = true,
+				Message = string.Empty
+			};
+		}
+		[Route("api/sharing/QueryAllWxUsers")]
+		[HttpPost]
+		public APIResult<QueryWxUserDetailsResponse> QueryAllWxUsers(QueryWxUserInfoRequest request) {
+			return new APIResult<QueryWxUserDetailsResponse>() {
+				Data = client.QueryWechatUserByAppId(request.WxApp.AppId, request.WxApp.Secret, request.NextOpenId),
+				Success = true
+			};
 		}
 	}
 }

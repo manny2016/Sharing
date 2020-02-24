@@ -19,3 +19,7 @@
 	[LastUpdatedDateTime] BIGINT NULL,             
 	[ScenarioId] UNIQUEIDENTIFIER NULL
 )
+GO
+--创建聚集索引
+CREATE UNIQUE INDEX [IDX_TradeId_MerchangeId] ON  [dbo].[Trade]([TradeId],[MerchantId])
+GO

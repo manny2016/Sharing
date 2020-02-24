@@ -2,6 +2,8 @@
 (
 	[Id] BIGINT NOT NULL IDENTITY(1, 1) CONSTRAINT [PK_WxUserId] PRIMARY KEY,	
 	[UnionId] NVARCHAR(32),
+	--[AppId] NVARCHAR(32),
+	--[OpenId] NVARCHAR(32),
 	[InvitedBy] BIGINT NULL CONSTRAINT [FK_WxUserId] FOREIGN KEY REFERENCES [dbo].[WxUser] ([Id]),	
     [Mobile]   NVARCHAR(11) NULL,
 	[RegistrySource] INT,
@@ -10,8 +12,7 @@
 	[Province] NVARCHAR(50),
 	[City] NVARCHAR(50),
 	[AvatarUrl] NVARCHAR(200),
-	[AppId] NVARCHAR(32),
-	[OpenId] NVARCHAR(32),
+	[Shared] BIT DEFAULT(0),
 	[CreatedBy] NVARCHAR(50) NULL, 
 	[CreatedDateTime] BIGINT NULL,         
 	[LastUpdatedBy] NVARCHAR(50) NULL,

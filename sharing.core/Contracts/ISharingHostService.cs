@@ -9,6 +9,9 @@ namespace Sharing.Core
     {        
         IList<MerchantDetails> MerchantDetails { get; }
 		IList<ProductTreeNodeModel> Products { get;}
+		
+		void RewardOnSharing(string appId,string openId);
+
 
 	}
 }

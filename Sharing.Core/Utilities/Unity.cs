@@ -62,7 +62,7 @@ namespace Sharing.Core {
 						if ( string.IsNullOrEmpty(model.LastUpdateBy) ) {
 							record.SetDBNull(i);
 						} else {
-							record.SetString(i, model.Info.AvatarUrl);
+							record.SetString(i, model.LastUpdateBy);
 						}
 						break;
 					case "ScenarioId":
