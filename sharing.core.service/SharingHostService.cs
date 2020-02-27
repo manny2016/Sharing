@@ -66,7 +66,7 @@ FROM [dbo].[Category] (NOLOCK) [categories] WHERE Enabled = 1
 						}).ToList();
 
 					}
-					entity.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+					entity.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(30);
 					return result;
 				});
 			}

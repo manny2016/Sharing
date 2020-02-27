@@ -6,12 +6,12 @@ namespace Sharing.Agent.Synchronizer.Models {
 	using Sharing.WeChat.Models;
 	public class WeChatUserSyncState : ProcessState<WeChatUserInfo> {
 		
-		public WeChatUserSyncState(IProcessSetting<WeChatUserInfo> setting) : base(setting) {
+		public WeChatUserSyncState(WeChatUserSyncSettings setting) : base(setting) {
 			
 		}
 		public override string Name {
 			get {
-				return "微信用户同步";
+				return "WeChat users synchronization.";
 			}
 		}
 		public override IProcessingResultService<WeChatUserInfo> GenerateProcessingResultService() {

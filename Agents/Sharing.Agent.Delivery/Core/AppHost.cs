@@ -10,7 +10,7 @@ namespace Sharing.Agent.Delivery {
 	using Microsoft.Extensions.Configuration.Json;
 
 	public static class AppHost {
-		private static IAppHostBuilder builder;
+		
 		private static IConfiguration configuration;
 		//public IAppHostBuilder CreateDefaultBuilder(string[] args) {
 

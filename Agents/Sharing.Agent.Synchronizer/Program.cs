@@ -1,44 +1,38 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using Sharing.Core;
-using Sharing.Core.Models;
+﻿
+
 
 namespace Sharing.Agent.Synchronizer {
+
+	using Sharing.Core;
+	using Microsoft.Extensions.DependencyInjection;
+	using Microsoft.Extensions.Logging;
+	using Sharing.Core.Services;
+	using Sharing.WeChat.Models;
+
 	class Program {
-		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(Program));
+
 		static void Main(string[] args) {
 
-			var workitems = "https://www.yourc.club/api/sharing/QueryMerchantDetails"
-				.GetUriJsonContent<JObject>().SelectToken("$.data").ToString()
-				.DeserializeToObject<MerchantDetails[]>()
-				.GenernateWorkItems();
+			var xx = Sharing.Agent.Synchronizer.Strings.RewardSuccessfully.DeserializeFromXml<RedpackResponse>();
+			var bb = Strings.RewardFailed.DeserializeFromXml<RedpackResponse>();
+			AppHost.CreateDefaultBuilder(args)
+				.ConfigureServices((collection) => {
+					collection.AddRandomGenerator();
+					collection.AddWeChatApiService();
+					collection.AddRewardMoneyGrantService();
+					collection.AddDatabaseFactory();
 
-			var scheduler = new WebJobScheduler((cancellation) => {
-				Parallel.ForEach(workitems, new ParallelOptions() {
-					MaxDegreeOfParallelism = 5
-				}, (workitem) => {
-					while ( cancellation.IsCancellationRequested == false ) {
+					collection.AddMemoryCache();
+					collection.AddLogging((cfg) => {
+						cfg.AddConsole();
+						cfg.AddLog4Net();
+					});
+				})
+				.ConfigureAppConfiguration((context, builder) => { })
+				.UseStartUp<StartUp>()
+				.Build()
+				.Start();
 
-						try {
-							var offset = 60D * 10;//1 hour     
-							workitem.Execute();
-							for ( var i = 0; ((cancellation.IsCancellationRequested == false) && (i < offset)); i++ ) {
-								Thread.Sleep(1000);
-							}
-						} catch ( Exception ex ) {
-							Logger.Error(ex.Message, ex);
-						}
-					}
-				});
-			});
-			scheduler.Shutdown += (sender, xx) => {
-				foreach ( var workitem in workitems ) {
-					workitem.Abort();
-				}
-			};
-			scheduler.Start();
 		}
 	}
 }

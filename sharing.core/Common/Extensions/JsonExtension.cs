@@ -46,7 +46,7 @@
 		}
 		public static T TryGetValue<T>(this JObject jObject, string jpath) {
 			try {
-				var result = jObject.SelectToken(jpath).Value<T>();
+				var result = jObject.SelectToken(jpath).ToString().DeserializeToObject<T>();
 				return result;
 
 			} catch ( Exception ex ) {

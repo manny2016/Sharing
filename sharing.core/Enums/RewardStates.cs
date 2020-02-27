@@ -11,7 +11,11 @@ namespace Sharing.Core {
 		/// <summary>
 		/// 已发放
 		/// </summary>
-		Offered = 2
+		GrantSuccessfully = 2,
+		/// <summary>
+		/// 发放失败
+		/// </summary>
+		GrantFailed = 3,
 
 	}
 }

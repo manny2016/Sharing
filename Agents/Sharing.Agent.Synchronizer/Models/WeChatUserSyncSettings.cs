@@ -15,22 +15,9 @@ namespace Sharing.Agent.Synchronizer.Models {
 		public string Secret { get; set; }
 		public AppTypes AppType { get; set; }
 		public long MerchantId { get; set; }
+		public string BrandName { get; set; }
 		public IProcessService<WeChatUserInfo> GenerateProcessService() {
 			return new WeChatUserSynchronizationService(this);
-		}
-		static Microsoft.Extensions.Configuration.IConfiguration configuration;
-		public Microsoft.Extensions.Configuration.IConfiguration GetConfiguration() {
-			if ( configuration == null ) {
-				configuration = new ConfigurationRoot(new List<IConfigurationProvider>() {
-					new  JsonConfigurationProvider(new JsonConfigurationSource(){
-						 Optional = true,
-						 FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(System.Environment.CurrentDirectory),
-						 Path ="appsettings.json",
-						 ReloadOnChange  =true
-					})
-				});
-			}
-			return configuration;
 		}
 	}
 }

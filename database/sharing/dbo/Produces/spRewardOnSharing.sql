@@ -8,7 +8,7 @@ AS
 	SELECT @wxUserId = [WxUserId] FROM [dbo].[WxUserIdentity] (NOLOCK) WHERE [AppId] =@appid AND [OpenId] = @openid;
 	SELECT @shared=Shared FROM [dbo].[WxUser] WHERE [Id] = @wxUserId;
 
-	IF(SELECT COUNT([WxUserId]) FROM [dbo].[RewardLogging] (NOLOCK) WHERE [WxUserId] = @wxUserId) =0 AND @shared  = 1
+	IF(SELECT COUNT([WxUserId]) FROM [dbo].[RewardLogging] (NOLOCK) WHERE [WxUserId] = @wxUserId AND [RewardMoney] IS NOT NULL) =0 AND @shared  = 1
 	BEGIN		
 		DECLARE @realMoney INT;
 		DECLARE @mchid BIGINT;

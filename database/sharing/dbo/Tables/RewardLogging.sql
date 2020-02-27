@@ -8,6 +8,7 @@
 	[RewardIntegral] INT,
 	[State] INT,
 	[Description] NVARCHAR(100),
+	[ErrorMessage] NVARCHAR(200),
 	[CreatedBy] NVARCHAR(50) NULL, 
 	[CreatedDateTime] BIGINT NULL,         
 	[LastUpdatedBy] NVARCHAR(50) NULL,

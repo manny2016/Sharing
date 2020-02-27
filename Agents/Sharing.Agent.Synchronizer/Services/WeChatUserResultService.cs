@@ -9,17 +9,22 @@ namespace Sharing.Agent.Synchronizer.Services {
 	using Sharing.WeChat.Models;
 	using System.Linq;
 	using Sharing.Core.Models;
-
+	using System.Threading;
 	public class WeChatUserResultService : IProcessingResultService<WeChatUserInfo> {
 		public void Dispose() {
 
 		}
 		private readonly WeChatUserSyncSettings settings;
+		private static AutoResetEvent signal = new AutoResetEvent(true);
 		public WeChatUserResultService(WeChatUserSyncSettings settings) {
 			this.settings = settings;
 		}
 		public void Save(IEnumerable<WeChatUserInfo> results) {
-			using ( var database = new DatabaseFactory(this.settings.GetConfiguration()).GenerateDatabase() ) {
+			if ( results == null || results.Count() == 0 ) {
+				return;
+			}
+			signal.WaitOne();
+			using ( var database = new DatabaseFactory(AppHost.Host.Configuration).GenerateDatabase() ) {
 				var queryString = @"[dbo].[spRegisterWeChatUser]";
 				var parameters = new IDbDataParameter[] {
 					new SqlParameter() {
@@ -37,6 +42,7 @@ namespace Sharing.Agent.Synchronizer.Services {
 				};
 				database.Execute(queryString, parameters, System.Data.CommandType.StoredProcedure);
 			}
+			signal.Set();
 		}
 	}
 }

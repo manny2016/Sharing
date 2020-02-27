@@ -32,7 +32,7 @@ namespace Sharing.Core.Services
 [TradeState],[Money],[RealMoney],[CreatedDateTime],[Attach], [Strategy])
     VALUES( 
     @pMerhantId,
-    (SELECT TOP 1 Id FROM [dbo].[WxUser] WHERE AppId=@pAppId AND OpenId=@pOpenId ) AS WxUserId,
+    (SELECT TOP 1 [WxUserId] FROM [dbo].[WxUserIdentity] WHERE AppId=@pAppId AND OpenId=@pOpenId ) AS WxUserId,
     (SELECT COUNT(Id) + 1 FROM [dbo].[Trade] WHERE CreatedDateTime / 86400 * 86400 = CONVERT(BIGINT,DATEDIFF(S,'1970-01-01',SYSDATETIME())) / 86400 * 86400) AS [TradeCode],
     @pWxOrderId AS WxOrderId,
     @pTradeId AS TradeId,
@@ -103,7 +103,7 @@ namespace Sharing.Core.Services
     [dbo].[Trade]([MerchantId],[WxUserId],[TradeCode],[WxOrderId],[TradeId],[TradeType],[TradeState],[Money],[RealMoney],[CreatedDateTime],[Attach], [Strategy])
     SELECT  
     @pMchId,
-    (SELECT TOP 1 Id FROM [dbo].[WxUser] WHERE AppId=@pAppId AND OpenId=@pOpenId ) AS WxUserId,
+    (SELECT TOP 1 [WxUserId] FROM [dbo].[WxUserIdentity] WHERE AppId=@pAppId AND OpenId=@pOpenId ) AS WxUserId,
     (SELECT COUNT(Id) + 1 FROM [dbo].[Trade] WHERE CreatedDateTime / 86400 * 86400 = CONVERT(BIGINT,DATEDIFF(S,'1970-01-01',SYSDATETIME())) / 86400 * 86400) AS [Code],
     @pWxOrderId AS WxOrderId,
     @pTradeId AS TradeId,

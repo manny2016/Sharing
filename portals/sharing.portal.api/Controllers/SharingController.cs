@@ -16,7 +16,7 @@ namespace Sharing.Portal.Api {
 
 	using Microsoft.Extensions.Configuration;
 	using System.Linq;
-	using Sharing.Core.Entities;
+	
 
 	[Produces("application/json")]
 	[ApiController]
@@ -348,7 +348,7 @@ namespace Sharing.Portal.Api {
 					client.GenernateSharedPoster(stream, sharedBy);
 					stream.Flush();
 				}
-				client.RewordOnSharing(sharedBy.AppId,sharedBy.OpenId);
+				client.RewordOnSharing(sharedBy.AppId, sharedBy.OpenId);
 			}
 			return new APIResult<string>() {
 				Data = $"images/moments/{fileName}",
@@ -359,8 +359,8 @@ namespace Sharing.Portal.Api {
 		}
 		[Route("api/sharing/QueryMerchantDetails")]
 		[HttpGet]
-		public APIResults<MerchantDetails> QueryMerchantDetails() {
-			return new APIResults<MerchantDetails>() {
+		public APIResult<MerchantDetails[]> QueryMerchantDetails() {
+			return new APIResult<MerchantDetails[]>() {
 				Data = client.GetMerchantDetails().ToArray(),
 				Success = true,
 				Message = string.Empty
@@ -371,6 +371,14 @@ namespace Sharing.Portal.Api {
 		public APIResult<QueryWxUserDetailsResponse> QueryAllWxUsers(QueryWxUserInfoRequest request) {
 			return new APIResult<QueryWxUserDetailsResponse>() {
 				Data = client.QueryWechatUserByAppId(request.WxApp.AppId, request.WxApp.Secret, request.NextOpenId),
+				Success = true
+			};
+		}
+		[Route("api/sharing/GetRewardloggings")]
+		[HttpPost]
+		public APIResult<RewardLogging[]> GetRewardloggings(QueryRewardContext context) {
+			return new APIResult<RewardLogging[]>() {
+				Data = client.GetRewardloggings(context),
 				Success = true
 			};
 		}

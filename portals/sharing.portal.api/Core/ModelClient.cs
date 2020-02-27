@@ -19,6 +19,7 @@ namespace Sharing.Portal.Api {
 	using System.IO;
 	using Microsoft.Extensions.Configuration;
 
+
 	public class ModelClient {
 		private readonly IWeChatApi wxapi;
 		private readonly IWeChatUserService wxUserService;
@@ -472,6 +473,36 @@ WHERE [TradeId] =@tradeId";
 		}
 		public void RewordOnSharing(string appid,string openid) {
 			this.sharingHostService.RewardOnSharing(appid,openid);
+		}
+		public RewardLogging[] GetRewardloggings(QueryRewardContext context) {
+			using(var database = this.databaseFactory.GenerateDatabase(isWriteOnly: false) ) {
+				var queryString = @"
+SELECT 
+[logging].[Id],
+[logging].[WxUserId],
+[trade].[TradeId] AS [RelevantTradeId],
+[users].[NickName],
+[logging].[State],
+[identity].[AppId],
+[identity].[OpenId],
+[logging].[RewardMoney],
+[trade].[RealMoney],
+[logging].[Description],
+[logging].[CreatedDateTime]
+FROM [dbo].[RewardLogging] [logging]
+	LEFT JOIN  [dbo].[WxUserIdentity] [identity]
+		ON [logging].[WxUserId] = [identity].WxUserId AND [AppId] = @appid
+	LEFT JOIN [dbo].[WxUser] [users]
+		ON [logging].[WxUserId] = [users].[Id]
+	LEFT JOIN [dbo].[Trade] [trade]
+		ON [trade].[Id] = [logging].[RelevantTradeId]
+WHERE [logging].RewardMoney>0 AND [logging].[State] = @state
+";
+				return database.SqlQuery<RewardLogging>(queryString,new {
+					@appid = context.AppId,
+					@state = (int)context.State
+				}).ToArray();
+			}
 		}
 	}
 }

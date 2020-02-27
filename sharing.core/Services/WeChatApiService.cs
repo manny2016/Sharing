@@ -26,6 +26,8 @@ namespace Sharing.Core.Services {
 		public WeChatApiService(IMemoryCache cache, IRandomGenerator generator) {
 			this.cache = cache;
 			this.generator = generator;
+			ServicePointManager.ServerCertificateValidationCallback= new RemoteCertificateValidationCallback(CheckValidationResult);
+			
 		}
 		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(WeChatApiService));
 		//private readonly IServiceProvider provider = SharingConfigurations.CreateServiceCollection(null).BuildServiceProvider();
@@ -157,10 +159,7 @@ namespace Sharing.Core.Services {
 		public WxPayParameter Unifiedorder(WxPayData data, string mchid) {
 			var request = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 			var order = request.GetUriContentDirectly((http) => {
-				if ( request.StartsWith("https", StringComparison.OrdinalIgnoreCase) ) {
-					ServicePointManager.ServerCertificateValidationCallback =
-							new RemoteCertificateValidationCallback(CheckValidationResult);
-				}
+				
 				http.Timeout = 30 * 1000;
 				ServicePointManager.DefaultConnectionLimit = 200;
 				http.UserAgent = string.Format("WXPaySDK/{3} ({0}) .net/{1} {2}",
@@ -303,14 +302,16 @@ namespace Sharing.Core.Services {
 			var url = "https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack";
 			var sign = string.Concat(redpack.PrepareSign(), $"&key={payKey}").MakeSign(WxPayData.SIGN_TYPE_MD5, payKey);
 			redpack.SetSign(sign);
-			var xml = redpack.SerializeToXml();
-			var result = url.GetUriContentDirectly((http) => {
+			
+			return url.GetUriContentDirectly((http) => {
 				http.Method = "POST";
 				http.ContentType = "text/xml";
-				var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+				var store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
 				store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly | OpenFlags.MaxAllowed);
-				var cert = store.Certificates.Find(X509FindType.FindByIssuerName, "MmpaymchCA", false);
-				http.ClientCertificates.Add(cert[0]);
+				var path  = Path.Combine(Environment.CurrentDirectory, @"cert\apiclient_cert.p12");
+				var cert = new X509Certificate2(path, "1520961881");
+				//var cert = store.Certificates.Find(X509FindType.FindBySerialNumber, "7d4daceb0866305aed424a175e86c005e6b80ee3", false);
+				http.ClientCertificates.Add(cert);
 				using ( var stream = http.GetRequestStream() ) {
 					var body = redpack.SerializeToXml();
 					var buffers = UTF8Encoding.UTF8.GetBytes(body);
@@ -318,8 +319,8 @@ namespace Sharing.Core.Services {
 					stream.Flush();
 				}
 				return http;
-			});
-			return new RedpackResponse();
+			}).DeserializeFromXml<RedpackResponse>();
+			
 		}
 
 		public QueryWxUserDetailsResponse QueryAllWxUsers(QueryWxUserInfoRequest context) {

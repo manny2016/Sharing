@@ -20,14 +20,16 @@ namespace Sharing.Agent.Synchronizer.Services {
 
 		}
 		public void Process(Action<WeChatUserInfo> pass, CancellationToken token) {
-			var loop = true;
+			var nextOpenId = (string)null;
+
 			do {
 				var result = "https://www.yourc.club/api/sharing/QueryAllWxUsers".GetUriJsonContent<JObject>((http) => {
 					http.Method = "POST";
 					http.ContentType = "application/json; encoding=utf-8";
 					using ( var stream = http.GetRequestStream() ) {
 						var data = new {
-							WxApp = new {appid = this.settings.AppId, secret = this.settings.Secret }
+							WxApp = new { appid = this.settings.AppId, secret = this.settings.Secret },
+							NextOpenId = nextOpenId
 						};
 						var body = data.SerializeToJson();
 						var buffers = UTF8Encoding.UTF8.GetBytes(body);
@@ -35,19 +37,15 @@ namespace Sharing.Agent.Synchronizer.Services {
 						stream.Flush();
 					}
 					return http;
-				});
-				var response = result.SelectToken("$.data").ToString();
-				var xx = response.DeserializeToObject<QueryWxUserDetailsResponse>();
-				Logger.Info($"Queried {xx.WeChatUserInfos.Length} users form WX api.");
-				if ( result == null ) {
-					break;
-				}
-				foreach(var model in xx.WeChatUserInfos ) {
+				}).TryGetValue<QueryWxUserDetailsResponse>("$.data");					
+				Logger.Info($"Queried {result.WeChatUserInfos.Length} users form WX api.");
+				foreach ( var model in result.WeChatUserInfos ) {
 					pass(model);
 				}
-				loop = !string.IsNullOrEmpty(xx.NextOpenId);
+				nextOpenId = result.NextOpenId;
+
 			}
-			while ( loop );
+			while ( !string.IsNullOrEmpty(nextOpenId) );
 
 		}
 	}

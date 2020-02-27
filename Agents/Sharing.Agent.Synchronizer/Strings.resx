@@ -117,7 +117,33 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <data name="RewardFailed" xml:space="preserve">
+    <value>&lt;xml&gt;
+&lt;return_code&gt;&lt;![CDATA[SUCCESS]]&gt;&lt;/return_code&gt;
+&lt;return_msg&gt;&lt;![CDATA[发放成功]]&gt;&lt;/return_msg&gt;
+&lt;result_code&gt;&lt;![CDATA[SUCCESS]]&gt;&lt;/result_code&gt;
+&lt;err_code&gt;&lt;![CDATA[SUCCESS]]&gt;&lt;/err_code&gt;
+&lt;err_code_des&gt;&lt;![CDATA[发放成功]]&gt;&lt;/err_code_des&gt;
+&lt;mch_billno&gt;&lt;![CDATA[T202002240000000025]]&gt;&lt;/mch_billno&gt;
+&lt;mch_id&gt;&lt;![CDATA[1520961881]]&gt;&lt;/mch_id&gt;
+&lt;wxappid&gt;&lt;![CDATA[wx20da9548445a2ca7]]&gt;&lt;/wxappid&gt;
+&lt;re_openid&gt;&lt;![CDATA[o18KQ54oC3bWFss8Zzk__G8CW9TU]]&gt;&lt;/re_openid&gt;
+&lt;total_amount&gt;100&lt;/total_amount&gt;
+&lt;send_listid&gt;&lt;![CDATA[1000041701202002263000051027427]]&gt;&lt;/send_listid&gt;
+&lt;/xml&gt;</value>
+  </data>
+  <data name="RewardSuccessfully" xml:space="preserve">
+    <value>&lt;xml&gt;
+&lt;return_code&gt;&lt;![CDATA[SUCCESS]]&gt;&lt;/return_code&gt;
+&lt;return_msg&gt;&lt;![CDATA[证书已过期]]&gt;&lt;/return_msg&gt;
+&lt;result_code&gt;&lt;![CDATA[FAIL]]&gt;&lt;/result_code&gt;
+&lt;err_code&gt;&lt;![CDATA[CA_ERROR]]&gt;&lt;/err_code&gt;
+&lt;err_code_des&gt;&lt;![CDATA[证书已过期]]&gt;&lt;/err_code_des&gt;
+&lt;mch_billno&gt;&lt;![CDATA[T202002240000000025]]&gt;&lt;/mch_billno&gt;
+&lt;mch_id&gt;&lt;![CDATA[1520961881]]&gt;&lt;/mch_id&gt;
+&lt;wxappid&gt;&lt;![CDATA[wx20da9548445a2ca7]]&gt;&lt;/wxappid&gt;
+&lt;re_openid&gt;&lt;![CDATA[o18KQ54oC3bWFss8Zzk__G8CW9TU]]&gt;&lt;/re_openid&gt;
+&lt;total_amount&gt;80&lt;/total_amount&gt;
+&lt;/xml&gt;</value>
+  </data>
 </root>

@@ -156,11 +156,10 @@
     </Compile>
     <Compile Include="Core\AppHost.cs" />
     <Compile Include="Core\Models\PrintItem.cs" />
-    <Compile Include="Contracts\IAppHostBuilder.cs" />
-    <Compile Include="FrmRedpack.cs">
+    <Compile Include="Forms\FrmRedpack.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmRedpack.Designer.cs">
+    <Compile Include="Forms\FrmRedpack.Designer.cs">
       <DependentUpon>FrmRedpack.cs</DependentUpon>
     </Compile>
     <Compile Include="Utilities\Settings.cs" />
@@ -195,7 +194,7 @@
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmRedpack.resx">
+    <EmbeddedResource Include="Forms\FrmRedpack.resx">
       <DependentUpon>FrmRedpack.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -232,7 +231,9 @@
       <Name>Sharing.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Contracts\" />
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
       <Visible>False</Visible>
