@@ -24,7 +24,7 @@ namespace Sharing.Agent.Delivery.Components {
 			this.lab_id.Text = string.Format(this.lab_id.Text, this.OnlineOrderContext.TradeId);
 			;
 			Point? lastPoint;
-			foreach ( var label in this.SplitAddressAndDisplay(string.Format("交付地址:{0}", this.OnlineOrderContext.Delivery == Sharing.Core.DeliveryTypes.BySelf
+			foreach ( var label in this.SplitAddressAndDisplay(string.Format("地址 : {0}", this.OnlineOrderContext.Delivery == Sharing.Core.DeliveryTypes.BySelf
 				? "本店"
 				: this.OnlineOrderContext.Address), out lastPoint) ) {
 				this.Controls.Add(label);
@@ -53,17 +53,16 @@ namespace Sharing.Agent.Delivery.Components {
 			this.lab_CopeWith.Text = string.Format(this.lab_CopeWith.Text, ((this.OnlineOrderContext.Total??0)/100).ToString("0.00"));
 			this.lab_CopeWith.Location = new Point(this.lab_CopeWith.Left, yValueNextList);
 
-			this.lab_disfromfriend.Text = string.Format(this.lab_disfromfriend.Text, "0.00");
-			this.lab_disfromfriend.Location = new Point(this.lab_disfromfriend.Left, yValueNextList);
+		
 
 			this.lab_paid.Text = string.Format(this.lab_paid.Text, ((this.OnlineOrderContext.Total??0)/100).ToString("0.00"));
-			this.lab_paid.Location = new Point(this.lab_paid.Left, this.lab_disfromfriend.Top + 20);
+			this.lab_paid.Location = new Point(this.lab_paid.Left, yValueNextList);
 
-			this.lab_paytype.Text = string.Format(this.lab_paid.Text, "线上支付");
-			this.lab_paytype.Location = new Point(this.lab_paytype.Left, this.lab_disfromfriend.Top + 20);
+			
+			this.lab_paytype.Location = new Point(this.lab_paytype.Left, this.lab_CopeWith.Top + 20);
 
-			this.lab_createdTime.Text = string.Format(this.lab_createdTime.Text, this.OnlineOrderContext.CreatedDateTime?.ToString("yyyy-MM-dd HH:mm:ss"));
-			this.lab_createdTime.Location = new Point(this.lab_createdTime.Location.X, this.lab_paid.Location.Y + this.lab_createdTime.Height + 10);
+			this.lab_createdTime.Text = string.Format(this.lab_createdTime.Text, this.OnlineOrderContext.CreatedDateTime?.ToString("yyyy-MM-dd HH:mm"));
+			this.lab_createdTime.Location = new Point(this.lab_createdTime.Location.X, this.lab_paytype.Top + 20);
 		}
 
 		public IEnumerable<PrintItem> GenernatePrintItems() {
@@ -111,7 +110,7 @@ namespace Sharing.Agent.Delivery.Components {
 			var list = new List<Label>();
 			lastPoint = null;
 			var location = new Point(20, 155);
-			var font = new Font("Microsoft YaHei", 9);
+			var font = new Font("Microsoft YaHei", 8);
 			var size = address.ToCharArray()[0].Measure(font);
 			var maxWordsInSingleLine = (int)((this.Width - 20) / size.Width);
 			var line = 0;

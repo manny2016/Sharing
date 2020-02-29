@@ -71,8 +71,8 @@ namespace Sharing.Agent.Delivery.Components {
 		/// <param name="e"></param>
 		private void tsbtn_done_Click(object sender, System.EventArgs e) {
 			if ( (this.OrderContext.State & TradeStates.Ready) == TradeStates.Ready ) {
-				this.UpgradeTradeState(TradeStates.Delivered);
-				
+				this.UpgradeTradeState(TradeStates.Delivered);				
+				this.Parent.Controls.Remove(this);
 			} else {
 				this.UpgradeTradeState(TradeStates.Ready);
 			}
@@ -97,7 +97,7 @@ namespace Sharing.Agent.Delivery.Components {
 			});
 			this.lab_state.Text = result.Data.GenernateTradeStateString();
 			this.OrderContext.State = result.Data;
-			
+
 		}
 		/// <summary>
 		/// 重新打印
@@ -124,9 +124,9 @@ namespace Sharing.Agent.Delivery.Components {
 			} else if ( ((this.OrderContext.State & TradeStates.Marking) == TradeStates.Marking) ||
 				  ((this.OrderContext.State & TradeStates.Ready) == TradeStates.Ready) ) {
 				this.UpgradeTradeState(TradeStates.Ready | TradeStates.Delivered);
-				this.Parent.Controls.Remove(this);
+				
 			}
-			this.OnlineOrderChanged?.Invoke(this, this.OrderContext);
+			//this.OnlineOrderChanged?.Invoke(this, this.OrderContext);
 		}
 	}
 }

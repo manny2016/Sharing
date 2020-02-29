@@ -496,7 +496,7 @@ FROM [dbo].[RewardLogging] [logging]
 		ON [logging].[WxUserId] = [users].[Id]
 	LEFT JOIN [dbo].[Trade] [trade]
 		ON [trade].[Id] = [logging].[RelevantTradeId]
-WHERE [logging].RewardMoney>0 AND [logging].[State] = @state
+WHERE [logging].RewardMoney>0 AND [logging].[State] = @state AND [identity].[OpenId] IS NOT NULL
 ";
 				return database.SqlQuery<RewardLogging>(queryString,new {
 					@appid = context.AppId,

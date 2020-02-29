@@ -14,7 +14,7 @@ namespace Sharing.Agent.Delivery.Components
             this.lab_code.Text = string.Format(this.lab_code.Text, code);
             this.lab_productName.Text = prodName;
             this.lab_counter.Text = string.Format(this.lab_counter.Text, index, total);
-            this.lab_createdTime.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+           // this.lab_createdTime.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
             this.lab_option.Text = option;
         }
         public IEnumerable<PrintItem> GenernatePrintItems()

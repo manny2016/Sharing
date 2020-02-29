@@ -44,16 +44,20 @@ namespace Sharing.Agent.Delivery {
 				var callback = new OnlineOrderComingDelegate(this.OnlineOrderComingCallback);
 				this.flp_NewOrder.Invoke(callback, model);
 			} else {
-				if ( dict[model.TradeCode] == null ) {
-					this.flp_NewOrder.Controls.Add(new OnlineOrderComponent(model));
-					dict[model.TradeCode] = model;
+				if ( !dict.ContainsKey(model.TradeId) ) {
+					var component = new OnlineOrderComponent(model);
+					component.OnlineOrderChanged += Component_OnlineOrderChanged;
+					this.flp_NewOrder.Controls.Add(component);
+					dict[model.TradeId] = model;
 				}
-
 				if ( Settings.Create().Autoprint ) {
 					model.PrintAsync();
 				}
 			}
 		}
+
+
+
 		private async Task<OnlineOrder[]> QueryOnineOrders(TradeStates[] includeStates, TradeStates[] excludeStates) {
 			var url = string.Format(Constants.API, "QueryOnlineOrders");
 			var result = url.GetUriJsonContent<OnlineOrder[]>((http) => {
@@ -86,7 +90,7 @@ namespace Sharing.Agent.Delivery {
 				var component = new OnlineOrderComponent(order);
 				component.Click += Component_Click;
 				component.OnlineOrderChanged += Component_OnlineOrderChanged;
-				dict[order.TradeCode] = order;
+				dict[order.TradeId] = order;
 				this.flp_NewOrder.Controls.Add(component);
 			}
 			this.lv_OrderDetals.Groups.Clear();
@@ -96,7 +100,9 @@ namespace Sharing.Agent.Delivery {
 		private void Component_OnlineOrderChanged(object sender, OnlineOrder order) {
 			if ( (order.State & TradeStates.Delivered) == TradeStates.Delivered ) {
 				this.Controls.Remove(sender as OnlineOrderComponent);
-				this.LoadOnlinOrder(this.lv_histories, order);
+				this.InitializeHistoryOnlineOrders();
+				this.InitializeHistoryOnlineOrders();
+				this.dict.TryRemove(order.TradeId, out order);
 			}
 
 		}
@@ -109,7 +115,7 @@ namespace Sharing.Agent.Delivery {
 			this.lv_histories.Groups.Clear();
 			this.lv_histories.Items.Clear();
 			results = results ?? new OnlineOrder[] { };
-			foreach ( var order in results ) {
+			foreach ( var order in results.OrderByDescending(x => x.CreatedDateTime) ) {
 				LoadOnlinOrder(lv_histories, order);
 			}
 		}
