@@ -18,8 +18,8 @@ namespace Sharing.Core.Tests.SharingApi {
 	[TestClass]
 	public class ExcelBultEditTest {
 
-		private  IDatabaseFactory factory;
-		
+		private IDatabaseFactory factory;
+
 		[TestMethod]
 		public void Write() {
 			var array = new string[] { };
@@ -35,7 +35,13 @@ namespace Sharing.Core.Tests.SharingApi {
 					model.Data2.ToList().ForEach(ctx => {
 						var settings = ctx.Settings.DeserializeToObject<ProductSettings>();
 						ctx.Options = settings?.Specifications.SerializeToJson();
-						ctx.Banners = string.Join(",", settings?.Banners);
+						ctx.Banners = string.Join(",",
+							(settings?.Banners.Select(x => x.Replace("https://www.yourc.club/images/products/", string.Empty))) ??
+							new string[] { ctx.ImageUrl.Replace("https://www.yourc.club/images/products/", string.Empty) });
+						ctx.Size = settings?.Specifications[0].SerializeToJson();
+						ctx.Temperature = settings?.Specifications[1].SerializeToJson();
+						ctx.ImageUrl = ctx.ImageUrl?.Replace("https://www.yourc.club/images/products/", string.Empty);
+						ctx.Banners = string.IsNullOrEmpty(ctx.Banners) ? ctx.ImageUrl : ctx.Banners;
 					});
 				}
 				model.DataMark = new ExcelDataMark() {
@@ -50,10 +56,7 @@ namespace Sharing.Core.Tests.SharingApi {
 		}
 		[TestMethod]
 		public void Read() {
-			using ( var stream = new FileStream("1582005804.xlsx", FileMode.Open, FileAccess.Read) ) {
-				var helper = new DefaultExcelBulkEditHelper();
-				var model = helper.Read<CategroyExcelBulkRow>(stream);
-			}
+
 		}
 		[TestMethod]
 		public void ImportProducts() {
@@ -117,13 +120,17 @@ VALUES([source].[Id] , [source].[MerchantId] , [source].[CategoryId] , [source].
 ";
 				using ( var database = factory.GenerateDatabase() ) {
 					queryString = string.Format(queryString, string.Join(",", products.Data.Where(x => x.Id != 0).Select(ctx => {
-						var settings = new ProductSettings() {
-							Banners = (ctx.Banners.DeserializeToObject<string[]>()??new string[] { })
-							.Select(x=>$"https://www.yourc.club/images/products/{x}")
-							.ToArray(),
-							Specifications = ctx.Options.DeserializeToObject<List<Specification>>()
+						var settings = new ProductSettings();
+						settings.Banners = ctx.Banners.Split(",")
+						?.Select(x => $"https://www.yourc.club/images/products/{x}")
+						.ToArray();
+
+						settings.Specifications = new List<Specification>(){
+							ctx.Size.DeserializeToObject<Specification>(),
+							ctx.Temperature.DeserializeToObject<Specification>()
 						};
-						ctx.ImageUrl  = string.IsNullOrEmpty(ctx.ImageUrl)?"": $"https://www.yourc.club/images/products/{ctx.ImageUrl}";
+						
+						ctx.ImageUrl = string.IsNullOrEmpty(ctx.ImageUrl) ? string.Empty : $"https://www.yourc.club/images/products/{ctx.ImageUrl}";
 						return $"\r\n({ctx.Id},{ctx.MerchantId},{ctx.CategoryId},'{ctx.Name}',{ctx.Price},{ctx.SalesVol},{ctx.SortNo},1,'{ctx.Description}','{ctx.ImageUrl}','{settings.SerializeToJson()}','Initialization',DATEDIFF(S,'1970-01-01',SYSUTCDATETIME()),'Initialization',DATEDIFF(S,'1970-01-01',SYSUTCDATETIME()))";
 					})));
 					database.Execute(queryString);

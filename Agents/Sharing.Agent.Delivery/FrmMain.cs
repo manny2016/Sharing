@@ -13,9 +13,11 @@ namespace Sharing.Agent.Delivery {
 	using System.Threading;
 	using System.Drawing;
 	using System.Collections.Generic;
+	using System.Collections.Concurrent;
 
 	public delegate void OnlineOrderComingDelegate(OnlineOrder model);
 	public partial class FrmMain : Form {
+		private ConcurrentDictionary<string, OnlineOrder> dict = new ConcurrentDictionary<string, OnlineOrder>();
 		public FrmMain() {
 			InitializeComponent();
 			this.Load += FrmMain_Load;
@@ -42,7 +44,11 @@ namespace Sharing.Agent.Delivery {
 				var callback = new OnlineOrderComingDelegate(this.OnlineOrderComingCallback);
 				this.flp_NewOrder.Invoke(callback, model);
 			} else {
-				this.flp_NewOrder.Controls.Add(new OnlineOrderComponent(model));
+				if ( dict[model.TradeCode] == null ) {
+					this.flp_NewOrder.Controls.Add(new OnlineOrderComponent(model));
+					dict[model.TradeCode] = model;
+				}
+
 				if ( Settings.Create().Autoprint ) {
 					model.PrintAsync();
 				}
@@ -76,9 +82,11 @@ namespace Sharing.Agent.Delivery {
 				new TradeStates[] { TradeStates.Delivered });
 			results = results ?? new OnlineOrder[] { };
 			foreach ( var order in results.OrderBy(o => o.TradeCode) ) {
+
 				var component = new OnlineOrderComponent(order);
 				component.Click += Component_Click;
 				component.OnlineOrderChanged += Component_OnlineOrderChanged;
+				dict[order.TradeCode] = order;
 				this.flp_NewOrder.Controls.Add(component);
 			}
 			this.lv_OrderDetals.Groups.Clear();

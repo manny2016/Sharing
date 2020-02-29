@@ -44,19 +44,26 @@ namespace Sharing.Core.Tests.Models {
 		[ExcelColumn(HeaderText = "排序号", SortId = 7)]
 		public int SortNo { get; set; }
 
-		[ExcelColumn(ExcelEditInputType = ExcelEditInputTypes.DropDownList, HeaderText = "是否启用", SortId = 7)]
+		[ExcelColumn(ExcelEditInputType = ExcelEditInputTypes.DropDownList, HeaderText = "是否启用", SortId = 8)]
 		public bool Enabled { get; set; }
 
-		[ExcelColumn(HeaderText = "封面图片", SortId = 8)]
+		[ExcelColumn(HeaderText = "封面图片", SortId = 9)]
 		public string ImageUrl { get; set; }
 
-		[ExcelColumn(HeaderText = "备注",SortId =15)]
-		public string Description { get; set; }
-
-		[ExcelColumn(HeaderText = "产品封面图片", SortId = 9)]
+		[ExcelColumn(HeaderText = "产品封面图片", SortId = 10)]
 		public string Banners { get; set; }
 
-		[ExcelColumn(HeaderText = "可选参数", SortId = 10)]
+		[ExcelColumn(HeaderText = "规格", SortId = 11)]
+		public string Size { get; set; }
+
+
+		[ExcelColumn(HeaderText = "温度", SortId = 12)]
+		public string Temperature { get; set; }
+
+
+		[ExcelColumn(HeaderText = "备注",SortId =13)]
+		public string Description { get; set; }
+
 		public string Options { get; set; }
 
 		public string Settings { get; set; }
