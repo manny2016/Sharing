@@ -262,11 +262,11 @@ WHERE [TradeId] =@tradeId";
 						new SqlParameter("@mchid",trade.MerchantId),
 						new SqlParameter("@wxUserId",trade.WxUserId),
 						new SqlParameter("@rewardTo", (pyarmid?.Parent?.Id) ?? -1),
-						new SqlParameter("@rewardMoney",(pyarmid?.Parent?.Id)==null?0:trade.RealMoney*0.1),
+						new SqlParameter("@rewardMoney",(pyarmid?.Parent?.Id)==null?0:trade.RealMoney*configuration.GetRewardSettings().Limit),
 						new SqlParameter("@rewardIntegral",trade.RealMoney/10),
 						new SqlParameter("@confirmTime",DateTime.UtcNow.ToUnixStampDateTime()),
 						new SqlParameter("@state",(int)TradeStates.AckPay),
-						new SqlParameter("@_rewardMoneyLimit",0.1)
+						new SqlParameter("@_rewardMoneyLimit",configuration.GetRewardSettings().Limit)
 					};
 
 						database.Execute(executeSqlString, parameters.ToArray(), System.Data.CommandType.StoredProcedure);
@@ -471,11 +471,11 @@ WHERE [TradeId] =@tradeId";
 				}
 			});
 		}
-		public void RewordOnSharing(string appid,string openid) {
-			this.sharingHostService.RewardOnSharing(appid,openid);
+		public void RewordOnSharing(string appid, string openid) {
+			this.sharingHostService.RewardOnSharing(appid, openid);
 		}
 		public RewardLogging[] GetRewardloggings(QueryRewardContext context) {
-			using(var database = this.databaseFactory.GenerateDatabase(isWriteOnly: false) ) {
+			using ( var database = this.databaseFactory.GenerateDatabase(isWriteOnly: false) ) {
 				var queryString = @"
 SELECT 
 [logging].[Id],
@@ -498,7 +498,7 @@ FROM [dbo].[RewardLogging] [logging]
 		ON [trade].[Id] = [logging].[RelevantTradeId]
 WHERE [logging].RewardMoney>0 AND [logging].[State] = @state AND [identity].[OpenId] IS NOT NULL
 ";
-				return database.SqlQuery<RewardLogging>(queryString,new {
+				return database.SqlQuery<RewardLogging>(queryString, new {
 					@appid = context.AppId,
 					@state = (int)context.State
 				}).ToArray();

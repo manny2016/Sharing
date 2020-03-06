@@ -15,7 +15,7 @@ namespace Sharing.Core {
 
 	//	public const string DefaultDatabase = "sharing-dev";
 	//	public static IConfiguration Configuration { get; private set; }
-		
+
 	//	public static void Configure(IConfiguration configuration) {
 	//		Configuration = configuration;
 	//	}
@@ -56,5 +56,9 @@ namespace Sharing.Core {
 			new SqlMetaData("SharedBy", System.Data.SqlDbType.NVarChar,32),
 			new SqlMetaData("ScenarioId", System.Data.SqlDbType.UniqueIdentifier)
 		};
+	}
+	public class RewardSettings {
+		public const string SectionName = "reward";
+		public decimal Limit { get; set; } = 0.5M;
 	}
 }

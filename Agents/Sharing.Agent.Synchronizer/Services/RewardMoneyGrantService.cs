@@ -44,7 +44,7 @@ namespace Sharing.Agent.Synchronizer.Services {
 			////TODO : need to impove. make sure it can be configured
 			foreach ( var reward in rewards ) {
 				var redpack = new Redpack(nonce_str: generator.Genernate(),
-					mch_billno: reward.RelevantTradeId,
+					mch_billno: string.Concat(reward.RelevantTradeId, reward.Id.ToString()),
 					mch_id: "1520961881",
 					wxappid: reward.AppId,
 					send_name: "柠檬工坊东坡里店",
@@ -57,7 +57,7 @@ namespace Sharing.Agent.Synchronizer.Services {
 					remark: "来自柠檬工坊东坡里店的推荐佣金");
 				var result = this.api.SendRedpack(this.Settings.WxApp, "EA62B75D5D3941C3A632B8F18C7B3575", redpack);
 				reward.ErrorMessage = string.Concat(result.ErrorCodeDescription.Value, "sendlistid", result.SendListId.Value);
-				reward.State = result.ResultCode.Equals("SUCCESS") ? RewardStates.GrantSuccessfully : RewardStates.GrantFailed;
+				reward.State = result.ResultCode.Value.Equals("SUCCESS",StringComparison.OrdinalIgnoreCase) ? RewardStates.GrantSuccessfully : RewardStates.GrantFailed;
 				if ( reward.State == RewardStates.GrantSuccessfully ) {
 					Logger.Info($"Grant successfully.{reward.NickName},{reward.RewardMoney / 100}");
 				} else {

@@ -8,14 +8,17 @@ namespace Sharing.Core.Services {
 	using Sharing.Core.Entities;
 	using System.Data.SqlClient;
 	using Dapper;
+	using Microsoft.Extensions.Configuration;
 
 	public class SharingHostService : ISharingHostService {
 		//private readonly IMerchantService MerchantService;
 		private readonly IMemoryCache MemoryCache;
 		private readonly IDatabaseFactory databaseFactory;
-		public SharingHostService(IMemoryCache memoryCache, IDatabaseFactory databaseFactory) {
+		private readonly IConfiguration configuration;
+		public SharingHostService(IMemoryCache memoryCache, IDatabaseFactory databaseFactory,IConfiguration configuration) {
 			this.databaseFactory = databaseFactory;
 			this.MemoryCache = memoryCache;
+			this.configuration = configuration;
 		}
 		public IList<MerchantDetails> MerchantDetails {
 			get {
@@ -100,7 +103,7 @@ WHERE Id = (SELECT WxUserId FROM[dbo].[WxUserIdentity] WHERE[AppId] = @appid AND
 				var parameters = new DynamicParameters();
 				parameters.Add("@appid",appId);
 				parameters.Add("@openId",openId);
-				parameters.Add("@rewardMoneyLimit",0.1);
+				parameters.Add("@rewardMoneyLimit",configuration.GetRewardSettings().Limit);
 				database.Execute(queryString, parameters, System.Data.CommandType.StoredProcedure);
 			}
 		}

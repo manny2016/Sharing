@@ -32,7 +32,7 @@ namespace Sharing.Agent.Synchronizer {
 					while ( cancellation.IsCancellationRequested == false ) {
 
 						try {
-							var offset = 60D * 10;//10 minutes
+							var offset = 60D;//10 minutes
 							workitem.Execute();
 							for ( var i = 0; ((cancellation.IsCancellationRequested == false) && (i < offset)); i++ ) {
 								Thread.Sleep(1000);

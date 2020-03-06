@@ -7,7 +7,7 @@
 	@rewardIntegral INT,
 	@confirmTime BIGINT,
 	@state INT,
-	@_rewardMoneyLimit FLOAT
+	@_rewardMoneyLimit decimal
 AS
 BEGIN TRY
 	BEGIN TRANSACTION	

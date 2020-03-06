@@ -124,11 +124,17 @@ VALUES([source].[Id] , [source].[MerchantId] , [source].[CategoryId] , [source].
 						settings.Banners = ctx.Banners.Split(",")
 						?.Select(x => $"https://www.yourc.club/images/products/{x}")
 						.ToArray();
-
-						settings.Specifications = new List<Specification>(){
-							ctx.Size.DeserializeToObject<Specification>(),
-							ctx.Temperature.DeserializeToObject<Specification>()
-						};
+						
+						settings.Specifications = new List<Specification>();
+						var size = ctx.Size.DeserializeToObject<Specification>();
+						if ( size != null ) {
+							settings.Specifications.Add(size);
+						}
+						var tempet = ctx.Temperature.DeserializeToObject<Specification>();
+						if ( tempet != null ) {
+							settings.Specifications.Add(tempet);
+						}
+						
 						
 						ctx.ImageUrl = string.IsNullOrEmpty(ctx.ImageUrl) ? string.Empty : $"https://www.yourc.club/images/products/{ctx.ImageUrl}";
 						return $"\r\n({ctx.Id},{ctx.MerchantId},{ctx.CategoryId},'{ctx.Name}',{ctx.Price},{ctx.SalesVol},{ctx.SortNo},1,'{ctx.Description}','{ctx.ImageUrl}','{settings.SerializeToJson()}','Initialization',DATEDIFF(S,'1970-01-01',SYSUTCDATETIME()),'Initialization',DATEDIFF(S,'1970-01-01',SYSUTCDATETIME()))";

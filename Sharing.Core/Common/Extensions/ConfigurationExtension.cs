@@ -14,5 +14,9 @@ namespace Sharing.Core {
 			return configuration.GetSection(DbConfiguration.SectionName)
 				.Get<DbConfiguration>();
 		}
+		public static RewardSettings GetRewardSettings(this IConfiguration configuration) {
+			return configuration.GetSection(RewardSettings.SectionName)
+				.Get<RewardSettings>();
+		}
 	}
 }

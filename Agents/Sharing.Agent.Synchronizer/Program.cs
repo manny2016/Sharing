@@ -21,7 +21,7 @@ namespace Sharing.Agent.Synchronizer {
 					collection.AddWeChatApiService();
 					collection.AddRewardMoneyGrantService();
 					collection.AddDatabaseFactory();
-
+					collection.AddWxChatOfficialSyncService();
 					collection.AddMemoryCache();
 					collection.AddLogging((cfg) => {
 						cfg.AddConsole();

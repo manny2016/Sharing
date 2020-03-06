@@ -11,7 +11,7 @@ namespace Sharing.Agent.Synchronizer.Models {
 		}
 		public override string Name {
 			get {
-				return "WeChat users synchronization.";
+				return "WeChat Users Synchronization.";
 			}
 		}
 		public override IProcessingResultService<WeChatUserInfo> GenerateProcessingResultService() {
